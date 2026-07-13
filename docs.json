@@ -4,8 +4,8 @@
   "theme": "almond",
   "language": "tr",
   "logo": {
-    "light": "/images/dark-all-big.png",
-    "dark": "/images/light-all-big.png",
+    "light": "/images/light-all-big.png",
+    "dark": "/images/dark-all-big.png",
     "href": "https://gurstore.net/"
   },
   "favicon": {

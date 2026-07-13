@@ -4,91 +4,67 @@ sidebarTitle: "Hesap Kurulumu"
 description: "GurStore profilinizi yapılandırın, iki adımlı doğrulamayı etkinleştirin ve mağazanızın temel bilgilerini hesap ayarları panelinden belirleyin."
 ---
 
-GurStore hesap ayarları; görünen adınızdan avatarınıza, mağazanızın para biriminden bakım moduna
-ve genel duyurulara kadar kişisel ve mağaza geneli her şeyi kontrol etmenizi sağlar. Bu sayfa,
-satışa başlamadan önce hesabınızın ve mağazanızın doğru kurulması için her alanı nasıl
-yapılandıracağınızı anlatır.
+GurStore hesap ayarları; görünen adınızdan avatarınıza, mağazanızın para biriminden bakım moduna ve genel duyurulara kadar kişisel ve mağaza geneli her şeyi kontrol etmenizi sağlar. Bu sayfa, satışa başlamadan önce hesabınızın ve mağazanızın doğru kurulması için her alanı nasıl yapılandıracağınızı anlatır.
 
 ## Profil Ayarları
 
-Profiliniz, adınızın ve avatarınızın panelde ve uygun yerlerde müşteriye dönük sayfalarda nasıl
-göründüğünü belirler.
+Profiliniz, adınızın ve avatarınızın panelde ve uygun yerlerde müşteriye dönük sayfalarda nasıl göründüğünü belirler.
 
 Profilinizi güncellemek için giriş yapmışken `/profile` sayfasına gidin.
 
 <Steps>
   <Step title="Görünen Adınızı Güncelleyin">
-    Hesabınızla ilişkilendirmek istediğiniz adı girin. Bu ad, yönetim paneli başlığında ve giden
-    e-posta bildirimlerinde görünür.
+    Hesabınızla ilişkilendirmek istediğiniz adı girin. Bu ad, yönetim paneli başlığında ve giden e-posta bildirimlerinde görünür.
   </Step>
   <Step title="E-posta Adresinizi Değiştirin">
-    Yeni bir e-posta adresi girip kaydedin. GurStore yeni adrese bir doğrulama bağlantısı gönderir
-    — değişikliğin geçerli olması için onaylamanız gerekir.
+    Yeni bir e-posta adresi girip kaydedin. GurStore yeni adrese bir doğrulama bağlantısı gönderir — değişikliğin geçerli olması için onaylamanız gerekir.
   </Step>
   <Step title="Avatar Yükleyin">
-    Avatar alanına tıklayarak bir profil görseli yükleyin. PNG ve JPG desteklenir. 200×200 piksel
-    veya daha büyük kare bir kırpma en iyi sonucu verir.
+    Avatar alanına tıklayarak bir profil görseli yükleyin. PNG ve JPG desteklenir. 200×200 piksel veya daha büyük kare bir kırpma en iyi sonucu verir.
   </Step>
 </Steps>
 
 ## Sosyal Giriş
 
-GurStore, Google ve Discord üzerinden OAuth tabanlı girişi destekler; böylece ayrı bir şifre
-yönetmeden oturum açabilirsiniz.
+GurStore, Google ve Discord üzerinden OAuth tabanlı girişi destekler; böylece ayrı bir şifre yönetmeden oturum açabilirsiniz.
 
-Bir sosyal sağlayıcı bağlamak için profil ayarlarınıza gidin ve bağlamak istediğiniz sağlayıcının
-yanındaki **Bağla** düğmesine tıklayın. GurStore sizi sağlayıcının yetkilendirme akışına yönlendirir
-ve ardından hesap bağlanmış olarak panelinize geri getirir.
+Bir sosyal sağlayıcı bağlamak için profil ayarlarınıza gidin ve bağlamak istediğiniz sağlayıcının yanındaki **Bağla** düğmesine tıklayın. GurStore sizi sağlayıcının yetkilendirme akışına yönlendirir ve ardından hesap bağlanmış olarak panelinize geri getirir.
 
 OAuth yönlendirme uç noktaları:
 
-```
+```text
 /auth/google/redirect
 /auth/discord/redirect
 ```
 
-Bir sağlayıcı bağlandıktan sonra giriş sayfasındaki "Google ile devam et" veya "Discord ile
-devam et" düğmesiyle anında oturum açabilirsiniz.
+Bir sağlayıcı bağlandıktan sonra giriş sayfasındaki "Google ile devam et" veya "Discord ile devam et" düğmesiyle anında oturum açabilirsiniz.
 
 <Warning>
-  OAuth sağlayıcı hesabınıza erişimi kaybederseniz — örneğin Google veya Discord hesabınız askıya
-  alınır ya da silinirse — bir şifre belirlememiş veya ikinci bir sağlayıcı bağlamamışsanız
-  GurStore'a giriş yapamazsınız. Yalnızca sosyal girişe güvenmeden önce profil ayarlarınızdan bir
-  şifre belirleyin veya yedek olarak ikinci bir sağlayıcı bağlayın.
+  OAuth sağlayıcı hesabınıza erişimi kaybederseniz — örneğin Google veya Discord hesabınız askıya alınır ya da silinirse — bir şifre belirlememiş veya ikinci bir sağlayıcı bağlamamışsanız GurStore'a giriş yapamazsınız. Yalnızca sosyal girişe güvenmeden önce profil ayarlarınızdan bir şifre belirleyin veya yedek olarak ikinci bir sağlayıcı bağlayın.
 </Warning>
 
 ## Mağaza Ayarları
 
-Mağaza düzeyindeki ayarlar tüm mağazanıza genel olarak uygulanır ve müşterilerin gördüğünü ve
-platformun davranışını etkiler. Aşağıdakileri yapılandırmak için **Yönetim → Ayarlar** bölümüne
-gidin:
+Mağaza düzeyindeki ayarlar tüm mağazanıza genel olarak uygulanır ve müşterilerin gördüğünü ve platformun davranışını etkiler. Aşağıdakileri yapılandırmak için **Yönetim → Ayarlar** bölümüne gidin:
 
 <Steps>
   <Step title="Mağaza Kimliği">
-    **Mağaza adı**, **iletişim e-postası** ve **logo**yu belirleyin. Bunlar mağaza başlığında,
-    işlem e-postalarında ve müşterilere gönderilen fişlerde görünür.
+    **Mağaza adı**, **iletişim e-postası** ve **logo**yu belirleyin. Bunlar mağaza başlığında, işlem e-postalarında ve müşterilere gönderilen fişlerde görünür.
   </Step>
   <Step title="Yerel Ayar ve Para Birimi">
-    Mağazanızın **yerel ayarını** (dil ve bölgesel biçimlendirme) ve tahsilat yaptığı **para
-    birimini** seçin. Para birimi değişiklikleri tüm yeni siparişlere uygulanır — mevcut siparişler
-    satın alma anındaki para birimini korur.
+    Mağazanızın **yerel ayarını** (dil ve bölgesel biçimlendirme) ve tahsilat yaptığı **para birimini** seçin. Para birimi değişiklikleri tüm yeni siparişlere uygulanır — mevcut siparişler satın alma anındaki para birimini korur.
   </Step>
   <Step title="Bakım Modu">
-    Mağazanızı geçici olarak çevrimdışına almak için **bakım modunu** açın — örneğin toplu stok
-    yüklerken veya ürünleri yeniden yapılandırırken. Mağazayı ziyaret eden müşteriler katalog
-    yerine bir bakım sayfası görür. Yönetim paneliniz tam olarak erişilebilir kalır. Ayrıntılar:
-    [Bakım Modu](/configuration/maintenance-mode).
+    Mağazanızı geçici olarak çevrimdışına almak için **bakım modunu** açın — örneğin toplu stok yüklerken veya ürünleri yeniden yapılandırırken. Mağazayı ziyaret eden müşteriler katalog yerine bir bakım sayfası görür. Yönetim paneliniz tam olarak erişilebilir kalır. Ayrıntılar: [Bakım Modu](/configuration/maintenance-mode).
   </Step>
   <Step title="Duyurular">
-    Mağazanızda banner olarak görünen mağaza geneli bir duyuru mesajı ekleyin. Bunu promosyonları,
-    stok yenileme bildirimlerini veya planlı kesintileri müşterilerinize iletmek için kullanın.
+    Mağazanızda banner olarak görünen mağaza geneli bir duyuru mesajı ekleyin. Bunu promosyonları, stok yenileme bildirimlerini veya planlı kesintileri müşterilerinize iletmek için kullanın.
   </Step>
 </Steps>
 
 ## Şifre ve Hesap Güvenliği
 
-Hesabınızı güvende tutmak, güçlü ve benzersiz bir şifreyle ve aktif giriş yöntemlerinizin farkında
-olmakla başlar.
+Hesabınızı güvende tutmak, güçlü ve benzersiz bir şifreyle ve aktif giriş yöntemlerinizin farkında olmakla başlar.
 
 **Şifrenizi değiştirmek için:**
 
@@ -97,9 +73,7 @@ olmakla başlar.
 3. **Şifreyi Kaydet**'e tıklayın.
 
 <Info>
-  Google veya Discord ile kaydolduysanız ve hiç şifre belirlemediyseniz, Güvenlik bölümündeki
-  **Şifre Belirle** seçeneğini kullanarak bir şifre ekleyin. Bu, sosyal sağlayıcınızdan bağımsız
-  bir yedek giriş yöntemi sağlar.
+  Google veya Discord ile kaydolduysanız ve hiç şifre belirlemediyseniz, Güvenlik bölümündeki **Şifre Belirle** seçeneğini kullanarak bir şifre ekleyin. Bu, sosyal sağlayıcınızdan bağımsız bir yedek giriş yöntemi sağlar.
 </Info>
 
 **Hesap güvenliği için en iyi uygulamalar:**
@@ -107,5 +81,4 @@ olmakla başlar.
 - GurStore için benzersiz bir şifre üretip saklamak üzere bir şifre yöneticisi kullanın.
 - Alternatif bir giriş yönteminiz olması için ikinci bir OAuth sağlayıcı bağlayın.
 - Aktif oturumlarınızı düzenli olarak gözden geçirin ve tanımadıklarınızı sonlandırın.
-- İletişim e-posta adresinizi güncel tutun — GurStore bunu güvenlik uyarıları ve hesap kurtarma
-  için kullanır.
+- İletişim e-posta adresinizi güncel tutun — GurStore bunu güvenlik uyarıları ve hesap kurtarma için kullanır.
