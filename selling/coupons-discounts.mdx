@@ -1,0 +1,75 @@
+---
+title: "Mağazanız için Kupon ve İndirim Oluşturun"
+sidebarTitle: "Kuponlar"
+description: "GurStore'da satışları artırmak için yüzde veya sabit indirimli kupon kodları, kullanım limitleri, son kullanma tarihleri ve kullanıcıya özel hedefleme oluşturun."
+---
+
+GurStore, ürünlerinizde indirim yapmanın iki esnek yolunu sunar: müşterilerin ödemede girdiği kupon
+kodları ve bir ürünün liste fiyatına otomatik uygulanan ürün düzeyi indirimler. Her iki seçenek de
+yüzde bazlı ve sabit tutarlı indirimleri destekler; böylece üçüncü taraf araçlara ihtiyaç duymadan
+promosyonlarınız üzerinde tam kontrole sahip olursunuz.
+
+## Kupon Oluşturma
+
+Yeni bir kupon oluşturmak için yönetim panelinizde **Yönetim → Kuponlar**'a gidin ve **Kupon Oluştur**'a
+tıklayın. Şu alanları yapılandırabilirsiniz:
+
+| Alan | Açıklama |
+|---|---|
+| **Kod** | Müşterilerin ödemede yazdığı dize (ör. `LANSMAN20`) |
+| **İndirim Türü** | Sipariş toplamından yüzde düşmek için **Yüzde**, sabit bir değer düşmek için **Sabit Tutar** seçin |
+| **İndirim Değeri** | Düşülecek miktar — yüzde (ör. `20`) veya sabit değer (ör. `5.00`) |
+| **Kullanım Limiti** | Kuponun toplamda kaç kez kullanılabileceği |
+| **Son Kullanma Tarihi** | Kuponun artık geçerli olmadığı tarih |
+| **Kullanıcıya Özel** | İsteğe bağlı olarak kuponu belirli bir kullanıcı hesabıyla sınırlayın |
+
+**Örnek:** Bir lansman promosyonu oluşturmak için kodu `LANSMAN20`, indirim türünü **Yüzde**, değeri
+`20`, kullanım limitini `100` ve son kullanma tarihini bugünden 30 gün sonrası olarak ayarlayın. Ödemede
+`LANSMAN20` giren müşteriler, toplam 100 kullanıma kadar siparişlerinde %20 indirim alır.
+
+<Warning>
+  Kupon kodları büyük/küçük harfe duyarlıdır. `LANSMAN20` olarak oluşturulan bir kod, müşteri
+  `lansman20` veya `Lansman20` girerse çalışmaz. Kodlarınızın tam biçimini müşterilere net bir şekilde
+  iletin.
+</Warning>
+
+## Ürün Düzeyi İndirimler
+
+Bir kupon kodu gerektirmeden bir ürünün fiyatını düşürmek isterseniz, doğrudan ürünün kendisine bir
+indirim tanımlayabilirsiniz. Yönetim panelinizde bir ürünü düzenlerken bir indirimi **yüzde** veya
+**sabit tutar** olarak belirtebilirsiniz. İndirimli fiyat, ürün listesinde ve ödeme sayfasında otomatik
+gösterilir — müşteriden bir kod gerekmez.
+
+Bu; kampanya etkinlikleri, stok eritme fiyatlandırması veya kalıcı olarak indirilmiş ürünler için
+kullanışlıdır.
+
+## Müşteriler Kuponları Nasıl Uygular?
+
+Müşteriler kupon kodlarını ödeme sırasında `/checkout` sayfasında uygular. Siparişlerini vermeden önce
+sipariş özeti bölümündeki **kupon kodu alanına** kodu girerler. Kod geçerliyse indirim anında uygulanır
+ve ödeme işlenmeden önce güncellenmiş sipariş toplamı gösterilir.
+
+<Tip>
+  Müşterilere kupon kodlarını siparişi vermeden önce uygulamalarını hatırlatın — indirimler tamamlanmış
+  satın alımlara geriye dönük uygulanamaz.
+</Tip>
+
+## Kupon Kullanımını İzleme
+
+Kuponlarınızın nasıl performans gösterdiğini **Yönetim → Kuponlar** bölümünden izleyebilirsiniz. Her
+kupon kaydı, kodun şimdiye kadar kaç kez kullanıldığını gösterir. Bu, tanımladığınız kullanım limitine
+karşı kalan kullanımları takip etmenizi ve bir promosyonun ne kadar iyi dönüşüm sağladığını
+değerlendirmenizi sağlar.
+
+## Kullanıcıya Özel Kuponlar
+
+Bir kupon oluştururken isteğe bağlı olarak onu belirli bir kullanıcı hesabına atayabilirsiniz. Kullanıcıya
+özel bir kupon yalnızca atandığı kullanıcı tarafından kullanılabilir; bu da onu geri kazanım
+kampanyaları, sadakat ödülleri veya kişiselleştirilmiş teklifler gibi hedefli promosyonlar için ideal
+kılar.
+
+<Tip>
+  Influencer veya ortaklık kampanyaları için sınırlı kullanımlı, kullanıcıya özel kuponlar kullanın. Her
+  influencer'a kullanım sınırı olan benzersiz bir kod atayın, ardından her ortağın etkisini ölçmek için
+  kod başına kullanımları izleyin.
+</Tip>

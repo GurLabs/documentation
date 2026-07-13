@@ -1,0 +1,71 @@
+---
+title: "GurStore Cüzdanınızı ve Bakiyenizi Yönetin"
+sidebarTitle: "Cüzdan"
+description: "GurStore cüzdanı, ödemede harcayabileceğiniz mağaza kredisi tutar. Bakiyenizi yükleyin ve panelinizin cüzdan bölümünden çekim talep edin."
+---
+
+GurStore cüzdanınız, doğrudan hesabınıza bağlı bir mağaza kredisi bakiyesidir. Ödemede satın alımları
+ödemek, mağazadan promosyon kredisi almak ve bakiyenizin iade edilmesini istiyorsanız çekim talep etmek
+için kullanabilirsiniz. Cüzdan; her seferinde ödeme bilgisi girmeden harcamanızı yönetmenin esnek ve
+hızlı bir yolunu sunar.
+
+## Bakiyenizi Görüntüleme
+
+Güncel cüzdan bakiyeniz her zaman panelinizin **Cüzdan** bölümünde görünür. Mevcut kredinizi tam bir
+işlem geçmişiyle birlikte görmek için `/dashboard/wallet` adresine gidin.
+
+Bakiyenizi programatik olarak müşteri cüzdan uç noktasıyla da alabilirsiniz:
+
+```bash
+GET /api/customer/wallet
+Authorization: Bearer YOUR_TOKEN
+```
+
+Yanıt, güncel bakiyenizi ve para birimini içerir.
+
+## Bakiyenizi Yükleme
+
+Mağaza kredisi cüzdanınıza iki şekilde eklenir:
+
+- **Yönetici kredisi** — Mağaza ekibi, örneğin bir iadenin, iyi niyet jestinin veya promosyon
+  teklifinin parçası olarak hesabınıza elle kredi ekleyebilir.
+- **Promosyon kampanyaları** — Mağaza, uygun hesapları otomatik kredilendiren kampanyalar
+  yürütebilir. Uygunsanız kredi, sizin bir işlem yapmanıza gerek kalmadan cüzdanınızda görünür.
+
+Kredi eklendiğinde işlem geçmişinizde yeni bir kayıt görürsünüz.
+
+## Bakiyenizi Harcama
+
+Ödemeye hazır olduğunuzda, ödeme ekranında ödeme yöntemi olarak **Cüzdan**'ı seçin. Satın alma tutarı
+mevcut bakiyenizden düşülür. Sipariş toplamınız cüzdan bakiyenizi aşarsa, farkı başka bir ödeme
+yöntemiyle karşılamanız gerekir.
+
+Bakiyeniz başarılı bir satın almadan hemen sonra güncellenir ve işlem cüzdan geçmişinizde görünür.
+
+## Çekim Talepleri
+
+Harcamak yerine iade edilmesini istediğiniz pozitif bir bakiyeniz varsa bir çekim talebi
+gönderebilirsiniz. Çekmek istediğiniz tutarla çekim uç noktasına bir `POST` isteği gönderin:
+
+```bash
+curl -X POST https://magazaniz.com/api/customer/wallet/withdraw \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 50}'
+```
+
+`YOUR_TOKEN` yerine kişisel API belirtecinizi ve `50` yerine çekmek istediğiniz tutarı yazın. Mağaza
+ekibi çekim taleplerini işleme almadan önce inceler.
+
+<Note>
+  Çekim işleme süresi yönetici onayına bağlıdır. Bir talep gönderdikten sonra mağaza ekibi bunu
+  inceler ve ödemeyi kendi programına göre işler. Çekiminiz onaylandığında veya daha fazla bilgi
+  gerektiğinde bir bildirim alırsınız.
+</Note>
+
+## İşlem Geçmişi
+
+Cüzdanınızdaki her kredi ve borç; bir zaman damgası, tutar ve açıklama ile kaydedilir. Tüm geçmişinizi
+gözden geçirmek için `/dashboard/wallet` adresine gidin ve **İşlem Geçmişi** tablosuna inin. Bu kaydı;
+satın alımları mutabık kılmak, promosyon kredisinin uygulandığını doğrulamak veya bir çekimin doğru
+işlendiğini teyit etmek için kullanabilirsiniz.

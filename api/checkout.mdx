@@ -1,0 +1,157 @@
+---
+title: "GurStore için Ödeme (Checkout) API Uç Noktası"
+sidebarTitle: "Ödeme"
+description: "Sepeti bir siparişe dönüştürmek için GurStore API'sine bir ödeme isteği gönderin. Ödeme yöntemini ve dönüş URL'lerini belirtin."
+---
+
+GurStore ödeme uç noktası, kimliği doğrulanmış müşterinin aktif sepetini onaylı bir siparişe dönüştürür.
+Bu uç noktayı çağırdığınızda GurStore; sepet içeriğini doğrular, aktif kuponu uygular, nihai toplamı
+hesaplar ve belirtilen ödeme yöntemi için ödeme akışını başlatır. Başarılı olduğunda bir sipariş kimliği
+ve — yönlendirme tabanlı ödeme sağlayıcıları için — müşteriyi ödemeyi tamamlaması için göndereceğiniz bir
+URL alırsınız.
+
+---
+
+## Bir ödeme gönder
+
+Kimliği doğrulanmış müşterinin güncel sepetini işler ve bir sipariş oluşturur.
+
+```
+POST /api/store/checkout
+```
+
+**Kimlik doğrulama:** Bearer belirteci gerekir
+
+### İstek gövdesi
+
+<ParamField body="payment_method" type="string" required>
+  Bu sipariş için kullanılacak ödeme sağlayıcısı. Kabul edilen değerler mağazanızın yapılandırılmış
+  entegrasyonlarına bağlıdır. Yaygın seçenekler:
+
+  - `"stripe"` — Stripe Checkout'a yönlendirmeyle Stripe ödeme işleme
+  - `"iyzico"` — Türk pazarı entegrasyonları için Iyzico ödeme işleme
+  - `"wallet"` — Sipariş toplamını doğrudan müşterinin GurStore cüzdan bakiyesinden düşer (anında işlenir, yönlendirme yok)
+</ParamField>
+
+<ParamField body="success_url" type="string">
+  Başarılı bir ödemeden sonra müşterinin yönlendirileceği URL. Yönlendirme tabanlı ödeme yöntemlerinde
+  (`stripe`, `iyzico`) zorunludur. Protokol dahil mutlak bir URL olmalıdır (ör.
+  `https://example.com/orders/success`).
+</ParamField>
+
+<ParamField body="cancel_url" type="string">
+  Müşteri ödeme akışını iptal eder veya yarıda bırakırsa yönlendirileceği URL. Yönlendirme tabanlı ödeme
+  yöntemleri için önerilir. Mutlak bir URL olmalıdır.
+</ParamField>
+
+<ParamField body="coupon_code" type="string">
+  Ödemede uygulanacak isteğe bağlı bir kupon kodu. Kuponu zaten `POST /api/store/cart/coupon` ile
+  uyguladıysanız, burada tekrar iletmenize gerek yoktur — sepette zaten yansıtılmıştır. Bu alanı yalnızca
+  ayrı bir sepet adımı olmadan ödeme anında bir kupon uygulamak istiyorsanız kullanın.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/store/checkout \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "payment_method": "stripe",
+    "success_url": "https://example.com/orders/success",
+    "cancel_url": "https://example.com/cart"
+  }'
+```
+
+### Örnek başarılı yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "order_id": 1048,
+    "order_reference": "GUR-1048-2024",
+    "payment_method": "stripe",
+    "total": 23.99,
+    "currency": "USD",
+    "payment_url": "https://checkout.stripe.com/pay/cs_live_abc123xyz",
+    "expires_at": "2024-06-01T15:30:00Z"
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string">
+  Geçerli bir `200` yanıtında `"success"`.
+</ResponseField>
+
+<ResponseField name="data.order_id" type="integer">
+  Yeni oluşturulan siparişin benzersiz sayısal kimliği. Siparişi daha sonra müşteri siparişleri API'siyle
+  aramak için bunu kullanın.
+</ResponseField>
+
+<ResponseField name="data.order_reference" type="string">
+  Müşteriye gösterilmeye veya fişlere ve onay e-postalarına dahil edilmeye uygun, okunabilir bir sipariş
+  referans dizesi.
+</ResponseField>
+
+<ResponseField name="data.payment_method" type="string">
+  Bu sipariş için kullanılan ödeme yöntemi; gönderdiğiniz değeri yansıtır.
+</ResponseField>
+
+<ResponseField name="data.total" type="number">
+  Tüm indirimler ve kupon düşümlerinden sonra tahsil edilen nihai sipariş toplamı.
+</ResponseField>
+
+<ResponseField name="data.currency" type="string">
+  Sipariş toplamı için ISO 4217 para birimi kodu (ör. `"USD"`, `"EUR"`, `"TRY"`).
+</ResponseField>
+
+<ResponseField name="data.payment_url" type="string | null">
+  Ödemeyi tamamlamak için müşterinin yönlendirileceği URL. Yönlendirme tabanlı ödeme yöntemlerinde
+  (`stripe`, `iyzico`) bulunur. Anında işlenen cüzdan ödemelerinde `null`.
+</ResponseField>
+
+<ResponseField name="data.expires_at" type="string | null">
+  Ödeme oturumunun ne zaman sona ereceğini belirten ISO 8601 zaman damgası. Bu süreden sonra müşteri
+  ödemeyi yeniden başlatmalıdır. Cüzdan ödemelerinde `null`.
+</ResponseField>
+
+### Örnek cüzdan ödemesi yanıtı
+
+```json
+{
+  "status": "success",
+  "data": {
+    "order_id": 1049,
+    "order_reference": "GUR-1049-2024",
+    "payment_method": "wallet",
+    "total": 23.99,
+    "currency": "USD",
+    "payment_url": null,
+    "expires_at": null
+  }
+}
+```
+
+<Note>
+Cüzdan ödemeleri, ödeme isteği alındığı anda anında işlenir. Yönlendirme gerekmez ve `payment_url`
+döndürülmez. Müşterinin cüzdan bakiyesi sipariş toplamını karşılamaya yetmiyorsa API, eksiği belirten bir
+mesajla `422` hatası döndürür.
+</Note>
+
+---
+
+## Ödeme Sonrası
+
+Bir ödeme isteği başarılı olduğunda GurStore, teslimat yaşam döngüsünü otomatik olarak devralır:
+
+1. **Sipariş oluşturuldu** — `pending_payment` (yönlendirme yöntemleri) veya `paid` (cüzdan) durumuyla yeni bir sipariş kaydı yazılır.
+2. **Ödeme onaylandı** — Yönlendirme tabanlı yöntemlerde GurStore, ödeme sağlayıcısının webhook'unu dinler. Ödeme onaylandığında sipariş durumu `paid` olur.
+3. **Dijital teslimat başlar** — Sipariş `paid` olarak işaretlenir işaretlenmez GurStore dijital ürünleri otomatik teslim eder — lisans anahtarları üretilir ve e-postayla gönderilir, indirme bağlantıları etkinleştirilir ve yapılandırılmış webhook'lar tetiklenir.
+
+Teslimatı tetiklemek için API'yi yoklamanıza (poll) gerek yoktur. Ödeme sonrası sipariş durumunu
+programatik olarak izlemek isterseniz, siparişi `order_id` ile sorgulamak için müşteri siparişleri uç
+noktasını kullanın.

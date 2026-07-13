@@ -1,0 +1,80 @@
+---
+title: "GurStore'a API İsteklerini Doğrulayın"
+sidebarTitle: "Kimlik Doğrulama"
+description: "GurStore, API kimlik doğrulaması için Laravel Sanctum bearer belirteçleri kullanır. Panelinizden bir belirteç oluşturun ve Authorization başlığında iletin."
+---
+
+GurStore, API isteklerini [Laravel Sanctum](https://laravel.com/docs/sanctum) aracılığıyla verilen
+**bearer belirteçleriyle** doğrular. Panelinizden bir kişisel erişim belirteci oluşturduğunuzda, sizi ve
+izinlerinizi tanımlayan bir dize alırsınız. Bu belirteci her kimliği doğrulanmış isteğe `Authorization`
+başlığı üzerinden eklersiniz. Belirteçler siz iptal edene kadar uzun ömürlüdür; bu yüzden onlara bir şifre
+gibi özen gösterin.
+
+## API Belirtecinizi Alma
+
+Kimliği doğrulanmış istekler yapmadan önce GurStore hesabınızdan bir kişisel erişim belirteci
+oluşturmanız gerekir.
+
+1. `https://magazaniz.com` adresinde GurStore hesabınıza giriş yapın.
+2. **Panel**'e gidin ve **Ayarlar → API Belirteçleri** (veya mağazanızın yönetim panelindeki eşdeğer API
+   ayarları sayfası) bölümünü açın.
+3. **Yeni belirteç oluştur**'a tıklayın, açıklayıcı bir etiket verin (ör. `uygulamam-uretim`) ve onaylayın.
+4. Belirteci hemen kopyalayın — yalnızca bir kez gösterilir. Kaybederseniz iptal edip yeni bir tane
+   oluşturmanız gerekir.
+
+## Belirtecinizi Kullanma
+
+Belirtecinizi her kimliği doğrulanmış istekte `Authorization` başlığında bir `Bearer` değeri olarak iletin:
+
+```bash
+curl https://magazaniz.com/api/customer/dashboard \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Accept: application/json"
+```
+
+`Accept: application/json` başlığı, bir şeyler ters gittiğinde API'nin HTML hata sayfası yerine daima JSON
+döndürmesini sağlamak için tüm isteklerde önerilir.
+
+<Warning>
+API belirtecinizi asla doğrudan kaynak koduna, yapılandırma dosyalarına veya istemci tarafı JavaScript'e
+gömmeyin. Belirtecinizi ele geçiren herkes sizin adınıza API çağrıları yapabilir. Bir belirteç açığa
+çıkarsa panelinizden hemen iptal edin ve yeni bir tane oluşturun.
+</Warning>
+
+<Tip>
+Belirtecinizi bir ortam değişkeninde (ör. `GURSTORE_API_TOKEN`) saklayın ve kodunuzda referans verin.
+Örneğin bir `.env` dosyasında: `GURSTORE_API_TOKEN=belirteciniz_buraya`. Çoğu dağıtım platformu (Vercel,
+Railway, Heroku vb.) proje ayarlarında güvenli ortam değişkeni saklama sunar.
+</Tip>
+
+## Herkese Açık Uç Noktalar
+
+Her uç nokta kimlik doğrulama gerektirmez. Herkese açık mağaza uç noktaları — `GET /api/store/products`
+gibi — açıktır ve belirteç gerektirmez. Bunları, tarayıcılar dahil herhangi bir istemciden `Authorization`
+başlığı olmadan serbestçe çağırabilirsiniz.
+
+```bash
+curl https://magazaniz.com/api/store/products \
+  -H "Accept: application/json"
+```
+
+Herkese açık uç noktaların tam listesi için [Ürünler](/api/products) referansına bakın.
+
+## Belirteç Kapsamları (Scopes)
+
+GurStore, hesap türüne bağlı olarak farklı erişim düzeylerinde belirteçler verir:
+
+| Belirteç türü | Erişim düzeyi |
+|---|---|
+| **Müşteri belirteci** | Müşteri kapsamlı uç noktalara erişim sağlar — sepet, siparişler, panel, lisans sorguları ve hesap ayrıntıları. |
+| **Yönetici belirteci** | Yönetici ve özel API uç noktalarına erişim sağlar — ürün yönetimi, kupon yapılandırması, sipariş yönetimi ve mağaza ayarları. |
+
+Bir yönetici uç noktasına erişmek için müşteri belirteci kullanmaya çalışmak `403 Forbidden` yanıtı
+döndürür. Çağırdığınız uç noktalar için doğru belirteç türünü kullandığınızdan emin olun.
+
+## Belirteçleri İptal Etme
+
+Herhangi bir kişisel erişim belirtecini istediğiniz zaman panelinizdeki **Ayarlar → API Belirteçleri**
+bölümünden iptal edebilirsiniz. Bir belirteci iptal etmek onu anında geçersiz kılar — o belirteci kullanan
+sonraki her istek `401 Unauthorized` yanıtı alır. Artık kullanmadığınız belirteçleri iptal edin ve ele
+geçirilmiş olabilecek belirteçleri daima iptal edin.

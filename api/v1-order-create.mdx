@@ -1,0 +1,136 @@
+---
+title: "POST /api/v1/order/create — API ile Sipariş Oluşturma"
+sidebarTitle: "Sipariş Oluştur"
+description: "Özel API v1 ile programatik olarak bir GurStore siparişi oluşturun — bayi sistemleri, otomatik akışlar veya özel ödeme entegrasyonları için."
+---
+
+Sipariş oluşturma uç noktası, harici sistemlerin standart GurStore mağazasından geçmeden müşteriler adına
+sipariş oluşturmasını sağlar. Bu; bir satın almayı tetikleyip dijital teslimatı — lisans anahtarı, seri
+kod veya indirme URL'si gibi — doğrudan API yanıtında almanız gereken bayi platformları, otomatik teslimat
+hatları veya özel ödeme deneyimleri için tasarlanmıştır.
+
+## POST /api/v1/order/create
+
+**Temel URL:** `https://magazaniz.com/api/v1`
+**Kimlik doğrulama:** Bearer belirteci gerekir (`Authorization: Bearer YOUR_TOKEN`)
+
+### İstek gövdesi
+
+<ParamField body="product_id" type="integer" required>
+  Satın alınacak ürünün kimliği. Ürün kimliklerini GurStore yönetim panelinde **Ürünler** altında
+  bulabilirsiniz.
+</ParamField>
+
+<ParamField body="variant_id" type="integer">
+  Belirli bir ürün varyantının veya fiyat kademesinin kimliği. Ürünün birden çok varyantı varsa (ör. aylık
+  veya yıllık), burada hangisinin sipariş edileceğini belirtin. Ürünün varsayılan varyantını kullanmak için
+  atlayın.
+</ParamField>
+
+<ParamField body="quantity" type="integer" default="1">
+  Sipariş edilecek birim sayısı. Sağlanmazsa varsayılan olarak `1`.
+</ParamField>
+
+<ParamField body="coupon_code" type="string">
+  Bu siparişe uygulanacak isteğe bağlı bir kupon veya indirim kodu. Kupon aktif ve belirtilen ürüne
+  uygulanabilir olmalıdır.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/v1/order/create \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "product_id": 5,
+    "variant_id": 2,
+    "quantity": 1
+  }'
+```
+
+### Başarılı yanıt
+
+**HTTP 200 OK**
+
+```json
+{
+  "status": "success",
+  "message": "Order created successfully",
+  "data": {
+    "order_id": 1234,
+    "total": 29.99,
+    "delivery": {
+      "type": "license_key",
+      "value": "XXXX-YYYY-ZZZZ-AAAA"
+    }
+  }
+}
+```
+
+<ResponseField name="status" type="string">
+  Geçerli bir yanıtta daima `"success"`.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Siparişin oluşturulduğuna dair okunabilir onay.
+</ResponseField>
+
+<ResponseField name="data.order_id" type="integer">
+  Bu siparişe GurStore'da atanan benzersiz kimlik. Siparişi yönetim panelinde aramak veya referans vermek
+  için bunu kullanın.
+</ResponseField>
+
+<ResponseField name="data.total" type="number">
+  Mağazanızın yapılandırılmış para biriminde, indirimler veya kuponlardan sonra bu sipariş için tahsil
+  edilen nihai tutar.
+</ResponseField>
+
+<ResponseField name="data.delivery" type="object">
+  Bu siparişle ilişkili teslim edilen öğe. Aşağıdaki [Teslimat Nesnesi](#teslimat-nesnesi) bölümüne bakın.
+</ResponseField>
+
+---
+
+## Teslimat Nesnesi
+
+Bir sipariş yerine getirildiğinde, yanıttaki `delivery` nesnesi satın alınan öğeyi anında içerir — ayrı
+bir uç noktayı yoklamanıza (poll) gerek yoktur.
+
+| Alan | Tür | Açıklama |
+|---|---|---|
+| `type` | string | Teslimat türü: `license_key`, `serial_code` veya `download_url` |
+| `value` | string | Teslim edilen gerçek içerik — anahtar, kod veya URL |
+
+Örneğin, lisans anahtarı teslimatıyla yapılandırılmış bir yazılım ürünü şunu döndürür:
+
+```json
+"delivery": {
+  "type": "license_key",
+  "value": "XXXX-YYYY-ZZZZ-AAAA"
+}
+```
+
+Dosya teslimatıyla yapılandırılmış bir ürün şunu döndürür:
+
+```json
+"delivery": {
+  "type": "download_url",
+  "value": "https://magazaniz.com/downloads/secure/abc123"
+}
+```
+
+`delivery.value`'yu kendi tarafınızda güvenle saklayın — sipariş oluşturma akışının birincil çıktısıdır.
+
+<Note>
+  API üzerinden oluşturulan siparişler yine de kimliği doğrulanmış hesabın yeterli cüzdan bakiyesine sahip
+  olmasını ya da mağaza yöneticisinin API siparişleri için sonradan-ödeme (post-pay) kredisi
+  yapılandırmasını gerektirir. Hesap bakiyesi yetersizse ve sonradan-ödeme etkin değilse sipariş reddedilir.
+</Note>
+
+<Warning>
+  Bu uç nokta yalnızca güvenilir sunucudan-sunucuya entegrasyon senaryoları içindir. API Bearer belirtecinizi
+  asla istemci tarafı JavaScript'te, mobil uygulama ikili dosyalarında veya herkese açık herhangi bir kodda
+  göstermeyin. Ona bir şifre gibi davranın — arka ucunuzda ortam değişkenlerinde veya bir gizli yöneticide
+  (secrets manager) saklayın.
+</Warning>

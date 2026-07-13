@@ -1,0 +1,76 @@
+---
+title: "GurStore için Müşteri Paneli API'si"
+sidebarTitle: "Panel"
+description: "GurStore müşteri panel verilerinizi API ile alın — sipariş özetleri, lisans sayıları, cüzdan bakiyesi ve hesap ayrıntıları dahil."
+---
+
+GurStore müşteri API'si, hesap verilerinize programatik erişim sağlar; mağazaya giriş yapmadan özet
+istatistikleri ve hesap ayrıntılarını çekmenize olanak tanır. Hesabınızın üst düzey bir anlık görüntüsünü
+almak için panel uç noktasını kullanın, ardından sayfalanmış ayrıntılı kayıtlar için tekil kaynak uç
+noktalarına inin.
+
+## GET /api/customer/dashboard
+
+Toplam sipariş sayısı, aktif lisans sayısı, güncel cüzdan bakiyesi ve referans kazançları dahil hesap
+etkinliğinizin bir özetini döndürür. Tüm alanlar, istek anındaki canlı verileri yansıtır.
+
+### Kimlik doğrulama
+
+Tüm müşteri API uç noktaları, GurStore tarafından verilen geçerli bir Bearer belirteci gerektirir. Her
+isteğin `Authorization` başlığına ekleyin.
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/customer/dashboard \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "orders_count": 12,
+    "licenses_count": 5,
+    "wallet_balance": 25.00,
+    "referral_earnings": 10.00
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string" required>
+  İsteğin başarılı olup olmadığını belirtir. Geçerli, kimliği doğrulanmış bir istekte `"success"` döndürür.
+</ResponseField>
+
+<ResponseField name="data" type="object" required>
+  Panel özet verilerinizi içeren üst düzey sarmalayıcı nesne.
+
+  <Expandable title="data alanları">
+    <ResponseField name="data.orders_count" type="integer" required>
+      Hesabınızda verilen toplam sipariş sayısı.
+    </ResponseField>
+
+    <ResponseField name="data.licenses_count" type="integer" required>
+      Hem aktif hem süresi dolmuş lisanslar dahil, hesabınızla şu anda ilişkili lisans sayısı.
+    </ResponseField>
+
+    <ResponseField name="data.wallet_balance" type="number" required>
+      Mağazanızın varsayılan para biriminde güncel cüzdan bakiyeniz.
+    </ResponseField>
+
+    <ResponseField name="data.referral_earnings" type="number" required>
+      Referans programı aracılığıyla kazandığınız toplam tutar. Bu değer kümülatiftir ve fon çektiğinizde
+      azalmaz.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Note>
+  Bu uç nokta **yalnızca özet sayıları** döndürür — panolar ve durum widget'ları için tasarlanmıştır,
+  kayıtları yinelemek için değil. Tam sipariş geçmişinizi veya eksiksiz lisans listenizi almak için
+  bunun yerine özel [Siparişler & Lisanslar](/api/orders-licenses) uç noktalarını kullanın.
+</Note>

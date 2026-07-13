@@ -1,0 +1,90 @@
+---
+title: "Ürünleriniz için Lisans Anahtarı Yönetimi"
+sidebarTitle: "Lisans Anahtarları"
+description: "GurStore'da yazılım lisans anahtarları üretin ve yönetin — donanım kimliği bağlama, domaine kilitleme, son kullanma tarihleri ve iptal desteğiyle."
+---
+
+Lisans anahtarları, yazılım veya hizmetlere erişimi satmanın ve kontrol etmenin yapılandırılmış bir
+yolunu sunar. GurStore her lisansı merkezî olarak saklar; böylece durumunu izleyebilir, hangi
+müşterinin sahibi olduğunu görebilir ve son kullanma tarihi ya da donanım bağlama gibi kısıtları —
+kendi lisanslama altyapınızı kurmadan — uygulayabilirsiniz. Bir müşteri lisans türü bir ürün satın
+aldığında GurStore yeni bir lisans kaydı oluşturur ve anahtarı doğrudan müşterinin paneline teslim eder.
+
+## Lisans Oluşturma
+
+Bir lisansı elle oluşturabilir veya satın alımda GurStore'un otomatik üretmesine izin verebilirsiniz.
+
+Elle oluşturmak için **Yönetim → Lisanslar → Oluştur** bölümüne gidin ve şu alanları doldurun:
+
+| Alan | Açıklama |
+|---|---|
+| **Ürün** | Bu lisansın erişim verdiği ürün. |
+| **Kullanıcı** | Lisansın atandığı müşteri hesabı. |
+| **Son Kullanma Tarihi** | Lisansın geçersiz hale geldiği tarih ve saat. Ömür boyu lisans için boş bırakın. |
+| **Donanım Kimliği** | Lisansı oluşturma anından itibaren belirli bir makineye kilitlemek isterseniz bu alanı önceden doldurun. Müşterinin ilk etkinleştirmede bağlamasına izin vermek için boş bırakın. |
+
+Kaydı kaydettiğinizde bir lisans anahtarı dizesi üretilir. Anahtarı lisans detay sayfasından
+kopyalayıp gerekirse müşteriye elle iletebilirsiniz.
+
+## Donanım Kimliği Bağlama
+
+Donanım kimliği bağlama, bir lisansı belirli bir cihaza bağlayarak tek bir anahtarın aynı anda birden
+fazla makinede kullanılmasını önler.
+
+Müşteri yazılımınızı etkinleştirip donanım kimliğini [lisans doğrulama uç noktasına](/api/v1-license-verify)
+gönderdiğinde GurStore bu kimliği lisansa kaydeder. Sonraki tüm doğrulama istekleri aynı donanım
+kimliğini sunmalıdır. **Farklı** bir donanım kimliğiyle bir istek gelirse API `403` hatası döndürür
+ve uygulamanız erişimi engellemelidir.
+
+Bir müşteri makinesini değiştirir ve lisansı taşıması gerekirse, kayıtlı donanım kimliğini **Yönetim
+→ Lisanslar → Düzenle** üzerinden temizleyerek bir sonraki etkinleştirmede yeni bir cihaza bağlamasına
+izin verebilirsiniz.
+
+## Lisans Durumları
+
+GurStore'daki her lisans üç durumdan birini taşır.
+
+| Durum | Anlamı |
+|---|---|
+| **Aktif** | Lisans geçerlidir ve doğrulama istekleri başarılı olur. |
+| **Süresi Dolmuş** | Lisans son kullanma tarihini geçmiştir ve artık geçerli değildir. Doğrulama, süresi dolmuş hatası döndürür. |
+| **İptal Edilmiş** | Lisans elle devre dışı bırakılmıştır. Son kullanma tarihinden bağımsız olarak doğrulama engellenir. |
+
+Bir lisansın durumunu değiştirmek için **Yönetim → Lisanslar**'ı açın, kaydı bulun ve düzenleme
+görünümündeki **Durum** açılır menüsünü kullanın. Süresi dolmuş bir lisansı, son kullanma tarihini
+güncelleyip durumu tekrar **Aktif** yaparak yeniden etkinleştirebilirsiniz.
+
+<Warning>
+  Bir lisansı iptal etmek otomatik olarak geri alınamaz. İptal edildiğinde doğrulama istekleri anında
+  başarısız olur. Bir müşterinin erişimini geri yüklemek için durumu yönetim panelinden elle tekrar
+  **Aktif** yapmanız gerekir — otomatik bir geri yükleme yoktur. Yalnızca erişimin kalıcı veya süresiz
+  olarak engellenmesi gerektiğinden eminseniz iptal edin.
+</Warning>
+
+## Müşterilerin Lisanslarını Görüntülemesi
+
+Müşteriler, hesaplarıyla ilişkili tüm lisansları `/dashboard/licenses` adresini ziyaret ederek
+görebilir. Her kayıt; ürün adını, lisans anahtarını, güncel durumu ve son kullanma tarihini gösterir.
+Anahtarlarını doğrudan bu sayfadan kopyalayabilirler.
+
+## Lisans Doğrulamayı Entegre Etme
+
+Uygulamanız bir lisansı, GurStore lisans doğrulama API'sine istek yaparak doğrular. Tüm ayrıntılar
+[Lisans Doğrulama API referansı](/api/v1-license-verify) sayfasındadır; ancak lisans geçerli
+olduğunda uç nokta şu biçimde bir JSON yanıtı döndürür:
+
+```json
+{
+  "status": "success",
+  "message": "License is valid",
+  "data": {
+    "expires_at": "2025-12-31T00:00:00Z",
+    "user_id": 42
+  }
+}
+```
+
+Entegrasyonunuzda birincil kontrol olarak `status` alanını kullanın. `"success"` değeri, lisansın tüm
+doğrulama kurallarını geçtiği anlamına gelir — aktiftir, süresi dolmamıştır ve (donanım bağlama
+etkinse) donanım kimliği eşleşmiştir. Başka herhangi bir durum değeri, erişimin reddedilmesi
+gerektiği anlamına gelir ve uygulamanız kullanıcıya uygun bir mesaj göstermelidir.

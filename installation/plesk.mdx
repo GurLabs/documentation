@@ -1,0 +1,92 @@
+---
+title: "Plesk ile Kurulum"
+sidebarTitle: "Plesk"
+description: "Plesk paneli üzerinde GurStore kurulumu: PHP sürümü seçimi, veritabanı, dosya yükleme ve belge kökünü public klasörüne ayarlama."
+---
+
+Bu rehber, **Plesk** paneline sahip sunucularda GurStore kurulumunu anlatır. Plesk, belge kökü
+ayarını ve PHP sürüm yönetimini kolaylaştırdığı için kurulum oldukça hızlıdır.
+
+<Note>
+  Kurulumu hiç yapmak istemiyorsanız [GurStore Hosting](/installation/gurstore-hosting) her şeyi
+  sizin yerinize halleder.
+</Note>
+
+## Ön Koşullar
+
+- Bir alan adı eklenmiş Plesk hesabı
+- PHP **8.2+** sürümünü seçebilme yetkisi
+- Veritabanı oluşturma yetkisi
+
+## 1. PHP Sürümünü ve Eklentileri Ayarlayın
+
+<Steps>
+  <Step title="PHP Settings">
+    **Websites & Domains → PHP Settings** yolunu izleyin ve alan adınız için PHP sürümünü
+    **8.2 veya 8.3** olarak seçin.
+  </Step>
+  <Step title="Eklentileri doğrulayın">
+    Gerekli eklentilerin (`pdo`, `openssl`, `mbstring`, `curl`, `tokenizer`, `xml`, `fileinfo`,
+    `bcmath`, `json`, `gd`/`imagick`) etkin olduğundan emin olun. Çoğu Plesk kurulumunda bunlar
+    varsayılan olarak açıktır.
+  </Step>
+</Steps>
+
+## 2. Veritabanı Oluşturun
+
+<Steps>
+  <Step title="Yeni veritabanı">
+    **Databases → Add Database** ile yeni bir MySQL/MariaDB (veya PostgreSQL) veritabanı
+    oluşturun.
+  </Step>
+  <Step title="Kullanıcı ve şifre">
+    Aynı ekranda veritabanı kullanıcısı ve güçlü bir şifre tanımlayın. Bu bilgileri kurulum
+    sihirbazında kullanacaksınız (host genellikle `localhost`).
+  </Step>
+</Steps>
+
+## 3. Dosyaları Yükleyin
+
+<Steps>
+  <Step title="Dosyaları yükleyin">
+    **Websites & Domains → File Manager** üzerinden GurStore ZIP paketini alan adı klasörüne
+    yükleyin. Alternatif olarak SFTP/FTP kullanabilirsiniz.
+  </Step>
+  <Step title="Arşivi çıkarın">
+    Yüklenen ZIP dosyasına File Manager'da **Extract Files** deyin.
+  </Step>
+</Steps>
+
+## 4. Belge Kökünü `public/` Yapın
+
+<Steps>
+  <Step title="Hosting Settings">
+    **Websites & Domains → Hosting & DNS → Hosting Settings** (veya **Apache & nginx Settings**)
+    ekranını açın.
+  </Step>
+  <Step title="Document root'u ayarlayın">
+    **Document root** alanını, uygulamanın `public` klasörünü gösterecek şekilde güncelleyin
+    (ör. `httpdocs/gurstore/public` veya doğrudan `httpdocs`'a çıkardıysanız `httpdocs/public`).
+    Kaydedin.
+  </Step>
+</Steps>
+
+## 5. Yazma İzinleri
+
+**File Manager**'da `storage`, `bootstrap/cache` klasörlerine ve `.env` dosyasına yazma izni
+(`775`) verin. Plesk'te dosya sahipliği genellikle doğru ayarlıdır; yalnızca izinleri kontrol
+etmeniz yeterlidir.
+
+## 6. Kurulum Sihirbazını Çalıştırın
+
+Tarayıcıdan `https://alanadiniz.com/install` adresine gidin ve
+[Kurulum Sihirbazı](/installation/setup-wizard) adımlarını izleyin.
+
+<Tip>
+  Zamanlanmış görevler için **Websites & Domains → Scheduled Tasks** bölümünden dakikada bir
+  çalışan bir görev ekleyin:
+
+  ```bash
+  php /var/www/vhosts/alanadiniz.com/httpdocs/gurstore/artisan schedule:run
+  ```
+</Tip>

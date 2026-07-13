@@ -1,0 +1,170 @@
+---
+title: "POST /api/v1/license/verify — Lisans Anahtarı Doğrulama"
+sidebarTitle: "Lisans Doğrulama"
+description: "Bir GurStore lisans anahtarını programatik olarak doğrulayın. Lisansları belirli makinelere veya cihazlara kilitlemek için donanım kimliği bağlamayı destekler."
+---
+
+Bu uç noktayı bir lisans anahtarını uygulamanızın içinden doğrulamak için kullanın — başlangıçta, bir
+özellik açılışında veya lisansın aktif kaldığından emin olmak için periyodik olarak. Uç nokta; anahtarın
+geçerliliğini, sona erme durumunu kontrol eder ve isteğe bağlı olarak bir donanım kimliği kullanarak
+lisansı belirli bir makineye ya da cihaza bağlar.
+
+## POST /api/v1/license/verify
+
+**Temel URL:** `https://magazaniz.com/api/v1`
+**Kimlik doğrulama:** Bearer belirteci gerekir (`Authorization: Bearer YOUR_TOKEN`)
+
+### İstek gövdesi
+
+<ParamField body="license_key" type="string" required>
+  Doğrulanacak lisans anahtarı.
+</ParamField>
+
+<ParamField body="product_id" type="integer" required>
+  Bu lisansın ait olduğu ürünün kimliği. Lisansın verildiği ürünle eşleşmelidir.
+</ParamField>
+
+<ParamField body="hardware_id" type="string">
+  İsteği yapan makine veya cihaz için benzersiz bir tanımlayıcı. Donanım bağlama için kullanılır — aşağıdaki
+  [Donanım Kimliği Bağlama](#donanım-kimliği-bağlama) bölümüne bakın.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/v1/license/verify \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "license_key": "XXXX-YYYY-ZZZZ-AAAA",
+    "product_id": 1,
+    "hardware_id": "hw-abc123"
+  }'
+```
+
+### Başarılı yanıt
+
+**HTTP 200 OK**
+
+```json
+{
+  "status": "success",
+  "message": "License is valid",
+  "data": {
+    "expires_at": "2025-12-31T00:00:00Z",
+    "user_id": 42
+  }
+}
+```
+
+<ResponseField name="status" type="string">
+  Geçerli bir yanıtta daima `"success"`.
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Lisansın geçerli olduğuna dair okunabilir onay.
+</ResponseField>
+
+<ResponseField name="data.expires_at" type="string | null">
+  Lisansın ne zaman sona ereceğini belirten ISO 8601 zaman damgası. Lisansın son kullanma tarihi yoksa
+  `null` döndürür.
+</ResponseField>
+
+<ResponseField name="data.user_id" type="integer">
+  Bu lisansın sahibi olan GurStore kullanıcı kimliği.
+</ResponseField>
+
+### Hata yanıtları
+
+| HTTP | Durum mesajı | Nedeni |
+|---|---|---|
+| `404` | License not found | `license_key` ve `product_id` birleşimi mevcut değil |
+| `403` | License is revoked | Lisans bir mağaza yöneticisi tarafından elle iptal edilmiş |
+| `403` | License is expired | `expires_at` tarihi geçmişte |
+| `403` | Hardware ID mismatch | Sağlanan `hardware_id`, lisansın zaten bağlı olduğu donanımla eşleşmiyor |
+
+---
+
+## Donanım Kimliği Bağlama
+
+Donanım kimliği bağlama, bir lisansı belirli bir makineye veya cihaza kilitleyerek tek bir anahtarın
+birden fazla kurulumda paylaşılmasını önlemenizi sağlar.
+
+- **Bir `hardware_id` ile ilk çağrı** — lisansta kayıtlı bir donanım kimliği yoksa GurStore, onu
+  sağladığınız değere kalıcı olarak bağlar. Aynı `hardware_id`'den gelen sonraki çağrılar başarıyla
+  doğrulanmaya devam eder.
+- **Farklı bir `hardware_id`'den çağrılar** — bir lisans bağlandıktan sonra, farklı bir `hardware_id`
+  sağlayan herhangi bir doğrulama isteği `403 Hardware ID mismatch` döndürür.
+- **Donanım bağlamasını sıfırlama** — son kullanıcılar kendi donanım bağlamalarını sıfırlayamaz. Bir
+  lisansı bir cihazdan ayırmak için bir mağaza yöneticisinin, yönetim panelinde lisans kaydından donanım
+  kimliğini temizlemesi gerekir.
+
+---
+
+## Entegrasyon Örneği
+
+Aşağıdaki sözde kod, bu uç noktayı kullanan tipik bir masaüstü uygulaması başlangıç kontrolünü gösterir:
+
+```python
+import requests
+import json
+import os
+
+VERIFY_URL = "https://magazaniz.com/api/v1/license/verify"
+CACHE_FILE  = "license_cache.json"
+
+def get_hardware_id():
+    # Kararlı bir makine tanımlayıcısı üretin veya alın
+    # ör. CPU seri no, MAC adresi veya OS kurulum kimliğinin hash'i
+    return "hw-abc123"
+
+def verify_license_on_startup(license_key: str, product_id: int) -> bool:
+    payload = {
+        "license_key": license_key,
+        "product_id":  product_id,
+        "hardware_id": get_hardware_id()
+    }
+
+    headers = {
+        "Authorization": "Bearer YOUR_TOKEN",
+        "Content-Type":  "application/json"
+    }
+
+    try:
+        response = requests.post(VERIFY_URL, json=payload, headers=headers, timeout=5)
+
+        if response.status_code == 200:
+            data = response.json()
+            # Başarılı yanıtı yerel olarak önbelleğe al
+            with open(CACHE_FILE, "w") as f:
+                json.dump(data, f)
+            return True
+        else:
+            error = response.json().get("message", "Unknown error")
+            print(f"License verification failed: {error}")
+            return False
+
+    except requests.exceptions.ConnectionError:
+        # Çevrimdışıysa önbelleğe alınmış sonuca geri dön
+        if os.path.exists(CACHE_FILE):
+            print("Offline — using cached license verification.")
+            return True
+        return False
+
+# Uygulama başlangıcında
+if not verify_license_on_startup("XXXX-YYYY-ZZZZ-AAAA", product_id=1):
+    print("License is not valid. Exiting.")
+    exit(1)
+```
+
+<Tip>
+  Başarılı bir doğrulama yanıtını yerel olarak önbelleğe alın ve her çalıştırmada uygulama açılışını
+  engellemek yerine arka planda periyodik olarak (örneğin her 24 saatte bir) yeniden doğrulayın. Bu,
+  başlangıcı hızlı tutar ve kısa ağ kesintileri sırasında uygulamanın çalışmaya devam etmesine izin
+  verirken iptal edilmiş veya süresi dolmuş lisansları da makul bir sürede yakalar.
+</Tip>
+
+<Note>
+  Yanıtta `expires_at` `null` ise lisansın son kullanma tarihi yoktur ve süresiz olarak geçerli kalır —
+  ya da bir mağaza yöneticisi tarafından elle iptal edilene kadar.
+</Note>

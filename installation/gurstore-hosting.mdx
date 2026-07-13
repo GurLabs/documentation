@@ -1,0 +1,87 @@
+---
+title: "GurStore Hosting ile Kurulum"
+sidebarTitle: "GurStore Hosting"
+description: "GurStore Hosting, %100 GurStore uyumlu, tak-çalıştır barındırma çözümüdür. Sunucu, alan adı, SSL ve kurulum tamamen bizde — dakikalar içinde yayında."
+---
+
+<Note>
+  **En kolay yol bu.** Kurulumun teknik adımlarını (sunucu ayarı, PHP eklentileri, veritabanı,
+  SSL, dosya izinleri) tamamen atlamak istiyorsanız **GurStore Hosting** tam size göre.
+</Note>
+
+**GurStore Hosting**, doğrudan bizim tarafımızdan işletilen, **%100 GurStore uyumlu** barındırma
+hizmetidir. Sunucu altyapısı GurStore'un tam olarak ihtiyaç duyduğu PHP sürümü, eklentiler,
+performans ve güvenlik ayarlarıyla önceden yapılandırılmıştır — böylece "sunucum uyumlu mu?"
+sorusuyla hiç uğraşmazsınız.
+
+## Neden GurStore Hosting?
+
+<CardGroup cols={2}>
+  <Card title="Sıfır Kurulum" icon="wand-magic-sparkles">
+    Dosya yükleme, PHP eklentisi, veritabanı oluşturma yok. Siparişinizin ardından mağazanız
+    kurulmuş olarak size teslim edilir.
+  </Card>
+  <Card title="%100 Uyumluluk" icon="circle-check">
+    Sunucu birebir GurStore için ayarlanmıştır. "Eklenti eksik", "izin hatası", "PHP sürümü"
+    gibi sorunlar yaşamazsınız.
+  </Card>
+  <Card title="Ücretsiz SSL & Alan Adı Bağlama" icon="lock">
+    Let's Encrypt SSL otomatik kurulur ve yenilenir. Alan adınızı birkaç tıkla bağlarız.
+  </Card>
+  <Card title="Otomatik Güncelleme & Yedek" icon="arrows-rotate">
+    GurStore sürüm güncellemeleri ve düzenli yedekler bizim tarafımızda yönetilir.
+  </Card>
+  <Card title="Optimize Performans" icon="gauge-high">
+    OPcache, Redis önbelleği ve CDN hazır gelir; mağazanız ilk günden hızlı çalışır.
+  </Card>
+  <Card title="Öncelikli Destek" icon="headset">
+    GurStore ekibinden doğrudan, öncelikli teknik destek alırsınız.
+  </Card>
+</CardGroup>
+
+## Nasıl Başlarım?
+
+<Steps>
+  <Step title="Paketi seçin">
+    [gurstore.net](https://gurstore.net) üzerinden bir **GurStore Hosting** paketi seçin.
+    Lisansınız pakete dahildir; ayrıca lisans satın almanıza gerek yoktur.
+  </Step>
+  <Step title="Alan adınızı belirtin">
+    Sipariş sırasında kullanmak istediğiniz alan adını girin. Alan adınız yoksa, bizden de
+    tedarik edebilirsiniz.
+  </Step>
+  <Step title="Alan adınızı yönlendirin">
+    Size verilen **nameserver** veya **A kaydı** bilgilerini alan adı sağlayıcınızda tanımlayın.
+    Yayılma tamamlandığında (genellikle birkaç saat) siteniz yayına girer.
+  </Step>
+  <Step title="Yönetici bilgilerinizle giriş yapın">
+    Kurulum bizim tarafımızda otomatik tamamlanır. Size iletilen yönetici e-postası ve şifresiyle
+    `https://alanadiniz.com/admin` üzerinden panele giriş yapın ve satışa başlayın.
+  </Step>
+</Steps>
+
+<Tip>
+  GurStore Hosting kullanıyorsanız bu bölümdeki diğer kurulum sayfalarını (cPanel, Plesk,
+  Pterodactyl, Ubuntu) **atlayabilirsiniz** — hepsi bizim tarafımızda halledilmiştir. Doğrudan
+  [Hızlı Başlangıç](/quickstart) ile ilk ürününüzü eklemeye geçebilirsiniz.
+</Tip>
+
+## Kendi Sunucumu Kurmak İstiyorum
+
+GurStore'u kendi sunucunuza kurmayı tercih ediyorsanız sorun değil — kaynak paketi sizindir.
+Sunucu türünüze uygun rehberi izleyin:
+
+<CardGroup cols={2}>
+  <Card title="cPanel" icon="server" href="/installation/cpanel">
+    Paylaşımlı/cPanel hosting kurulumu.
+  </Card>
+  <Card title="Plesk" icon="panel-top" href="/installation/plesk">
+    Plesk paneli kurulumu.
+  </Card>
+  <Card title="Pterodactyl" icon="egg" href="/installation/pterodactyl">
+    Pterodactyl egg kurulumu.
+  </Card>
+  <Card title="Ubuntu / VPS" icon="terminal" href="/installation/ubuntu-vps">
+    Nginx + PHP-FPM ile self-hosting.
+  </Card>
+</CardGroup>

@@ -1,0 +1,104 @@
+---
+title: "GurStore REST API'ye Genel Bakış"
+sidebarTitle: "Giriş"
+description: "GurStore; başsız (headless) mağaza erişimi, müşteri hesabı yönetimi, lisans doğrulama ve sipariş oluşturma için bir REST API sunar. Tüm yanıtlar JSON'dur."
+---
+
+GurStore REST API, dijital ticaret mağazanızın her katmanına programatik erişim sağlar. Özel mağazalar
+kurabilir, sipariş akışlarını otomatikleştirebilir, yazılım lisanslarını doğrulayabilir, müşteri
+hesaplarını yönetebilir ve GurStore'u HTTP isteği gönderebilen herhangi bir yığına entegre edebilirsiniz.
+Her API etkileşimi standart REST kurallarını izler — istekleri tanıdık HTTP yöntemleriyle (`GET`, `POST`,
+`PUT`, `DELETE`) gönderirsiniz ve her yanıt JSON olarak geri döner.
+
+## Temel URL (Base URL)
+
+Tüm API istekleri şu temel URL'ye yapılır:
+
+```
+https://magazaniz.com/api
+```
+
+`magazaniz.com` yerine gerçek GurStore alan adınızı yazın. Burada belgelenen tüm uç noktalar bu temel
+URL'ye görelidir.
+
+## İstek Biçimi
+
+Bir istek gövdesi gönderirken (`POST`, `PUT` veya `PATCH` istekleri için) JSON olarak kodlayın ve
+`Content-Type` başlığını buna göre ayarlayın:
+
+```
+Content-Type: application/json
+```
+
+`GET` istekleri için sorgu parametreleri standart URL kodlamasını izler. Özel bir serileştirme gerekmez.
+
+## Yanıt Biçimi
+
+GurStore API'sinden gelen her yanıt bir JSON nesnesi döndürür. Üst düzey yapı her zaman, isteğin sonucunu
+belirten bir `status` alanı içerir.
+
+| Alan | Tür | Açıklama |
+|---|---|---|
+| `status` | string | `"success"` veya `"error"` |
+| `data` | object \| array | Başarılı yanıtlarda bulunur; istenen kaynağı/kaynakları içerir |
+| `message` | string | Hata yanıtlarında bulunur; sorunun okunabilir açıklaması |
+
+**Başarılı yanıt biçimi:**
+
+```json
+{
+  "status": "success",
+  "data": { ... }
+}
+```
+
+**Hata yanıtı biçimi:**
+
+```json
+{
+  "status": "error",
+  "message": "The provided token is invalid or has expired."
+}
+```
+
+## Hız Sınırlama (Rate Limiting)
+
+GurStore, platform kararlılığını korumak için tüm API uç noktalarında hız sınırları uygular. Belirli bir
+pencerede izin verilen istek sayısını aşarsanız API `429 Too Many Requests` yanıtı döndürür.
+
+Bir `429` aldığınızda isteklerinizi duraklatın ve **üstel geri çekilme (exponential backoff)** ile yeniden
+deneyin — kısa bir süre bekleyin, ardından istek başarılı olana kadar her yeniden denemede bekleme
+süresini iki katına çıkarın. Yanıtta varsa `Retry-After` başlığına uyun; yeniden denemeden önce tam olarak
+kaç saniye beklemeniz gerektiğini söyler.
+
+## Hata Kodları
+
+GurStore API, her isteğin sonucunu belirtmek için standart HTTP durum kodlarını kullanır. Aşağıdaki tablo,
+karşılaşabileceğiniz her kodu ve bağlamdaki anlamını listeler.
+
+| Kod | Anlamı |
+|---|---|
+| `400` | **Hatalı istek** — İstek bozuk veya doğrulamadan geçemedi. İstek gövdenizi ve parametrelerinizi kontrol edin. |
+| `401` | **Yetkisiz** — Belirteç sağlanmadı ya da belirteç eksik, süresi dolmuş veya geçersiz. |
+| `403` | **Yasak** — Belirteciniz geçerli ancak istenen kaynağa erişim izni yok. |
+| `404` | **Bulunamadı** — İstenen kaynak yok veya verilen yolda erişilebilir değil. |
+| `422` | **İşlenemez** — İstek biçimsel olarak doğru ancak bir veya daha fazla zorunlu alan eksik. |
+| `429` | **Çok fazla istek** — Hız sınırını aştınız. Geri çekilin ve yeniden deneyin. |
+| `500` | **Sunucu hatası** — GurStore tarafında beklenmedik bir hata oluştu. Devam ederse destekle iletişime geçin. |
+
+## API'yi Keşfedin
+
+<CardGroup cols={2}>
+  <Card title="Kimlik Doğrulama" icon="key" href="/api/authentication">
+    Bearer belirteçleri oluşturmayı ve isteklerinizi Laravel Sanctum ile doğrulamayı öğrenin.
+  </Card>
+  <Card title="Mağaza API'si" icon="store" href="/api/products">
+    Başsız mağazanızı besleyen herkese açık ürün uç noktalarına göz atın — kimlik doğrulama gerekmez.
+  </Card>
+  <Card title="Müşteri API'si" icon="user" href="/api/cart">
+    Sepet içeriğini yönetin, kupon uygulayın ve kimliği doğrulanmış müşteri oturumuyla etkileşin.
+  </Card>
+  <Card title="Özel API v1" icon="lock" href="/api/checkout">
+    Ödeme isteklerini gönderin, ödemeleri işleyin ve dijital sipariş teslimatını tetikleyin.
+  </Card>
+</CardGroup>

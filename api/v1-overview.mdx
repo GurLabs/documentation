@@ -1,0 +1,112 @@
+---
+title: "Harici Entegrasyonlar için GurStore Özel API v1"
+sidebarTitle: "Özel API v1"
+description: "Lisans doğrulamayı ve programatik sipariş oluşturmayı kendi yazılımınıza ve uygulamalarınıza entegre etmek için GurStore Özel API v1'i kullanın."
+---
+
+GurStore Özel API v1; GurStore'u doğrudan kendi harici yazılımınıza, hizmetlerinize ve otomatik
+sistemlerinize entegre etmek için tasarlanmıştır. Kullanıcılarınızın mağazayı ziyaret etmesini gerektirmek
+yerine, uygulamanızın başlangıcında lisans anahtarlarını doğrulayabilir, bayi akışları aracılığıyla
+müşteriler adına programatik olarak sipariş oluşturabilir veya bir oyun sunucusundan gerçek zamanlı olarak
+oyuncu lisanslarını kontrol edebilirsiniz. Tüm v1 uç noktaları, müşteri API'siyle aynı kimlik doğrulama
+mekanizmasını paylaşır; bu da birleşik entegrasyonlar kurmayı kolaylaştırır.
+
+---
+
+## Kimlik Doğrulama
+
+Özel API v1, müşteri API'siyle aynı Laravel Sanctum Bearer belirtecini kullanır. Belirtecinizi her isteğin
+`Authorization` başlığına ekleyin.
+
+```bash
+Authorization: Bearer YOUR_TOKEN
+```
+
+Tüm v1 uç nokta yolları `/api/v1` ön ekiyle başlar. Örneğin:
+
+```
+https://magazaniz.com/api/v1/products
+https://magazaniz.com/api/v1/license/verify
+https://magazaniz.com/api/v1/order/create
+```
+
+<Note>
+  Hız sınırları, v1 uç noktalarında standart müşteri API'sinden **daha katıdır**. Entegrasyonunuz sık veya
+  yüksek hacimli çağrılar yapıyorsa — örneğin geniş bir kullanıcı tabanında her uygulama açılışında lisans
+  kontrolleri — yeniden deneme mantığınızda titreşimli (jitter) **üstel geri çekilme** uygulayın. Bir `429
+  Too Many Requests` yanıtı aldığınızda yeniden denemeden önce bekleyin: 1 saniyeyle başlayın ve makul bir
+  üst sınıra kadar her başarısızlıkta gecikmeyi iki katına çıkarın.
+</Note>
+
+---
+
+## Kullanılabilir Uç Noktalar
+
+### GET /api/v1/products
+
+Mağazada bulunan tüm aktif ürünlerin bir listesini döndürür. Bayi araçlarında ürün seçim arayüzünü
+doldurmak veya lisans doğrulama ve sipariş oluşturma çağrılarında kullanmak üzere `product_id` değerlerini
+almak için bu uç noktayı kullanın.
+
+```bash
+curl https://magazaniz.com/api/v1/products \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### POST /api/v1/license/verify
+
+Bir lisans anahtarını bir ürüne ve isteğe bağlı olarak belirli bir donanım kimliğine karşı doğrular.
+Korunan özelliklere erişim vermeden önce bir müşterinin geçerli, aktif bir lisansa sahip olduğunu teyit
+etmek için bu uç noktayı uygulamanızın içinde kullanın. Tam parametre ve yanıt dokümantasyonu için
+[Lisans Doğrulama](/api/v1-license-verify) referans sayfasına bakın.
+
+### POST /api/v1/order/create
+
+Bir müşteri adına programatik olarak bir sipariş oluşturur. Müşterinin mağaza ödeme akışından geçmesini
+gerektirmeden sipariş vermek için bu uç noktayı bayi platformlarında veya otomatik teslimat sistemlerinde
+kullanın. Tam parametre ve yanıt dokümantasyonu için [Sipariş Oluştur](/api/v1-order-create) referans
+sayfasına bakın.
+
+---
+
+## Kullanım Senaryoları
+
+Özel API v1, üç birincil entegrasyon deseni etrafında kurulmuştur:
+
+**Başlangıçta yazılım lisans kısıtlama** — Masaüstü veya sunucu uygulamanız başlatıldığında `POST
+/api/v1/license/verify`'ı çağırır; müşterinin lisans anahtarını ve isteğe bağlı bir donanım parmak izini
+iletir. Yanıt lisansın aktif ve geçerli olduğunu teyit ederse uygulama normal şekilde devam eder. Aksi
+takdirde uygun bir mesaj gösterip erişimi kısıtlayabilirsiniz.
+
+**Bayi sipariş oluşturma** — Bayi platformları ve ortaklık sistemleri, son müşteriler adına GurStore
+içinde sipariş oluşturmak için `POST /api/v1/order/create`'i çağırır. Bu; satın alma mağazanızın dışında
+başlasa bile teslimatı, lisans verilmesini ve işlem kayıtlarını GurStore örneğinizde merkezileştirir.
+
+**Oyun sunucusu oyuncu doğrulama** — Çok oyunculu oyun sunucuları, bağlantı anında `POST
+/api/v1/license/verify`'ı çağırır; oyuncunun lisans anahtarını ve isteğe bağlı bir donanım veya oturum
+tanımlayıcısını iletir. Bu; ayrı bir kimlik doğrulama katmanı kurmadan sunucu erişimini ödeme yapan
+müşterilerle sınırlamanızı sağlar.
+
+---
+
+## Uç Nokta Referansı
+
+<CardGroup cols={2}>
+  <Card title="Lisans Doğrulama" icon="shield-check" href="/api/v1-license-verify">
+    Bir müşterinin lisans anahtarını bir ürün kimliğine karşı, isteğe bağlı donanım-kilidi kontrolüyle
+    doğrulayın. Lisans durumunu, sona ermeyi ve etkinleştirme ayrıntılarını döndürür.
+  </Card>
+  <Card title="Sipariş Oluştur" icon="cart-plus" href="/api/v1-order-create">
+    Bir müşteri adına GurStore'da programatik olarak bir sipariş oluşturun. Oluşturulan sipariş kimliğini
+    ve teslim edilen lisans anahtarlarını veya dosyaları döndürür.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Uygulamanız `POST /api/v1/license/verify`'ı sık çağırıyorsa — örneğin her başlangıçta veya oturumda —
+  başarılı doğrulama yanıtlarını istemci tarafında kısa bir süre (güvenlik gereksinimlerinize bağlı olarak
+  1–24 saat gibi) **önbelleğe almayı** düşünün. `"active"` sonucunun önbelleğe alınması, API'ye her açılışta
+  değil yalnızca oturum başına veya günde bir kez ulaşmanız anlamına gelir; bu da kullanıcılarınız için
+  gecikmeyi azaltır ve istek hacminizi hız sınırlarının rahatça içinde tutar. Önbellek penceresi dolduğunda
+  veya kullanıcı bir lisanslama sorunu bildirdiğinde daima yeniden doğrulayın.
+</Tip>

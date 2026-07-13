@@ -1,0 +1,70 @@
+---
+title: "Ürün Varyantları ve Esnek Fiyatlandırma Seçenekleri"
+sidebarTitle: "Varyantlar & Fiyatlandırma"
+description: "Tek bir ürün için birden çok fiyat kademesi oluşturun — süre bazlı seçenekler (7, 15, 30 gün), paketler veya bağımsız stok kontrollü herhangi bir özel varyant."
+---
+
+Varyantlar, her biri için ayrı ürünler oluşturmadan tek bir ürün listesi altında birkaç farklı seçenek
+sunmanızı sağlar. Ürün sayfanızı ziyaret eden bir müşteri kendisine uyan seçeneği seçebilir — örneğin
+7 günlük deneme, 30 günlük abonelik veya yıllık plan — ve her varyantın kendi fiyatı, stok seviyesi ve
+açıklaması olabilir. Bu, kataloğunuzu sade tutarken alıcılara ihtiyaç duydukları esnekliği verir.
+
+## Varyant Oluşturma
+
+Bir ürüne varyant eklemek için **Yönetim → Ürünler**'e gidin, düzenlemek istediğiniz ürünü açın ve
+**Varyantlar** sekmesine geçin. Her seçeneği oluşturmak için **Varyant Ekle**'ye tıklayın.
+
+Her varyant şu alanları içerir:
+
+| Alan | Açıklama |
+|---|---|
+| **Ad** | Müşterilerin seçenek seçerken gördüğü etiket (ör. `1 Ay`, `3 Ay`, `Ömür Boyu`). |
+| **Fiyat** | Bu varyanta özel satış fiyatı. Ürünün temel fiyatını geçersiz kılar. |
+| **Stok Adedi** | Bu varyant için kaç adet mevcut olduğu. Diğer varyantlardan bağımsız izlenir. |
+| **Açıklama** | Müşterinin ne aldığını netleştirmek için varyantın yanında gösterilen isteğe bağlı kısa not. |
+
+Süre bazlı erişim için yaygın bir kullanım, tek bir üründe üç varyant oluşturmaktır: daha düşük
+fiyatlı bir **7 Gün** seçeneği, orta kademe bir **15 Gün** ve en avantajlı fiyatla bir **30 Gün**.
+Müşteriler ürün sayfasında üç seçeneği de görür ve sepete eklemeden önce seçer.
+
+## Varyant Başına Bağımsız Stok
+
+Her varyant kendi stok sayacını tutar. 7 günlük varyantınız tükenirse 30 günlük varyant satışta kalır
+— GurStore stoğu varyantlar arasında havuzlamaz. Bir varyantın stoğu sıfıra ulaştığında, o seçenek
+ürün sayfasında kullanılamaz olarak gösterilirken diğerleri satışa açık kalır. Bir varyantın stoğunu,
+Varyantlar sekmesinde adedini düzenleyerek istediğiniz zaman artırabilirsiniz.
+
+## Fiyatlandırma Türleri
+
+Bir varyantın fiyatını iki şekilde belirleyebilirsiniz:
+
+- **Sabit fiyat** — mutlak bir fiyat girin (ör. `9.99`). Ürünün temel fiyatından bağımsız olarak
+  müşterinin ödediği tutar budur.
+- **Yüzde indirim** — ürünün temel fiyatına göre bir indirim yüzdesi girin. GurStore nihai fiyatı
+  otomatik hesaplar ve mağazada hem orijinal hem indirimli tutarı göstererek tasarrufu müşteriye
+  görünür kılar.
+
+## Eklentiler (Addon)
+
+Eklentiler, müşterilerin ödeme sırasında dahil etmeyi seçebileceği isteğe bağlı ekstralardır.
+Varyantlardan ayrıdır — müşteri önce bir varyant seçer, ardından satın almayı tamamlamadan önce
+isteğe bağlı olarak bir veya daha fazla eklenti ekler.
+
+Eklenti oluşturmak için **Yönetim → Ürünler → Eklentiler**'e gidin ve ilgili ürüne bağlayın. Her
+eklentinin kendi adı ve fiyatı vardır; bu fiyat, ödemede seçili varyant fiyatının üzerine eklenir.
+Eklentileri; genişletilmiş destek paketleri, ek koltuk lisansları veya ana ürünü tamamlayan yardımcı
+varlıklar gibi şeyler için kullanın.
+
+<Tip>
+  Varyantlarınızı net ve spesifik adlandırın. `Basic`, `Standard` ve `Pro` gibi etiketler belirsiz
+  olabilir — müşteriler dikkatle okumadan farkı anlamayabilir. `7 Günlük Erişim`, `30 Günlük Erişim`
+  ve `1 Yıllık Erişim` gibi etiketler değeri anında iletir ve satış öncesi soruları azaltır.
+</Tip>
+
+<Note>
+  Mağaza ürün sayfasında varyantlar, Sepete Ekle düğmesinin üstünde seçilebilir bir seçenek grubu
+  olarak görünür. Müşteri varyantlar arasında geçiş yaptıkça fiyat gösterimi otomatik güncellenir;
+  böylece satın almaya karar vermeden önce daima doğru fiyatı görürler. Her varyant adının ve
+  açıklamasının doğru olduğundan emin olun — mağaza bunları yönetim panelinde girdiğiniz gibi birebir
+  gösterir.
+</Note>

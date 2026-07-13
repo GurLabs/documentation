@@ -1,0 +1,68 @@
+---
+title: "GurStore Ödeme (Checkout) Deneyimi Nasıl Çalışır?"
+sidebarTitle: "Ödeme Akışı"
+description: "GurStore ödeme akışı; misafir alışverişi, kupon kodları ve çoklu ağ geçidiyle ödemeyi destekler — başarılı işlem sonrası anında dijital teslimatla."
+---
+
+Bir müşteri GurStore mağazanızı ziyaret ettiğinde, sürtünmeyi en aza indirmek ve dijital ürünleri
+anında teslim etmek için tasarlanmış akıcı bir ödeme deneyiminden geçer. Mağazanızı gezmekten indirme
+bağlantısı veya lisans anahtarı almaya kadar tüm akış otomatik yürütülür — sizin tarafınızda elle
+teslimat gerekmez.
+
+## Sepete Ekleme
+
+Müşteriler ürünlerinizi `/store` adresindeki mağazanızı gezerek keşfeder. Her ürün listesi bir ad,
+açıklama, fiyat ve varsa ilgili medyayı içerir. Satın almak için müşteri bir ürüne tıklar ve sepetine
+ekler. Ödemeye geçmeden önce gezinmeye devam edip birden çok öğe ekleyebilir.
+
+<Tip>
+  Müşterileri ödemeden önce sepetlerini gözden geçirmeye teşvik edin. Kupon kodları, sipariş
+  verilmeden önce ödeme sayfasında uygulanmalıdır; bu yüzden kodlarını hazır bulundurmalarını
+  hatırlatın.
+</Tip>
+
+## Ödeme Sayfası
+
+Bir müşteri satın almaya hazır olduğunda `/checkout` sayfasına gider ve şunları içeren tam bir sipariş
+özeti görür:
+
+- **Sepetindeki öğeler** — ürün adları, adetler ve tekil fiyatlar
+- **Sipariş toplamı** — uygulanan indirimler dahil otomatik hesaplanır
+- **Kupon kodu alanı** — siparişi vermeden önce geçerli bir indirim kodu girebilecekleri yer
+- **Ödeme yöntemi seçimi** — mağazanızda etkinleştirdiğiniz tüm ödeme ağ geçitleri, müşterinin
+  seçmesi için burada gösterilir
+
+Ödeme sayfası her şeyi tek yerde tuttuğundan müşteriler gereksiz yönlendirmeler olmadan inceleyebilir,
+düzenleyebilir ve ödeyebilir.
+
+## Misafir Ödemesi
+
+Müşterilerin satın alma yapmak için hesap oluşturması gerekmez. GurStore, kutudan çıktığı gibi misafir
+ödemesini destekler; böylece herkes yalnızca e-posta adresiyle mağazanızdan alışveriş yapabilir. Bu,
+kayıt sürtünmesini ortadan kaldırır ve daha fazla ilk kez gelen ziyaretçiyi alıcıya dönüştürür.
+
+Hesabı olan müşteriler; sipariş geçmişlerine ve daha önce satın aldıkları öğelere istedikleri zaman
+erişmek için giriş yapabilir.
+
+## Ödemeden Sonra
+
+Bir ödeme başarıyla işlendikten sonra müşteri `/checkout/success` sayfasına yönlendirilir ve şunları
+görür:
+
+- Tüm sipariş ayrıntılarıyla siparişinin bir onayı
+- **Anında dijital teslimat** — ürün türüne bağlı olarak bu, doğrudan başarı sayfasında gösterilen bir
+  indirme bağlantısı, seri anahtar veya lisans anahtarı olabilir
+
+Teslimat otomatik ve anlıktır. Satın alma sonrası dosya veya anahtar göndermenize gerek yoktur.
+
+<Note>
+  Her başarılı satın alma sonrası müşteriye otomatik olarak bir onay e-postası gönderilir. Bu e-posta;
+  sipariş ayrıntılarını ve teslimat öğelerini içerir; böylece müşteri daha sonra giriş yapmadan satın
+  almasına erişebilir.
+</Note>
+
+## İptal Edilen veya Başarısız Ödemeler
+
+Bir müşteri ödeme sürecini iptal ederse veya bir işlem başarısız olursa `/checkout/cancel` sayfasına
+yönlendirilir. Sipariş oluşturulmaz ve tahsilat yapılmaz. Müşteri istediği zaman mağazaya dönüp tekrar
+deneyebilir.

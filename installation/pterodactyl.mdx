@@ -1,0 +1,91 @@
+---
+title: "Pterodactyl ile Kurulum"
+sidebarTitle: "Pterodactyl"
+description: "Hazır GurStore egg'i ile Pterodactyl paneli üzerinde konteyner tabanlı kurulum: egg içe aktarma, dosya yükleme ve başlatma."
+---
+
+**Pterodactyl** altyapınız varsa, GurStore'u hazır **egg** dosyamızla bir konteyner (sunucu)
+olarak çalıştırabilirsiniz. Bu yöntem, oyun/panel sunucusu altyapısına sahip olan kullanıcılar
+için idealdir.
+
+<Note>
+  Pterodactyl deneyimi olmayanlar için en pratik seçenek [GurStore Hosting](/installation/gurstore-hosting)
+  veya [cPanel](/installation/cpanel) kurulumudur.
+</Note>
+
+## Ön Koşullar
+
+- Yönetici (admin) erişimli bir Pterodactyl paneli
+- PHP 8.3 yolk imajını çalıştırabilen bir node
+- GurStore **egg** dosyası (`pterodactyl-gurstore-egg.json`) ve GurStore kaynak paketi
+
+## 1. Egg'i İçe Aktarın
+
+<Steps>
+  <Step title="Nest seçin veya oluşturun">
+    Panel yönetiminde **Admin → Nests** bölümüne gidin. İsterseniz "GurStore" adında yeni bir
+    nest oluşturun.
+  </Step>
+  <Step title="Egg'i içe aktarın">
+    **Import Egg** düğmesine tıklayın, `pterodactyl-gurstore-egg.json` dosyasını seçin ve içe
+    aktarın. Egg, **PHP 8.3** konteyner imajını ve doğru başlatma komutunu içerir.
+  </Step>
+</Steps>
+
+## 2. Sunucu (Server) Oluşturun
+
+<Steps>
+  <Step title="Yeni sunucu">
+    **Admin → Servers → Create New** ile yeni bir sunucu oluşturun; sahibini ve node'u seçin.
+  </Step>
+  <Step title="GurStore egg'ini atayın">
+    **Nest** ve **Egg** olarak GurStore'u seçin. Bellek/disk sınırlarını ihtiyacınıza göre
+    belirleyin (öneri: en az 1 GB RAM, 2 GB disk).
+  </Step>
+  <Step title="APP_URL değişkenini ayarlayın">
+    Egg değişkenlerinde **App URL (`APP_URL`)** alanına sitenizin genel adresini girin
+    (ör. `https://alanadiniz.com`).
+  </Step>
+</Steps>
+
+## 3. Dosyaları Yükleyin
+
+Egg'in kurulum betiği yalnızca gerekli klasörleri hazırlar; **uygulama dosyalarını sizin
+yüklemeniz gerekir.**
+
+<Steps>
+  <Step title="SFTP ile bağlanın">
+    Sunucunun **Settings** sekmesindeki SFTP bilgilerini kullanarak (FileZilla vb.) bağlanın.
+  </Step>
+  <Step title="GurStore dosyalarını yükleyin">
+    GurStore kaynak paketinin içeriğini sunucunun kök dizinine (`/home/container`) yükleyin.
+    `artisan`, `public/`, `app/` gibi dosya ve klasörler doğrudan kökte olmalıdır.
+  </Step>
+</Steps>
+
+## 4. Sunucuyu Başlatın
+
+Konsoldan sunucuyu **Start** edin. Egg, uygulamayı şu komutla çalıştırır:
+
+```bash
+php artisan serve --host=0.0.0.0 --port={{SERVER_PORT}}
+```
+
+Konsolda `Server running on ...` mesajını gördüğünüzde uygulama ayağa kalkmış demektir.
+
+## 5. Alan Adı ve Ters Proxy
+
+Pterodactyl, uygulamayı bir IP:port üzerinde yayınlar. Alan adınızı ve HTTPS'i eklemek için
+sunucunun önüne bir **ters proxy** (Nginx/Traefik) yerleştirin ve `https://alanadiniz.com`
+adresini bu port'a yönlendirin.
+
+<Warning>
+  `php artisan serve` geliştirme sunucusudur. Yüksek trafik için önüne bir ters proxy koymanız
+  ve SSL'i orada sonlandırmanız önerilir. Tam kontrol istiyorsanız
+  [Ubuntu / VPS](/installation/ubuntu-vps) kurulumunu değerlendirin.
+</Warning>
+
+## 6. Kurulum Sihirbazını Çalıştırın
+
+Alan adınız uygulamaya ulaştığında `https://alanadiniz.com/install` adresine gidin ve
+[Kurulum Sihirbazı](/installation/setup-wizard) adımlarını tamamlayın.

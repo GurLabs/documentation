@@ -1,0 +1,165 @@
+---
+title: "GurStore Ürünleri için REST API Uç Noktaları"
+sidebarTitle: "Ürünler"
+description: "GurStore herkese açık mağaza API'sinden aktif ürünlerin listesini alın veya slug ile tek bir ürünü getirin — kimlik doğrulama gerekmez."
+---
+
+GurStore mağaza ürün uç noktaları tamamen herkese açıktır — bunları çağırmak için bir API belirteci veya
+herhangi bir kimlik doğrulama başlığı gerekmez. Bu, onları başsız mağazaları, statik site oluşturmayı,
+ürün listeleme sayfalarını ve kataloğunuzu sunucu tarafı oturum olmadan göstermek istediğiniz her bağlamı
+beslemek için ideal kılar. Her iki uç nokta da yalnızca **aktif** ürünleri döndürür; taslaklar ve devre
+dışı listeler otomatik olarak hariç tutulur.
+
+---
+
+## Tüm ürünleri listele
+
+Mağazanızdaki tüm aktif ürünlerin bir dizisini döndürür.
+
+```
+GET /api/store/products
+```
+
+**Kimlik doğrulama:** Gerekmez
+
+**Sorgu parametreleri:** Şu anda zorunlu bir sorgu parametresi yoktur. Ek filtreleme seçenekleri
+(kategoriye, fiyat aralığına veya etikete göre) gelecekteki API sürümlerinde eklenebilir.
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/store/products \
+  -H "Accept: application/json"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 1,
+      "name": "Pro License",
+      "slug": "pro-license",
+      "price": 29.99,
+      "is_active": true
+    },
+    {
+      "id": 2,
+      "name": "Enterprise License",
+      "slug": "enterprise-license",
+      "price": 99.99,
+      "is_active": true
+    }
+  ]
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string">
+  İsteğin sonucunu belirtir. `200` yanıtında daima `"success"`.
+</ResponseField>
+
+<ResponseField name="data" type="array">
+  Ürün nesnelerinden oluşan bir dizi. Aktif ürün yoksa boş dizi döndürür.
+
+  <ResponseField name="data[].id" type="integer">
+    Ürünün benzersiz sayısal tanımlayıcısı.
+  </ResponseField>
+
+  <ResponseField name="data[].name" type="string">
+    Ürünün mağazanızda göründüğü şekliyle görünen adı.
+  </ResponseField>
+
+  <ResponseField name="data[].slug" type="string">
+    Ürünün URL-güvenli tanımlayıcısı. `GET /api/store/products/{slug}` ile tek bir ürünü getirmek için bu
+    değeri kullanın.
+  </ResponseField>
+
+  <ResponseField name="data[].price" type="number">
+    Mağazanızın yapılandırılmış para biriminde ondalık sayı olarak ürün fiyatı.
+  </ResponseField>
+
+  <ResponseField name="data[].is_active" type="boolean">
+    Ürünün aktif olup olmadığı. Pasif ürünler filtrelendiğinden liste yanıtlarında bu alan daima `true`.
+  </ResponseField>
+</ResponseField>
+
+---
+
+## Tek bir ürünü getir
+
+URL slug'ıyla tanımlanan tek bir ürünü döndürür.
+
+```
+GET /api/store/products/{slug}
+```
+
+**Kimlik doğrulama:** Gerekmez
+
+### Yol parametreleri
+
+<ParamField path="slug" type="string" required>
+  Getirmek istediğiniz ürünün URL slug'ı. Bir ürünün slug'ını liste uç noktasındaki `slug` alanından veya
+  GurStore panelinizde ürünün ayarları altından bulabilirsiniz.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/store/products/pro-license \
+  -H "Accept: application/json"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "name": "Pro License",
+    "slug": "pro-license",
+    "price": 29.99,
+    "is_active": true
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string">
+  İsteğin sonucunu belirtir. `200` yanıtında daima `"success"`.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  İstenen slug ile eşleşen tek bir ürün nesnesi.
+
+  <ResponseField name="data.id" type="integer">
+    Ürünün benzersiz sayısal tanımlayıcısı.
+  </ResponseField>
+
+  <ResponseField name="data.name" type="string">
+    Ürünün görünen adı.
+  </ResponseField>
+
+  <ResponseField name="data.slug" type="string">
+    Yolda ilettiğiniz değerle eşleşen, ürünün URL slug'ı.
+  </ResponseField>
+
+  <ResponseField name="data.price" type="number">
+    Mağazanızın yapılandırılmış para biriminde ondalık sayı olarak ürün fiyatı.
+  </ResponseField>
+
+  <ResponseField name="data.is_active" type="boolean">
+    Ürünün şu anda aktif ve satın alınabilir olup olmadığı.
+  </ResponseField>
+</ResponseField>
+
+<Note>
+Verilen slug'a sahip ürün yoksa **veya** devre dışı bırakılmışsa API `404 Not Found` yanıtı döndürür.
+API açısından, kullanılamayan listelerin yanlışlıkla açığa çıkmasını önlemek için pasif ürünler yokmuş
+gibi ele alınır.
+</Note>

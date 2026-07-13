@@ -1,0 +1,81 @@
+---
+title: "Lisans & Etki Alanı"
+sidebarTitle: "Lisans & Etki Alanı"
+description: "GurStore lisansının nasıl çalıştığı: alan adına bağlama, otomatik yenileme, paket seviyeleri ve lisansı başka bir domaine taşıma."
+---
+
+GurStore, **alan-adı-bağlı (domain-locked)** bir lisanslama kullanır. Lisansınız satın aldığınız
+tek bir alan adına bağlanır ve GurStore lisans sunucusu tarafından güvenli biçimde doğrulanır.
+
+## Lisans Nasıl Çalışır?
+
+<Steps>
+  <Step title="Lisans satın alın">
+    [gurstore.net](https://gurstore.net) üzerinden bir GurStore lisansı (veya lisansı içeren bir
+    [GurStore Hosting](/installation/gurstore-hosting) paketi) alın.
+  </Step>
+  <Step title="Kurulumda alan adına bağlayın">
+    [Kurulum Sihirbazı](/installation/setup-wizard) sırasında lisans anahtarınızı girersiniz.
+    Sistem, lisansı kurulum yaptığınız alan adına bağlar.
+  </Step>
+  <Step title="Otomatik doğrulama ve yenileme">
+    GurStore, lisans geçerliliğini düzenli aralıklarla arka planda doğrular ve otomatik yeniler.
+    Bu yüzden sunucunuzda **zamanlanmış görevin (cron) çalışıyor olması** önemlidir — kurulum
+    yöntemi sayfalarındaki cron adımını uygulayın.
+  </Step>
+</Steps>
+
+<Note>
+  GurStore açık kaynaklıdır (Business Source License 1.1) — kodu inceleyebilir ve
+  özelleştirebilirsiniz. Yerel geliştirme ve test **ücretsizdir**; canlı bir alan adında ticari
+  kullanım için geçerli bir lisans gerekir.
+</Note>
+
+## Paket Seviyeleri (Tier)
+
+Lisansınızın seviyesi, kullanılabilir modülleri belirler. Bir modül paketinizde yer almıyorsa
+yönetim panelinde gizlenir.
+
+| Seviye | Kime uygun? |
+|---|---|
+| **Basic** | Temel mağaza ve satış özellikleri |
+| **Pro** | Sadakat, cüzdan, referans, kupon gibi büyüme modülleri |
+| **Enterprise** | API, webhook ve gelişmiş entegrasyonlar dahil tüm modüller |
+
+<Tip>
+  Hangi modülün hangi seviyede olduğunu görmek ve yükseltmek için
+  [gurstore.net](https://gurstore.net) fiyatlandırma sayfasına bakın.
+</Tip>
+
+## Lisansı Başka Bir Alan Adına Taşıma
+
+Lisansınız tek bir alan adına bağlı olduğundan, farklı bir domaine geçmek istediğinizde lisansın
+yeni alan adına yeniden bağlanması gerekir.
+
+<Steps>
+  <Step title="Destekle iletişime geçin">
+    [gurstore.net/contact](https://gurstore.net/contact) veya Discord üzerinden taşıma talebinde
+    bulunun; mevcut ve yeni alan adınızı belirtin.
+  </Step>
+  <Step title="Yeni alan adında kurun">
+    Onay sonrası GurStore'u yeni alan adına kurun ve sihirbazda lisansınızı girin.
+  </Step>
+</Steps>
+
+## Sık Karşılaşılan Durumlar
+
+<AccordionGroup>
+  <Accordion title="Site 'lisanssız' uyarısı veriyor">
+    Genellikle cron görevinin çalışmaması nedeniyle lisans yenilenememiştir. Kurulum yöntemi
+    sayfanızdaki **zamanlanmış görev** adımını uygulayın ve sunucunuzun `api.gurstore.net`
+    adresine çıkış (dış bağlantı) yapabildiğinden emin olun.
+  </Accordion>
+  <Accordion title="Ödeme iptal edilirse ne olur?">
+    Lisans yenilenmez ve sistem kilitlenir. Ödeme yeniden aktif olduğunda lisans otomatik olarak
+    yeniden geçerli hale gelir.
+  </Accordion>
+  <Accordion title="Alan adım www'li ve www'siz çalışıyor">
+    Lisans ana alan adınıza bağlanır. `www` ve kök alan adı arasında yönlendirme (redirect)
+    kullanmanız önerilir; sorun yaşarsanız destek ekibiyle iletişime geçin.
+  </Accordion>
+</AccordionGroup>

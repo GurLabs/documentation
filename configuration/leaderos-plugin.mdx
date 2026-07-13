@@ -1,0 +1,101 @@
+---
+title: "LeaderOS Tema Eklentisi"
+sidebarTitle: "LeaderOS Eklentisi"
+description: "LeaderOS temalarını GurStore mağazanızda satın. Satın alımda müşterinin alan adına otomatik olarak LeaderOS lisansı eklenir."
+---
+
+GurStore, **LeaderOS temaları** satmak için yerleşik bir eklenti içerir. Bir müşteri LeaderOS teması
+satın aldığında, GurStore LeaderOS tema-geliştirici API'si üzerinden müşterinin belirttiği alan adına
+**otomatik olarak bir tema lisansı ekler** — sizin elle bir işlem yapmanıza gerek kalmaz.
+
+<Note>
+  Bu eklenti, LeaderOS temaları satan geliştiriciler içindir. LeaderOS temaları satmıyorsanız bu bölümü
+  atlayabilirsiniz.
+</Note>
+
+## Bölge (Region) ve API Anahtarları
+
+LeaderOS iki bölgede çalışır ve her biri ayrı bir API anahtarı kullanır:
+
+| Bölge | API Adresi | Kullanım |
+|---|---|---|
+| **tr** (varsayılan) | `api2.leaderos.com.tr` | `.com.tr` LeaderOS lisansları |
+| **global** | `api2.leaderos.net` | `.net` LeaderOS lisansları |
+
+API anahtarlarınızı eklenti ayarlarında tanımlayın:
+
+<Steps>
+  <Step title="Yönetim → Eklentiler → LeaderOS bölümüne gidin">
+    Yönetim panelinizde `/admin/plugins/leaderos` adresindeki LeaderOS eklenti kontrol paneline gidin.
+  </Step>
+  <Step title="API anahtarlarınızı girin">
+    LeaderOS tema-geliştirici panelinizden aldığınız **TR API Anahtarı** ve **Global API Anahtarı**
+    değerlerini ilgili alanlara girip kaydedin.
+  </Step>
+</Steps>
+
+## Bir Ürünü LeaderOS Teması Olarak İşaretleme
+
+Bir ürünü LeaderOS teması olarak satışa açmak için ürün formundaki ilgili seçeneği kullanın:
+
+<Steps>
+  <Step title="Ürünü oluşturun veya düzenleyin">
+    **Yönetim → Ürünler → Oluştur** (veya mevcut bir ürünü düzenleyin) ekranını açın ve **Eklentiler**
+    sekmesine geçin.
+  </Step>
+  <Step title="LeaderOS teması seçeneğini açın">
+    **🎨 Bu bir LeaderOS temasıdır** anahtarını etkinleştirin.
+  </Step>
+  <Step title="Tema slug'ını ve bölgeyi belirtin">
+    Temanın **slug**'ını (LeaderOS'taki tema kimliği) girin ve **bölgeyi** seçin (`tr` veya `global`).
+    Ürünü kaydedin.
+  </Step>
+</Steps>
+
+## Müşteri Satın Alma Akışı
+
+<Steps>
+  <Step title="Müşteri temayı sepete ekler">
+    Müşteri, LeaderOS temasını mağazanızdan normal bir ürün gibi satın alır.
+  </Step>
+  <Step title="Ödeme sırasında alan adını girer">
+    Sepette bir LeaderOS teması olduğunda ödeme ekranında bir **alan adı** alanı görünür. Müşteri, lisansın
+    ekleneceği LeaderOS site alan adını girer.
+  </Step>
+  <Step title="Lisans otomatik eklenir">
+    Ödeme onaylandığında GurStore, LeaderOS API'si üzerinden temayı müşterinin alan adına otomatik
+    lisanslar. İşlem tekrar-güvenlidir (idempotent) — aynı lisans iki kez eklenmez.
+  </Step>
+</Steps>
+
+## Yönetim Kontrol Paneli
+
+`/admin/plugins/leaderos` sayfası, LeaderOS entegrasyonunuz için tam bir kontrol paneli sunar:
+
+<CardGroup cols={2}>
+  <Card title="İstatistikler" icon="chart-simple">
+    Eklenmiş lisansların ve LeaderOS tema satışlarının genel istatistikleri.
+  </Card>
+  <Card title="Manuel Lisans Ekle" icon="plus">
+    Bir tema slug'ı, alan adı ve bölge belirterek elle lisans ekleyin.
+  </Card>
+  <Card title="Lisans Sorgula (Pre-check)" icon="magnifying-glass">
+    Bir alan adının belirli bir tema için lisansının olup olmadığını satın alma öncesi kontrol edin.
+  </Card>
+  <Card title="Sürüm / Güncelleme Gönder" icon="cloud-arrow-up">
+    Bir temaya yeni sürüm (indirme ve güncelleme dosyalarıyla) gönderin.
+  </Card>
+  <Card title="Lisans Listesi & Kaldırma" icon="list">
+    Eklenmiş tüm lisansları listeleyin ve gerektiğinde bir alan adından lisansı kaldırın.
+  </Card>
+</CardGroup>
+
+<Tip>
+  Satın alma öncesi **Lisans Sorgula** ile bir alan adının zaten lisanslı olup olmadığını doğrulayarak
+  yinelenen lisans eklemelerini önleyebilirsiniz.
+</Tip>
+
+<Warning>
+  Bir lisansı kaldırmak, müşterinin o alan adındaki LeaderOS temasına erişimini keser. Yalnızca iade veya
+  yetkisiz kullanım gibi durumlarda ve doğru alan adını seçtiğinizden emin olarak kaldırın.
+</Warning>

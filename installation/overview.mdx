@@ -1,0 +1,115 @@
+---
+title: "Kurulum — Genel Bakış"
+sidebarTitle: "Genel Bakış"
+description: "GurStore'u sunucunuza kurmanın tüm yolları: sistem gereksinimleri, yöntem karşılaştırması ve web tabanlı kurulum sihirbazı."
+---
+
+GurStore, standart bir **Laravel** uygulamasıdır ve kaynak paketi **önceden derlenmiş
+ön yüz varlıklarıyla (assets)** birlikte gelir — yani sunucunuzda Node.js/npm çalıştırmanıza
+gerek yoktur. Kurulum üç adımdan ibarettir:
+
+<Steps>
+  <Step title="Dosyaları sunucuya yükleyin">
+    Lisans panelinizden indirdiğiniz GurStore ZIP paketini sunucunuza yükleyip açın.
+  </Step>
+  <Step title="Alan adını /public klasörüne yönlendirin">
+    Web sunucunuzun belge kökünü (document root) uygulamanın `public/` klasörüne ayarlayın.
+  </Step>
+  <Step title="Kurulum sihirbazını çalıştırın">
+    Tarayıcıdan `https://alanadiniz.com/install` adresine gidin; sihirbaz lisans, veritabanı
+    ve yönetici hesabını sizin için ayarlar. Bkz. [Kurulum Sihirbazı](/installation/setup-wizard).
+  </Step>
+</Steps>
+
+<Note>
+  Zor kurulumla hiç uğraşmak istemiyor musunuz? **GurStore Hosting** ile sunucu, alan adı,
+  SSL ve kurulum tamamen bizde. Paket %100 GurStore uyumludur ve dakikalar içinde yayına girer.
+  [GurStore Hosting'i keşfedin →](/installation/gurstore-hosting)
+</Note>
+
+## Sistem Gereksinimleri
+
+GurStore kurulum sihirbazı, `/install` sayfasını açtığınızda aşağıdaki gereksinimleri
+**otomatik olarak** kontrol eder. Kuruluma başlamadan önce sunucunuzun bunları karşıladığından
+emin olun.
+
+<Tabs>
+  <Tab title="Sunucu">
+    | Gereksinim | Değer |
+    |---|---|
+    | **PHP** | 8.2 veya üzeri (**8.3 önerilir**) |
+    | **Web sunucusu** | Apache veya Nginx |
+    | **Veritabanı** | MySQL 8+, MariaDB 10.4+, PostgreSQL 13+ veya SQLite |
+    | **Disk** | En az 500 MB boş alan |
+    | **SSL** | HTTPS (Let's Encrypt yeterli) — ödeme ağ geçitleri için zorunlu |
+  </Tab>
+
+  <Tab title="PHP Eklentileri">
+    Aşağıdaki PHP eklentileri etkin olmalıdır:
+
+    - `PDO`
+    - `OpenSSL`
+    - `Mbstring`
+    - `cURL`
+    - `Tokenizer`
+    - `XML`
+    - `Fileinfo`
+    - `BCMath`
+    - `JSON`
+    - `GD` **veya** `Imagick`
+  </Tab>
+
+  <Tab title="Yazma İzinleri">
+    Aşağıdaki dizin ve dosyalar web sunucusu kullanıcısı tarafından **yazılabilir** olmalıdır:
+
+    - `storage/app`
+    - `storage/framework`
+    - `storage/logs`
+    - `bootstrap/cache`
+    - `.env`
+
+    Genellikle `chmod -R 775 storage bootstrap/cache` ve doğru sahiplik (ör.
+    `chown -R www-data:www-data`) yeterlidir.
+  </Tab>
+</Tabs>
+
+## Kurulum Yöntemi Seçin
+
+Sunucu erişiminize ve panelinize göre size en uygun yöntemi seçin. Tüm yöntemler aynı yerde
+biter: tarayıcıdan çalıştırılan [Kurulum Sihirbazı](/installation/setup-wizard).
+
+<CardGroup cols={2}>
+  <Card title="GurStore Hosting" icon="rocket" href="/installation/gurstore-hosting">
+    **En kolay yol.** Kurulumla hiç uğraşmayın — sunucu, SSL ve kurulum bizde. %100 uyumlu.
+  </Card>
+  <Card title="cPanel" icon="server" href="/installation/cpanel">
+    Paylaşımlı/cPanel hosting üzerinde Dosya Yöneticisi ve MySQL sihirbazı ile kurulum.
+  </Card>
+  <Card title="Plesk" icon="panel-top" href="/installation/plesk">
+    Plesk paneli üzerinde PHP sürümü, veritabanı ve belge kökü ayarlarıyla kurulum.
+  </Card>
+  <Card title="Pterodactyl" icon="egg" href="/installation/pterodactyl">
+    Hazır GurStore egg'i ile Pterodactyl paneli üzerinde konteyner kurulumu.
+  </Card>
+  <Card title="Ubuntu / VPS" icon="terminal" href="/installation/ubuntu-vps">
+    Kendi sunucunuzda (self-hosting) Nginx + PHP-FPM ile tam kontrollü kurulum.
+  </Card>
+  <Card title="Lisans & Etki Alanı" icon="key" href="/installation/license">
+    Lisansınızı alan adına bağlama, yenileme ve başka bir domaine taşıma.
+  </Card>
+</CardGroup>
+
+## Yöntem Karşılaştırması
+
+| Yöntem | Zorluk | Sunucu erişimi | Kimler için? |
+|---|---|---|---|
+| **GurStore Hosting** | ⭐ Çok kolay | Gerekmez | Teknik detaylarla uğraşmak istemeyenler |
+| **cPanel** | Kolay | cPanel | Paylaşımlı hosting kullanıcıları |
+| **Plesk** | Kolay | Plesk | Plesk sunucusu olanlar |
+| **Pterodactyl** | Orta | Panel + SFTP | Oyun/panel sunucusu altyapısı olanlar |
+| **Ubuntu / VPS** | İleri | SSH (root) | Tam kontrol isteyen ileri kullanıcılar |
+
+<Tip>
+  Hangi yöntemi seçerseniz seçin, dosyaları yükledikten ve alan adınızı `public/` klasörüne
+  yönlendirdikten sonra kurulum tek noktada birleşir: **`https://alanadiniz.com/install`**.
+</Tip>

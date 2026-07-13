@@ -1,0 +1,115 @@
+---
+title: "Stripe, Iyzico ve Daha Fazlasıyla Ödeme Alın"
+sidebarTitle: "Ödemeler"
+description: "GurStore'a Stripe, Iyzico veya Papara bağlayarak kart ödemeleri, yerel Türk ödeme yöntemleri ve kripto kabul edin — otomatik webhook işlemeyle."
+---
+
+GurStore, dünyanın her yerinden müşterilerden ödeme almanız — ya da belirli yerel pazarları
+hedeflemeniz — için birden çok ödeme ağ geçidi bağlamanıza olanak tanır. Uluslararası kart ödemeleri
+için Stripe'ı, Türk alıcılar için Iyzico veya Papara'yı ve merkeziyetsiz işlemler için kripto'yu
+etkinleştirebilirsiniz. Her ağ geçidi yönetim panelinizden bağımsız olarak yapılandırılır ve GurStore
+webhook doğrulamasını otomatik yaptığından ödemeler elle iş gerektirmeden kaydedilir.
+
+<Warning>
+  Yayına geçmeden önce ödeme ağ geçidi entegrasyonunuzu daima sandbox veya test bilgileriyle test edin.
+  Kurulumunuzu doğrulamadan gerçek ödeme işlemek, başarısız siparişlere ve kötü bir müşteri
+  deneyimine yol açabilir.
+</Warning>
+
+## Desteklenen Ağ Geçitleri
+
+<CardGroup cols={2}>
+  <Card title="Stripe" icon="credit-card">
+    Uluslararası kredi ve banka kartı ödemeleri alın. Küresel müşteri kitlesi olan mağazalar için
+    idealdir.
+  </Card>
+  <Card title="Iyzico" icon="building-columns">
+    Türkiye'de yaygın bir ödeme sağlayıcı; yerel kartları ve taksit seçeneklerini destekler.
+  </Card>
+  <Card title="Papara" icon="wallet">
+    Türkiye'de çevrimiçi alışverişlerde yaygın kullanılan bir dijital cüzdan ve ödeme yöntemi.
+  </Card>
+  <Card title="Kripto" icon="bitcoin-sign">
+    Merkeziyetsiz işlemler için kripto para ödemelerini kabul edin.
+  </Card>
+</CardGroup>
+
+## Stripe Bağlama
+
+<Steps>
+  <Step title="Yönetim → Ödeme Kurulumu bölümüne gidin">
+    GurStore yönetim panelinizde, ana ayarlar alanı altındaki **Ödeme Kurulumu**'na gidin.
+  </Step>
+  <Step title="Stripe anahtarlarınızı girin">
+    **Stripe Secret Key** ve **Stripe Publishable Key** değerlerini girin. Her ikisini de Stripe
+    panelinizde **Developers → API Keys** altında bulabilirsiniz.
+  </Step>
+  <Step title="Webhook uç noktasını yapılandırın">
+    Stripe panelinizde şu adrese işaret eden yeni bir webhook uç noktası ekleyin:
+    ```
+    POST /webhook/stripe
+    ```
+    GurStore'un gerçek zamanlı ödeme güncellemeleri alması için ilgili ödeme olaylarını (ör.
+    `payment_intent.succeeded`) seçin.
+  </Step>
+  <Step title="Kaydedin ve Stripe'ı etkinleştirin">
+    Yapılandırmanızı kaydedin ve Stripe'ı **etkin** duruma getirin. Mağazanız artık ödeme sırasında
+    Stripe'ı bir ödeme seçeneği olarak gösterir.
+  </Step>
+</Steps>
+
+## Iyzico Bağlama
+
+<Steps>
+  <Step title="Yönetim → Ödeme Kurulumu bölümüne gidin">
+    GurStore yönetim panelinizde **Ödeme Kurulumu**'na gidin.
+  </Step>
+  <Step title="Iyzico bilgilerinizi girin">
+    **Iyzico API Key** ve **Iyzico Secret Key** değerlerini girin. Bunlar Iyzico üye iş yeri
+    panelinizde mevcuttur.
+  </Step>
+  <Step title="Geri çağırma (callback) URL'nizi ayarlayın">
+    Iyzico panelinizde şu callback URL'sini yapılandırın:
+    ```
+    POST /webhook/iyzico
+    ```
+    Bu, bir ödeme tamamlandığında veya güncellendiğinde Iyzico'nun GurStore'u bilgilendirmesini sağlar.
+  </Step>
+  <Step title="Kaydedin ve Iyzico'yu etkinleştirin">
+    Yapılandırmanızı kaydedin ve Iyzico'yu etkinleştirin. Ödeme sırasında müşteriler için bir ödeme
+    seçeneği olarak görünür.
+  </Step>
+</Steps>
+
+## Papara Bağlama
+
+Papara kurulumu diğer ağ geçitleriyle aynı deseni izler. **Yönetim → Ödeme Kurulumu**'na gidin, Papara
+bilgilerinizi girin ve webhook callback URL'nizi şu şekilde ayarlayın:
+
+```
+POST /webhook/papara
+```
+
+Bilgileriniz hazır olduğunda ağ geçidini kaydedip etkinleştirin. Papara bundan sonra ödeme sayfanızda
+bir ödeme yöntemi olarak sunulur.
+
+## Çoklu Para Birimi Desteği
+
+Mağazanızın varsayılan para birimini **Yönetim → Ayarlar** üzerinden yapılandırabilirsiniz. GurStore;
+**USD**, **EUR**, **TRY** ve daha fazlasını içeren bir dizi para birimini destekler. Tüm ürün
+fiyatları ve sipariş toplamları seçtiğiniz mağaza para biriminde gösterilir. Dönüşüm sorunlarını
+önlemek için ödeme ağ geçidi hesaplarınızın aynı para biriminde işlem kabul edecek şekilde
+yapılandırıldığından emin olun.
+
+## İadeler
+
+İadeler, ödeme ağ geçidinizin kendi panelinden (Stripe, Iyzico veya Papara) başlatılır. Bir iade ağ
+geçidi düzeyinde işlendikten sonra GurStore bunu otomatik algılar ve ilgili sipariş durumunu yönetim
+panelinizde **iade edildi** olarak günceller. İade verdikten sonra sipariş kayıtlarını elle
+güncellemenize gerek yoktur.
+
+<Note>
+  GurStore, desteklenen tüm ödeme ağ geçitleri için webhook imzalarını otomatik doğrular. Bu, yalnızca
+  yapılandırdığınız ağ geçitlerinden gelen meşru ödeme olaylarının siparişlerinizi güncellemesini
+  sağlar ve mağazanızı sahte webhook çağrılarından korur.
+</Note>

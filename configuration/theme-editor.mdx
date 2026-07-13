@@ -1,0 +1,155 @@
+---
+title: "Tema Editörüyle Mağazanızı Özelleştirin"
+sidebarTitle: "Tema Editörü"
+description: "GurStore yönetim panelinden mağaza temalarını kurun ve etkinleştirin. Kod yazmadan renkleri, düzeni ve tasarımı markanıza uyacak şekilde özelleştirin."
+---
+
+Tema editörü, mağazanızın görünümü ve hissi üzerinde tam kontrol sağlar. Renklerden yazı tiplerine,
+düzen yapısından şablon dosyalarına kadar mağazanızın her görsel yönü doğrudan yönetim panelinden
+yönetilebilir — kodlama deneyimi gerekmez. İster yeni bir temayla sıfırdan başlayın ister mevcut
+tasarımınızı ince ayarlayın, tema editörü markanızı tutarlı ve mağazanızı en iyi halinde tutar.
+
+## Tema Editörüne Erişim
+
+Tema editörünü açmak için **Yönetim → Tema** bölümüne gidin. Burada kurulu tüm temaları, aktif temayı
+ve mağaza görünümünüzü özelleştirme araçlarını bulursunuz.
+
+<Steps>
+  <Step title="Yönetim panelinize giriş yapın">
+    Mağazanızın yönetim URL'sine gidin ve yönetici bilgilerinizle oturum açın.
+  </Step>
+  <Step title="Tema bölümünü açın">
+    Sol kenar çubuğunda tema yönetim alanına girmek için **Tema**'ya tıklayın.
+  </Step>
+</Steps>
+
+## Tema Kurma
+
+GurStore, yönetim panelinden doğrudan yükleyebileceğiniz tema paketlerini destekler. Yüklendikten sonra
+tema kütüphanenize eklenir ve yayına almadan önce özelleştirmeye hazır olur.
+
+<Steps>
+  <Step title="Yönetim → Tema bölümüne gidin">
+    Kenar çubuğundan tema yönetim alanını açın.
+  </Step>
+  <Step title="Tema Yükle'ye tıklayın">
+    **Tema Yükle** düğmesini seçin ve tema paketi dosyanızı (`.zip` biçimi) seçin.
+  </Step>
+  <Step title="Kurulumun tamamlanmasını bekleyin">
+    GurStore temayı açar ve kaydeder. İşlem bittiğinde temanın kütüphanenizde belirdiğini görürsünüz.
+  </Step>
+  <Step title="Etkinleştirmeden önce önizleyin">
+    Yeni kurulan temayı yayına almadan önce nasıl göründüğünü incelemek için yanındaki **Önizle**
+    düğmesini kullanın.
+  </Step>
+</Steps>
+
+<Warning>
+  Yalnızca güvenilir kaynaklardan tema paketleri kurun. Bozuk veya kötü amaçlı bir tema dosyası
+  mağazanızın düzenini bozabilir. Yeni bir temayı etkinleştirmeden önce daima önizleme modunda test edin.
+</Warning>
+
+## Tema Etkinleştirme
+
+GurStore'da yeni bir temaya geçmek sorunsuzdur — geçiş sırasında mağazanız çevrimiçi kalır ve önceki
+temanız korunur; böylece istediğiniz zaman geri dönebilirsiniz.
+
+<Steps>
+  <Step title="Etkinleştirmek istediğiniz temayı bulun">
+    **Yönetim → Tema**'da kütüphanenizde yayına almak istediğiniz temayı bulun.
+  </Step>
+  <Step title="Etkinleştir'e tıklayın">
+    Temanın yanındaki **Etkinleştir**'i seçin. GurStore onu mağazanıza anında uygular.
+  </Step>
+  <Step title="Değişikliği doğrulayın">
+    Yeni temanın müşteriler için doğru gösterildiğini teyit etmek için mağazanızı ziyaret edin.
+  </Step>
+</Steps>
+
+<Tip>
+  Bir temayı etkinleştirmeden önce mağazanızda tam olarak nasıl göründüğünü görmek için **Önizle**
+  düğmesini kullanın. Önizleme modu yalnızca size görünür ve müşterilerin gördüğünü etkilemez.
+</Tip>
+
+<Note>
+  Geçiş yaptığınızda önceden aktif olan temanız asla silinmez. Tema kütüphanenizde kalır ve yeniden
+  kurmadan istediğiniz zaman tekrar etkinleştirebilirsiniz.
+</Note>
+
+## Tema Dosyalarını Düzenleme
+
+Tema editörü, tema kaynak dosyalarınızı doğrudan yönetim panelinde gezip düzenlemenizi sağlayan yerleşik
+bir dosya tarayıcısı içerir. Bu; tarayıcınızdan ayrılmadan hassas düzen ayarları yapmak veya şablon
+mantığını düzenlemek için kullanışlıdır.
+
+<Steps>
+  <Step title="Dosya ağacını açın">
+    **Yönetim → Tema**'da aktif veya kurulu temanızda **Düzenle** düğmesine tıklayın. Editörün sol
+    tarafında dosya ağacı paneli açılır.
+  </Step>
+  <Step title="Bir dosyaya göz atın ve seçin">
+    Düzenlemek istediğiniz dosyayı bulmak için dosya ağacındaki klasörleri genişletin. Kod editöründe
+    açmak için dosya adına tıklayın.
+  </Step>
+  <Step title="Değişikliklerinizi yapın">
+    Dosya içeriğini editör bölmesinde düzenleyin. Yaygın şablon ve stil biçimleri için söz dizimi
+    vurgulama mevcuttur.
+  </Step>
+  <Step title="Değişikliklerinizi kaydedin">
+    Düzenlemeleri uygulamak için **Kaydet**'e tıklayın. Tema aktifse değişiklikler mağazanıza anında
+    yansır.
+  </Step>
+</Steps>
+
+<Warning>
+  Bir tema dosyasını düzenlemeden önce daima bir yedek kopyasını saklayın. Bir dosyanın üzerine yazıp
+  kaydettikten sonra önceki sürüm otomatik olarak geri yüklenemez. Değişiklik yapmadan önce orijinal
+  dosya içeriğini güvenli bir yere kopyalayın.
+</Warning>
+
+<Accordion title="Düzenleyebileceğiniz yaygın dosyalar">
+  - **layout/theme.liquid** — genel sayfa yapısını ve saran öğeleri kontrol eder
+  - **templates/index.liquid** — ana sayfa şablonu
+  - **templates/product.liquid** — ürün detay sayfası düzeni
+  - **assets/main.css** — boşluk, tipografi ve özel stiller için genel stil dosyası
+  - **snippets/header.liquid** — gezinme ve başlık bileşeni
+</Accordion>
+
+## Renk Paleti Özelleştirme
+
+Mağazanızın renk şemasını hiç kod dokunmadan güncelleyebilirsiniz. Renk paleti ayarları; mağazanızın
+tamamında kullanılan birincil, vurgu ve arka plan renklerini tanımlamanıza olanak tanır.
+
+<Steps>
+  <Step title="Tema Ayarlarını açın">
+    **Yönetim → Tema**'da görsel özelleştiriciyi açmak için aktif temanızda **Özelleştir**'e tıklayın.
+  </Step>
+  <Step title="Renklere gidin">
+    Özelleştirici kenar çubuğunda **Renkler** veya **Palet** bölümünü seçin.
+  </Step>
+  <Step title="Renklerinizi belirleyin">
+    Aşağıdakilerin her biri için renk seçiciyi kullanın veya bir hex kodu girin:
+
+    <CardGroup cols={3}>
+      <Card title="Birincil Renk" icon="palette">
+        Düğmeler, bağlantılar ve temel arayüz öğeleri için kullanılan ana marka rengi.
+      </Card>
+      <Card title="Vurgu Rengi" icon="star">
+        Öne çıkarma, rozet ve fareyle üzerine gelme durumları için tamamlayıcı bir renk.
+      </Card>
+      <Card title="Arka Plan Rengi" icon="square">
+        Mağaza sayfalarınız için temel arka plan rengi.
+      </Card>
+    </CardGroup>
+  </Step>
+  <Step title="Kaydedin ve önizleyin">
+    Renk değişikliklerinizi uygulamak için **Kaydet**'e tıklayın, ardından güncellenen paleti görmek
+    için mağazanızı ziyaret edin.
+  </Step>
+</Steps>
+
+<Tip>
+  Mağazanızı erişilebilir ve tüm müşteriler için okunması kolay tutmak için birincil renginiz ile arka
+  plan renginiz arasında yeterli kontrast hedefleyin. Çoğu tarayıcı, kontrast oranlarını kontrol
+  edebilen yerleşik geliştirici araçları içerir.
+</Tip>

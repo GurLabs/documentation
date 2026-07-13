@@ -1,0 +1,148 @@
+---
+title: "Ekibinizi ve Personel İzinlerini Yönetin"
+sidebarTitle: "Ekip & Personel"
+description: "GurStore yönetim panelinize personel ekleyin ve ayrıntılı izinler atayın; böylece her ekip üyesi yalnızca ihtiyaç duyduğu alana erişir."
+---
+
+Mağazanız büyüdükçe; siparişleri yönetmek, müşteri desteği sağlamak veya ürün kataloğunuzu güncellemek
+için ek ekip üyelerine ihtiyaç duyabilirsiniz. GurStore'un ekip yönetim sistemi, personeli yönetim
+panelinize davet etmenizi, onlara bir rol atamanızı ve yönetimin tam olarak hangi alanlarına
+erişebileceklerini kontrol etmenizi sağlar. Herhangi bir yönetici veya personel tarafından yapılan her
+eylem otomatik kaydedilir; böylece her zaman net bir denetim izine sahip olursunuz.
+
+## Rollere Genel Bakış
+
+GurStore iki katmanlı bir rol sistemi kullanır. Davet ettiğinizde her ekip üyesine iki rolden biri atanır:
+
+<CardGroup cols={2}>
+  <Card title="Yönetici (Admin)" icon="shield">
+    Tüm panellere, ayarlara ve yapılandırma alanlarına tam, kısıtlamasız erişim. Yöneticiler; diğer ekip
+    üyelerini davet edip kaldırabilir, ödeme ayarlarını değiştirebilir, temaları düzenleyebilir ve tüm
+    raporları görebilir. Bu rolü yalnızca güvendiğiniz kişilere atayın.
+  </Card>
+  <Card title="Personel (Staff)" icon="user">
+    Davet sırasında atadığınız bireysel izinlere dayalı kısıtlı erişim. Personel, yalnızca izinlerinin
+    izin verdiği yönetim paneli bölümlerini görür. İzinlerini istediğiniz zaman güncelleyebilirsiniz.
+  </Card>
+</CardGroup>
+
+## Ekip Üyesi Ekleme
+
+Yeni bir ekip üyesini doğrudan yönetim panelinden davet edin. Hesap oluşturmak ve mağazanızın yönetimine
+katılmak için bir e-posta daveti alırlar.
+
+<Steps>
+  <Step title="Yönetim → Ekip → Davet Et bölümüne gidin">
+    Kenar çubuğunda **Ekip** bölümünü açın ve **Davet Et**'e tıklayın.
+  </Step>
+  <Step title="Ekip üyesinin e-postasını girin">
+    Davet etmek istediğiniz kişinin e-posta adresini yazın. GurStore, o adrese bir davet bağlantısı
+    gönderir.
+  </Step>
+  <Step title="Rollerini seçin">
+    Rol açılır menüsünden **Yönetici** veya **Personel**'i seçin.
+  </Step>
+  <Step title="İzinleri atayın (yalnızca Personel rolü)">
+    Personel rolünü seçtiyseniz, bu ekip üyesinin ihtiyaç duyduğu belirli izinleri açın. Kullanılabilir
+    izinlerin tam listesi için aşağıdaki [Ayrıntılı İzinler](#ayrıntılı-i̇zinler-acl) bölümüne bakın.
+  </Step>
+  <Step title="Daveti gönderin">
+    **Davet Gönder**'e tıklayın. Ekip üyesi, hesabını kurup yönetim paneline erişmek için bir bağlantı
+    içeren bir e-posta alır.
+  </Step>
+</Steps>
+
+## Ayrıntılı İzinler (ACL)
+
+Bir Personel üyesini davet ederken veya düzenlerken her izni bağımsız olarak etkinleştirebilir veya devre
+dışı bırakabilirsiniz. Bu erişim kontrol listesi (ACL), bir ekip üyesine tam olarak ihtiyaç duyduğu
+erişimi vermenizi sağlar — fazlasını değil.
+
+<Accordion title="Siparişler">
+  - **Siparişleri Görüntüle** — personelin; müşteri bilgileri, satın alınan öğeler ve ödeme durumu dahil
+    sipariş ayrıntılarını açıp okumasına izin verir.
+  - **Siparişleri Yönet** — personelin; sipariş durumlarını güncellemesine, iade vermesine ve siparişlere
+    not eklemesine izin verir. Siparişleri Görüntüle'nin etkin olmasını gerektirir.
+</Accordion>
+
+<Accordion title="Ürünler">
+  - **Ürünleri Görüntüle** — personelin; ürün kataloğunuza göz atmasına ve ürün ayrıntılarını,
+    fiyatlandırmayı ve stok seviyelerini görmesine izin verir.
+  - **Ürünleri Yönet** — personelin; yeni ürünler oluşturmasına, mevcutları düzenlemesine ve ürünleri
+    mağazanızda yayınlamasına/yayından kaldırmasına izin verir.
+
+  <Warning>
+    **Ürünleri Yönet** iznini verirken dikkatli olun. Bu izne sahip bir personel, ürünleri anında
+    yayınlayabilir veya yayından kaldırabilir; bu da müşterilerin mağazanızda ne görebileceğini ve satın
+    alabileceğini doğrudan etkiler. Bu izni yalnızca katalog değişikliği yapmasına güvendiğiniz personele
+    atayın.
+  </Warning>
+</Accordion>
+
+<Accordion title="Destek Talepleri">
+  - **Talepleri Görüntüle** — personelin; açık ve kapalı müşteri destek taleplerini okumasına izin verir.
+  - **Taleplere Yanıt Ver** — personelin; müşteri destek taleplerine yanıt göndermesine ve talep durumunu
+    güncellemesine izin verir. Talepleri Görüntüle'nin etkin olmasını gerektirir.
+</Accordion>
+
+<Accordion title="Kullanıcılar">
+  - **Kullanıcıları Görüntüle** — personelin; müşteri listesine göz atmasına ve bireysel müşteri
+    profillerini, sipariş geçmişini ve hesap ayrıntılarını görmesine izin verir.
+</Accordion>
+
+<Accordion title="Analitik">
+  - **Analitiğe Eriş** — personelin; satış raporları, gelir özetleri ve trafik verileri dahil mağaza
+    analitiğini görmesine izin verir.
+</Accordion>
+
+## Etkinlik Kayıtları (Activity Logs)
+
+GurStore, yönetim panelinizde yöneticiler ve personel tarafından yapılan her eylemi otomatik kaydeder.
+Etkinlik kayıtları, kimin ne zaman ne değiştirdiğini her zaman görebilmeniz için eksiksiz bir denetim izi
+sunar.
+
+<Steps>
+  <Step title="Yönetim → Etkinlik Kayıtları'na gidin">
+    Mağazanızın tüm kayıt geçmişini görüntülemek için kenar çubuğundan **Etkinlik Kayıtları**'nı açın.
+  </Step>
+  <Step title="Kayıtları filtreleyin">
+    Kayıtları ekip üyesine, tarih aralığına veya eylem türüne göre daraltmak için sayfanın üstündeki
+    filtreleri kullanın.
+  </Step>
+  <Step title="Kayıtları dışa aktarın">
+    Kayıt tutma veya harici inceleme için etkinlik kayıtlarını CSV dosyası olarak indirmek üzere **Dışa
+    Aktar**'a tıklayın.
+  </Step>
+</Steps>
+
+<Tip>
+  Özellikle siparişlerinizde veya ürün kataloğunuzda beklenmedik bir değişiklikten sonra etkinlik
+  kayıtlarını düzenli gözden geçirmeyi alışkanlık haline getirin. Kayıtlar, değişikliği hangi ekip üyesinin
+  ve ne zaman yaptığını tam olarak gösterir; bu da hataları belirlemeyi ve düzeltmeyi kolaylaştırır.
+</Tip>
+
+## Bir Personeli Kaldırma
+
+Bir ekip üyesi kuruluşunuzdan ayrılırsa veya artık yönetici erişimine ihtiyaç duymuyorsa, erişimini
+yönetim panelinden anında iptal edebilirsiniz.
+
+<Steps>
+  <Step title="Yönetim → Ekip bölümüne gidin">
+    Ekip üyelerinizin tam listesini görmek için kenar çubuğunda **Ekip** bölümünü açın.
+  </Step>
+  <Step title="Personeli bulun">
+    Erişimini kaldırmak istediğiniz ekip üyesini bulun.
+  </Step>
+  <Step title="Hesaplarını yönetin">
+    Hesap ayarlarını açmak için adının yanındaki **Yönet**'e tıklayın.
+  </Step>
+  <Step title="Erişimi iptal edin">
+    **Erişimi İptal Et**'e tıklayın ve işlemi onaylayın. Personel anında oturumdan çıkarılır ve artık
+    yönetim panelinize giriş yapamaz.
+  </Step>
+</Steps>
+
+<Note>
+  Bir personelin erişimini iptal etmek, daha önce yaptığı eylemleri silmez veya kayıtlarını etkinlik
+  günlüğünden kaldırmaz. Hesapları devre dışı bırakıldıktan sonra bile denetim geçmişiniz sağlam kalır.
+</Note>

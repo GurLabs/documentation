@@ -1,0 +1,128 @@
+---
+title: "Ubuntu / VPS ile Kurulum (Self-Hosting)"
+sidebarTitle: "Ubuntu / VPS"
+description: "Kendi sunucunuzda GurStore kurulumu: Nginx + PHP 8.3-FPM, veritabanı, dosya yükleme, izinler ve HTTPS ile tam kontrollü self-hosting."
+---
+
+Bu rehber, **kök (root) SSH erişiminiz olan bir Ubuntu VPS** üzerinde GurStore'u sıfırdan
+kurmayı anlatır. En fazla kontrolü sunan yöntemdir; Nginx + PHP-FPM önerilir.
+
+<Note>
+  Sunucu yönetimiyle uğraşmak istemiyorsanız [GurStore Hosting](/installation/gurstore-hosting)
+  tüm bu adımları sizin yerinize yapar.
+</Note>
+
+## 1. Gerekli Paketleri Kurun
+
+```bash
+sudo apt update
+sudo apt install -y nginx unzip git \
+  php8.3-fpm php8.3-cli php8.3-mysql php8.3-pgsql \
+  php8.3-mbstring php8.3-xml php8.3-curl php8.3-bcmath \
+  php8.3-gd php8.3-zip php8.3-fileinfo
+```
+
+<Tip>
+  PHP 8.3 deposu dağıtımınızda yoksa `ppa:ondrej/php` deposunu ekleyin:
+  `sudo add-apt-repository ppa:ondrej/php && sudo apt update`
+</Tip>
+
+## 2. Veritabanı Oluşturun
+
+MySQL/MariaDB örneği:
+
+```bash
+sudo mysql -e "CREATE DATABASE gurstore CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+sudo mysql -e "CREATE USER 'gurstore'@'localhost' IDENTIFIED BY 'GUCLU_BIR_SIFRE';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON gurstore.* TO 'gurstore'@'localhost'; FLUSH PRIVILEGES;"
+```
+
+## 3. Dosyaları Yerleştirin
+
+```bash
+sudo mkdir -p /var/www/gurstore
+# GurStore ZIP paketini sunucuya yükleyip açın:
+sudo unzip gurstore.zip -d /var/www/gurstore
+```
+
+## 4. İzinleri Ayarlayın
+
+Web sunucusu kullanıcısının (`www-data`) yazabilmesi gereken klasörler:
+
+```bash
+sudo chown -R www-data:www-data /var/www/gurstore
+sudo chmod -R 775 /var/www/gurstore/storage /var/www/gurstore/bootstrap/cache
+sudo touch /var/www/gurstore/.env && sudo chown www-data:www-data /var/www/gurstore/.env
+```
+
+## 5. Nginx Sanal Sunucusu
+
+`/etc/nginx/sites-available/gurstore` dosyasını oluşturun. **Belge kökü `public/` klasörünü
+göstermelidir:**
+
+```nginx
+server {
+    listen 80;
+    server_name alanadiniz.com www.alanadiniz.com;
+    root /var/www/gurstore/public;
+
+    index index.php;
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+```
+
+Etkinleştirin ve yeniden yükleyin:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/gurstore /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+## 6. HTTPS (SSL) Ekleyin
+
+Let's Encrypt ile ücretsiz sertifika:
+
+```bash
+sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d alanadiniz.com -d www.alanadiniz.com
+```
+
+<Warning>
+  Ödeme ağ geçitleri ve güvenli oturum için HTTPS **zorunludur**. Kuruluma geçmeden SSL'in aktif
+  olduğundan emin olun.
+</Warning>
+
+## 7. Zamanlanmış Görev (Cron)
+
+Lisans yenileme, e-posta kuyruğu ve diğer arka plan işleri için:
+
+```bash
+sudo crontab -e -u www-data
+# Aşağıdaki satırı ekleyin:
+* * * * * php /var/www/gurstore/artisan schedule:run >> /dev/null 2>&1
+```
+
+## 8. Kurulum Sihirbazını Çalıştırın
+
+Tarayıcıdan `https://alanadiniz.com/install` adresine gidin ve
+[Kurulum Sihirbazı](/installation/setup-wizard) adımlarını izleyin. Veritabanı bilgilerini
+(3. adımda oluşturduğunuz) burada gireceksiniz; tablolar otomatik oluşturulur.
+
+<Tip>
+  GurStore kaynak paketi **önceden derlenmiş ön yüz varlıklarıyla** gelir; bu sunucuda
+  `npm install` veya `npm run build` çalıştırmanıza gerek yoktur.
+</Tip>

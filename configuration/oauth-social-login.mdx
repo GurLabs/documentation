@@ -1,0 +1,129 @@
+---
+title: "Mağazanız için Google ve Discord Girişini Etkinleştirin"
+sidebarTitle: "Sosyal Giriş"
+description: "Daha hızlı, şifresiz kayıt ve giriş deneyimi için müşterilerin GurStore'unuza Google veya Discord hesaplarıyla giriş yapmasına izin verin."
+---
+
+Sosyal giriş, müşterilerinizin ayrı bir şifre oluşturmak yerine mevcut Google veya Discord hesaplarıyla
+mağazanıza giriş yapmasını sağlar. Bu; kayıt sürtünmesini azaltır, unutulan şifrelerin neden olduğu sepet
+terkini düşürür ve geri dönen müşteriler için ödeme deneyimini hızlandırır. GurStore hem Google'ı hem
+Discord'u OAuth sağlayıcısı olarak destekler ve birini ya da her ikisini yönetim panelinizden
+etkinleştirebilirsiniz.
+
+## Müşteriler Sosyal Girişi Nasıl Kullanır?
+
+Bir sosyal giriş sağlayıcısını etkinleştirdiğinizde müşteriler, mağazanızın giriş ve kayıt sayfalarında
+ilgili giriş düğmesini görür. Akış hızlıdır ve tamamen mağazanız ile OAuth sağlayıcısı arasında yürür —
+müşterilerin asla bir şifre belirlemesi gerekmez.
+
+<Steps>
+  <Step title="Müşteri bir sosyal giriş düğmesine tıklar">
+    Mağazanızın giriş sayfasında müşteri **Google ile giriş yap** veya **Discord ile giriş yap**'a
+    tıklar.
+  </Step>
+  <Step title="Müşteri sağlayıcıya yönlendirilir">
+    GurStore, müşteriyi sağlayıcının yetkilendirme sayfasına yönlendirir:
+    - **Google:** `/auth/google/redirect`
+    - **Discord:** `/auth/discord/redirect`
+  </Step>
+  <Step title="Müşteri izin verir">
+    Müşteri, sağlayıcının sayfasında istenen izinleri (genellikle adı ve e-posta adresi) onaylar.
+  </Step>
+  <Step title="Müşteri mağazanıza döner">
+    Sağlayıcı, müşteriyi geri çağırma (callback) URL'si üzerinden mağazanıza geri yönlendirir ve otomatik
+    giriş yapılır. Zaten yoksa ilk girişte yeni bir hesap oluşturulur.
+  </Step>
+</Steps>
+
+<Note>
+  Bir müşteri daha önce e-posta adresiyle kaydolduysa ve bu e-posta, Google ya da Discord hesabıyla
+  ilişkili olanla eşleşiyorsa GurStore sosyal girişi mevcut hesabına bağlar. Giriş için iki yöntemi de
+  kullanmaya devam edebilir.
+</Note>
+
+## Sosyal Giriş Sağlayıcılarını Etkinleştirme
+
+Sosyal giriş bilgilerini **Yönetim → Ayarlar → Sosyal Giriş** bölümünde yapılandırırsınız. Her sağlayıcı,
+o sağlayıcının geliştirici konsolunda oluşturduğunuz bir OAuth uygulamasından bir **Client ID** ve
+**Client Secret** gerektirir.
+
+### Google
+
+<Steps>
+  <Step title="Bir Google OAuth uygulaması oluşturun">
+    [console.cloud.google.com](https://console.cloud.google.com) adresine gidin, bir proje seçin veya
+    oluşturun ve **APIs & Services → Credentials**'a gidin. **Create Credentials → OAuth client ID**'ye
+    tıklayın ve uygulama türü olarak **Web application**'ı seçin.
+  </Step>
+  <Step title="Yetkili yönlendirme URI'sini ekleyin">
+    OAuth istemci ayarlarında **Authorized redirect URIs** listesine şu URI'yi ekleyin:
+
+    ```
+    https://magazaniz.com/auth/google/callback
+    ```
+  </Step>
+  <Step title="Bilgilerinizi kopyalayın">
+    Kaydettikten sonra bilgiler sayfasında gösterilen **Client ID** ve **Client Secret** değerlerini
+    kopyalayın.
+  </Step>
+  <Step title="Bilgileri GurStore'a girin">
+    **Yönetim → Ayarlar → Sosyal Giriş**'te Google bölümünü bulun, **Client ID** ve **Client Secret**
+    değerlerini ilgili alanlara yapıştırın ve **Kaydet**'e tıklayın.
+  </Step>
+</Steps>
+
+### Discord
+
+<Steps>
+  <Step title="Bir Discord OAuth uygulaması oluşturun">
+    [discord.com/developers/applications](https://discord.com/developers/applications) adresine gidin ve
+    **New Application**'a tıklayın. Bir ad verin (örneğin mağaza adınız) ve onaylayın.
+  </Step>
+  <Step title="OAuth2 ayarlarını yapılandırın">
+    Uygulamanızın ayarlarında **OAuth2 → General**'a gidin ve şu yönlendirme URL'sini ekleyin:
+
+    ```
+    https://magazaniz.com/auth/discord/callback
+    ```
+  </Step>
+  <Step title="Bilgilerinizi kopyalayın">
+    **OAuth2 → General** sayfasından **Client ID**'yi kopyalayın. **Client Secret**'ı almak için **Reset
+    Secret** (veya zaten oluşturulmuşsa **Copy**) düğmesine tıklayın.
+  </Step>
+  <Step title="Bilgileri GurStore'a girin">
+    **Yönetim → Ayarlar → Sosyal Giriş**'te Discord bölümünü bulun, **Client ID** ve **Client Secret**
+    değerlerini ilgili alanlara yapıştırın ve **Kaydet**'e tıklayın.
+  </Step>
+</Steps>
+
+## Geri Çağırma (Callback) URL'leri Referansı
+
+Bu callback URL'lerini her sağlayıcının geliştirici panelinde tam olarak bu şekilde kaydedin. Yanlış bir
+callback URL'si OAuth akışının başarısız olmasına ve müşterilerin giriş yapamamasına neden olur.
+
+<CardGroup cols={2}>
+  <Card title="Google Callback URL" icon="google">
+    ```
+    https://magazaniz.com/auth/google/callback
+    ```
+    Bunu Google OAuth istemci ayarlarınızdaki **Authorized redirect URIs**'ye ekleyin.
+  </Card>
+  <Card title="Discord Callback URL" icon="discord">
+    ```
+    https://magazaniz.com/auth/discord/callback
+    ```
+    Bunu Discord uygulamanızın OAuth2 ayarlarındaki **Redirects**'e ekleyin.
+  </Card>
+</CardGroup>
+
+<Note>
+  Tüm callback URL'lerinde `magazaniz.com` yerine gerçek mağaza alan adınızı yazın. Mağazanız özel bir
+  alan adında erişilebiliyorsa, herhangi bir varsayılan GurStore alt alan adı yerine o alan adını kullanın.
+</Note>
+
+<Warning>
+  Google'ın veya Discord'un geliştirici konsolunda bir OAuth uygulamasını iptal eder veya silerseniz, o
+  sağlayıcıyı kullanarak giriş yapan tüm müşteriler bu yöntemle giriş yapma yeteneğini anında kaybeder.
+  Bir OAuth uygulamasını iptal etmeden önce etkilenen müşterileri bilgilendirin ve hesaplarına erişmeleri
+  için şifre sıfırlama gibi alternatif bir yol sunun.
+</Warning>

@@ -1,0 +1,180 @@
+---
+title: "GurStore için Siparişler ve Lisanslar API Uç Noktaları"
+sidebarTitle: "Siparişler & Lisanslar"
+description: "GurStore müşteri API'si ile tam sipariş geçmişinizi ve lisans listenizi alın. Her sipariş teslimat öğelerini içerir — dosyalar, seri anahtarlar veya lisans ayrıntıları."
+---
+
+Bu uç noktalar, kimliği doğrulanmış müşteri için eksiksiz sipariş geçmişini ve lisans kayıtlarını
+döndürür. Satın alma geçmişini ve teslimat ayrıntılarını — dosyalar, seri anahtarlar veya lisans ekleri
+dahil — incelemek için siparişler uç noktasını; hesabınıza bağlı her lisans anahtarını güncel durumu ve
+son kullanma tarihiyle listelemek için lisanslar uç noktasını kullanın.
+
+---
+
+## GET /api/customer/orders
+
+Hesabınızda verilen tüm siparişlerin sayfalanmış bir listesini döndürür. Her sipariş nesnesi; sipariş
+durumunu, tahsil edilen toplam tutarı ve o siparişe ekli teslimat öğelerini içerir. Teslimat öğeleri ürün
+türüne göre değişir ve indirilebilir dosyalar, seri anahtarlar veya lisans referansları içerebilir.
+
+### Kimlik doğrulama
+
+Bearer belirtecinizi `Authorization` başlığına ekleyin.
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/customer/orders \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "current_page": 1,
+    "total": 12,
+    "per_page": 15,
+    "orders": [
+      {
+        "id": 1042,
+        "status": "completed",
+        "total": 49.99,
+        "created_at": "2024-11-03T14:22:00Z",
+        "items": [
+          {
+            "product": "Pro Suite – Annual",
+            "type": "license",
+            "delivery": "XXXX-YYYY-ZZZZ-AAAA"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string" required>
+  İstek kimliği doğrulanıp doğru işlendiğinde `"success"` döndürür.
+</ResponseField>
+
+<ResponseField name="data.current_page" type="integer" required>
+  Güncel sonuç kümesinin sayfa numarası.
+</ResponseField>
+
+<ResponseField name="data.total" type="integer" required>
+  Tüm sayfalar boyunca hesabınızdaki toplam sipariş sayısı.
+</ResponseField>
+
+<ResponseField name="data.per_page" type="integer" required>
+  Sayfa başına döndürülen maksimum sipariş sayısı.
+</ResponseField>
+
+<ResponseField name="data.orders" type="array" required>
+  Güncel sayfaya ait sipariş nesnelerinden oluşan bir dizi.
+
+  <Expandable title="sipariş nesnesi alanları">
+    <ResponseField name="id" type="integer" required>
+      Siparişin benzersiz tanımlayıcısı.
+    </ResponseField>
+
+    <ResponseField name="status" type="string" required>
+      Güncel sipariş durumu. Yaygın değerler: `"pending"`, `"processing"`, `"completed"` ve `"refunded"`.
+    </ResponseField>
+
+    <ResponseField name="total" type="number" required>
+      Mağazanızın varsayılan para biriminde sipariş için tahsil edilen tutar.
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string" required>
+      Siparişin verildiği anın ISO 8601 zaman damgası.
+    </ResponseField>
+
+    <ResponseField name="items" type="array" required>
+      Bu siparişe ekli teslimat öğeleri. Her öğe bir `product` adı, bir `type` (`"license"`, `"file"` veya
+      `"serial"`) ve teslim edilen içeriği barındıran bir `delivery` değeri içerir.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+---
+
+## GET /api/customer/licenses
+
+Hesabınızla ilişkili tüm lisansların düz bir listesini döndürür. Her lisans kaydı; anahtarın kendisini,
+ait olduğu ürünü, etkinleştirme durumunu ve varsa son kullanma tarihini içerir.
+
+### Kimlik doğrulama
+
+Bearer belirtecinizi `Authorization` başlığına ekleyin.
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/customer/licenses \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 7,
+      "license_key": "XXXX-YYYY-ZZZZ-AAAA",
+      "product": "Pro License",
+      "status": "active",
+      "expires_at": "2025-12-31T00:00:00Z"
+    }
+  ]
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string" required>
+  Geçerli, kimliği doğrulanmış bir istekte `"success"` döndürür.
+</ResponseField>
+
+<ResponseField name="data" type="array" required>
+  Hesabınıza ait lisans nesnelerinden oluşan bir dizi.
+
+  <Expandable title="lisans nesnesi alanları">
+    <ResponseField name="id" type="integer" required>
+      Lisans kaydının benzersiz tanımlayıcısı.
+    </ResponseField>
+
+    <ResponseField name="license_key" type="string" required>
+      Müşteriye teslim edilen lisans anahtarı dizesi. Bu değeri gizli tutun — doğrulama çağrılarında
+      lisansı kimliklendirir.
+    </ResponseField>
+
+    <ResponseField name="product" type="string" required>
+      Bu lisansın erişim verdiği ürünün görünen adı.
+    </ResponseField>
+
+    <ResponseField name="status" type="string" required>
+      Lisansın güncel etkinleştirme durumu. Olası değerler: `"active"`, `"expired"`, `"suspended"` ve
+      `"unactivated"`.
+    </ResponseField>
+
+    <ResponseField name="expires_at" type="string | null" required>
+      Lisansın ne zaman sona ereceğini belirten ISO 8601 zaman damgası. Sona ermeyen ömür boyu lisanslar
+      için `null` döndürür.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Note>
+  Bu uç nokta, hesap alanınızda lisans bilgilerini göstermek içindir. Bir lisans anahtarını kendi
+  yazılımınız içinden — örneğin uygulama başlangıcında — **programatik olarak doğrulamanız** gerekiyorsa,
+  bunun yerine Özel API v1 uç noktası [`POST /api/v1/license/verify`](/api/v1-overview)'ı kullanın. O uç
+  nokta; donanıma kilitli etkinleştirme kontrolleri için bir `license_key`, `product_id` ve isteğe bağlı
+  bir `hardware_id` kabul eder.
+</Note>

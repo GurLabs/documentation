@@ -1,0 +1,74 @@
+---
+title: "E-Pin ve Seri Anahtarları Otomatik Satın"
+sidebarTitle: "Seri / E-Pin"
+description: "Ürününüze bir seri anahtar veya e-pin kod havuzu ekleyin. Müşteri ödemeyi tamamladığı anda GurStore havuzdan birini otomatik olarak teslim eder."
+---
+
+Seri anahtar ve e-pin ürünleri; kupon kodları, etkinleştirme anahtarları, ön ödemeli yükleme pinleri
+veya tek kullanımlık her türlü kodu, sizin tarafınızda hiçbir elle teslimat olmadan satmanızı sağlar.
+Önceden bir kod havuzunu GurStore'a yüklersiniz; müşteri ödemeyi başarıyla tamamladığında GurStore
+havuzdan bir kod çeker ve sipariş sayfasında gösterir — anında ve otomatik. E-posta şablonu yok,
+tablo yok, elle kopyala-yapıştır yok.
+
+## Seri Anahtar Ürünü Kurma
+
+<Steps>
+  <Step title="Bir ürün oluşturun ve türü Seri Anahtar yapın">
+    **Yönetim → Ürünler → Oluştur** bölümüne gidin. Ürün adı, fiyat, kategori ve görselleri
+    doldurun, ardından **Ürün Türü**'nü **Seri Anahtar** (bazı görünümlerde **Kod** olarak da
+    etiketlenir) yapın. Devam etmek için ürünü kaydedin.
+  </Step>
+  <Step title="Yönetim → Seri Anahtarlar bölümüne gidin">
+    Kenar çubuğundan **Yönetim → Seri Anahtarlar**'a gidin. Tüm seri anahtar ürünlerinin kod havuzunu
+    burada yönetirsiniz.
+  </Step>
+  <Step title="Ürünü seçip kodlarınızı ekleyin">
+    Az önce oluşturduğunuz ürünü açılır menüden seçin, ardından kodlarınızı giriş alanına yapıştırın.
+    Toplu içe aktarma için **her satıra bir kod** girin — GurStore her satırı ayrı bir kod olarak
+    ayrıştırır ve hepsini tek işlemde havuza ekler.
+  </Step>
+  <Step title="Fiyatı belirleyin ve yayınlayın">
+    Ürün listesine dönün, fiyatın doğru olduğunu onaylayın ve durumu **Aktif** yapın. Ürününüz artık
+    yayında. Siparişler geldikçe GurStore havuzdan kod teslim etmeye başlar.
+  </Step>
+</Steps>
+
+## Teslimat Nasıl Çalışır?
+
+Müşterinin ödemesi onaylandığında GurStore, havuzdaki bir sonraki uygun kodu anında alır ve kullanılmış
+olarak işaretler. Kod, müşterinin sipariş onay sayfasında görünür ve `/dashboard/orders` adresindeki
+**Siparişler** panelinde görünür kalır. Sürecin tamamı otomatiktir — teslimatı elle onaylamanıza veya
+tetiklemenize gerek yoktur.
+
+Her kod tam olarak bir kez teslim edilir. Bir siparişe atanmış bir kod başka bir müşteriye yeniden
+atanamaz; bu yüzden aynı kodun iki kişiye gitmesinden asla endişe etmeniz gerekmez.
+
+## Stok Yönetimi
+
+GurStore, havuzda kalan kullanılmamış kod sayısını izler ve bu sayıyı ürünün stok seviyesi olarak
+kullanır. Satın alımlarla kodlar tüketildikçe mevcut stok sayısı otomatik azalır. Havuz sıfıra
+ulaştığında GurStore ürünü **stokta yok** olarak işaretler ve yeni sipariş verilmesini engeller —
+müşteriler aktif bir satın alma düğmesi yerine stokta yok bildirimi görür.
+
+Stok eklemek için istediğiniz zaman **Yönetim → Seri Anahtarlar** üzerinden daha fazla kod ekleyin.
+Havuzda kod olur olmaz ürün tekrar satışa açılır.
+
+<Warning>
+  Yüksek talep gören ürünlerde — örneğin bir promosyon veya ürün lansmanı sırasında — havuzunuz
+  beklenenden hızlı tükenebilir. Kalan stoğunuzu düzenli izleyin ve beklenen yoğunluklardan çok önce
+  havuzu doldurun. Yoğun talep sırasında stoğu biten bir ürün, geri kazanamayacağınız kayıp satışlar
+  demektir.
+</Warning>
+
+## Kullanılan ve Mevcut Kodları Görüntüleme
+
+**Yönetim → Seri Anahtarlar**'ı açın ve yüklediğiniz her kodun tam listesini görmek için ürüne göre
+filtreleyin. Her kod **Mevcut** veya **Kullanıldı** durumunu ve (kullanılan kodlar için) teslim
+edildiği sipariş kimliğini gösterir. Bu görünüm; envanterinizi denetlemeyi, teslimatı doğrulamayı
+veya belirli bir kodla ilgili müşteri sorusunu incelemeyi kolaylaştırır.
+
+<Tip>
+  Kodları toplu içe aktarırken, listenizi herhangi bir metin düzenleyicide her satıra bir kod olacak
+  şekilde hazırlayın, ardından tüm bloğu tek seferde yapıştırın. GurStore ayrıştırmayı otomatik
+  yaptığından yüzlerce ya da binlerce kodu tek adımda içe aktarabilirsiniz.
+</Tip>

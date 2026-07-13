@@ -1,0 +1,106 @@
+---
+title: "cPanel ile Kurulum"
+sidebarTitle: "cPanel"
+description: "Paylaşımlı veya cPanel tabanlı hosting üzerinde GurStore kurulumu: dosya yükleme, PHP sürümü, veritabanı oluşturma ve belge kökü ayarı."
+---
+
+Bu rehber, **cPanel** paneline sahip paylaşımlı hosting hesaplarında GurStore kurulumunu anlatır.
+İşlem, dosyaları yüklemek, bir veritabanı oluşturmak ve alan adını `public/` klasörüne
+yönlendirmekten ibarettir.
+
+<Note>
+  Kurulumla hiç uğraşmak istemiyorsanız [GurStore Hosting](/installation/gurstore-hosting) ile
+  tüm bu adımlar sizin yerinize yapılır.
+</Note>
+
+## Ön Koşullar
+
+- PHP **8.2+** seçebildiğiniz bir cPanel hesabı (MultiPHP Manager)
+- En az bir MySQL veritabanı oluşturma yetkisi
+- Alan adınızın cPanel hesabına tanımlı olması
+
+## 1. PHP Sürümünü Ayarlayın
+
+<Steps>
+  <Step title="MultiPHP Manager'ı açın">
+    cPanel ana ekranında **MultiPHP Manager**'a girin, alan adınızı seçin ve PHP sürümünü
+    **8.2 veya 8.3** olarak ayarlayın.
+  </Step>
+  <Step title="Gerekli eklentileri etkinleştirin">
+    **Select PHP Version** (veya **PHP Extensions**) bölümünden şu eklentilerin işaretli
+    olduğundan emin olun: `pdo`, `openssl`, `mbstring`, `curl`, `tokenizer`, `xml`, `fileinfo`,
+    `bcmath`, `json`, `gd` (veya `imagick`).
+  </Step>
+</Steps>
+
+## 2. Veritabanı Oluşturun
+
+<Steps>
+  <Step title="MySQL Database Wizard">
+    **MySQL® Database Wizard**'ı açın ve yeni bir veritabanı oluşturun (ör. `kullanici_gurstore`).
+  </Step>
+  <Step title="Kullanıcı oluşturup yetki verin">
+    Yeni bir veritabanı kullanıcısı ve güçlü bir şifre belirleyin, ardından bu kullanıcıya
+    veritabanı üzerinde **ALL PRIVILEGES** verin.
+  </Step>
+  <Step title="Bilgileri not edin">
+    Veritabanı adı, kullanıcı adı ve şifreyi bir kenara not edin; kurulum sihirbazında
+    gerekecek. cPanel'de host genellikle `localhost`'tur.
+  </Step>
+</Steps>
+
+## 3. Dosyaları Yükleyin
+
+<Steps>
+  <Step title="ZIP paketini yükleyin">
+    **File Manager**'ı açın, alan adınızın kök klasörüne (genellikle `public_html` veya alt alan
+    adı klasörü) girin ve GurStore ZIP paketini **Upload** ile yükleyin.
+  </Step>
+  <Step title="Arşivi çıkarın">
+    Yüklenen ZIP'e sağ tıklayıp **Extract** deyin. Tüm GurStore dosyaları bu klasöre açılır.
+  </Step>
+</Steps>
+
+## 4. Belge Kökünü `public/` Yapın
+
+GurStore'un güvenli çalışması için alan adınız uygulamanın `public/` klasörünü göstermelidir.
+
+<Tabs>
+  <Tab title="Yöntem A — Belge kökünü değiştir">
+    cPanel'de **Domains** bölümünden alan adınızın **Document Root** değerini
+    `.../gurstore/public` olacak şekilde güncelleyin. (Bazı paylaşımlı paketlerde bu ayar kapalı
+    olabilir; bu durumda Yöntem B'yi kullanın.)
+  </Tab>
+  <Tab title="Yöntem B — İçeriği public_html'e taşı">
+    Belge kökünü değiştiremiyorsanız: `public/` klasörünün **içindeki** dosyaları `public_html`
+    köküne taşıyın ve uygulamanın geri kalan klasörlerini bir üst dizine yerleştirin. Ardından
+    `public_html/index.php` içindeki `require` yollarını uygulamanın bulunduğu klasöre göre
+    güncelleyin.
+
+    <Warning>
+      Yöntem B'de dizin yapısı değiştiği için Yöntem A'yı (belge kökü ayarı) tercih etmeniz her
+      zaman daha güvenli ve kolaydır.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## 5. Yazma İzinleri
+
+File Manager'da (veya SSH varsa) şu klasörlerin yazılabilir olduğundan emin olun: `storage`,
+`bootstrap/cache` ve `.env`. cPanel'de klasöre sağ tıklayıp **Change Permissions** ile `775`
+verebilirsiniz.
+
+## 6. Kurulum Sihirbazını Çalıştırın
+
+Her şey hazır. Tarayıcıdan `https://alanadiniz.com/install` adresine gidin ve
+[Kurulum Sihirbazı](/installation/setup-wizard) adımlarını izleyin — lisans, veritabanı ve
+yönetici hesabınızı orada tanımlayacaksınız.
+
+<Tip>
+  Kurulumdan sonra GurStore'un zamanlanmış görevleri (lisans yenileme, e-posta kuyruğu vb.) için
+  cPanel **Cron Jobs** bölümünden dakikada bir çalışan bir görev ekleyin:
+
+  ```bash
+  * * * * * /usr/local/bin/php /home/kullanici/gurstore/artisan schedule:run >> /dev/null 2>&1
+  ```
+</Tip>

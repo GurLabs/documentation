@@ -1,0 +1,254 @@
+---
+title: "GurStore için Cüzdan ve Destek Talebi API'si"
+sidebarTitle: "Cüzdan & Talepler"
+description: "GurStore cüzdan bakiyenize erişin, çekim talepleri gönderin ve destek taleplerini müşteri API'si aracılığıyla programatik olarak yönetin."
+---
+
+Cüzdan ve talep uç noktaları; iki temel hesap yönetimi akışı üzerinde programatik kontrol sağlar: cüzdan
+fonlarınızı kontrol etme ve çekme, destek talebi açma veya inceleme. Bu uç noktaları; hesap bakiyesi
+bilgilerini ve destek geçmişini GurStore mağazasına giriş gerektirmeden göstermek için kendi araçlarınıza,
+faturalandırma panolarınıza veya müşteri portallarınıza entegre edebilirsiniz.
+
+---
+
+## GET /api/customer/wallet
+
+Güncel cüzdan bakiyenizi, tutulduğu para birimini ve cüzdan hesabınızdaki işlemlerin geçmişini döndürür.
+
+### Kimlik doğrulama
+
+Bearer belirtecinizi `Authorization` başlığına ekleyin.
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/customer/wallet \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "balance": 75.50,
+    "currency": "USD",
+    "transactions": [
+      {
+        "id": 301,
+        "type": "credit",
+        "amount": 50.00,
+        "description": "Referral bonus",
+        "created_at": "2024-10-15T09:30:00Z"
+      },
+      {
+        "id": 287,
+        "type": "debit",
+        "amount": 25.00,
+        "description": "Order #1042 payment",
+        "created_at": "2024-10-10T11:00:00Z"
+      }
+    ]
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string" required>
+  Geçerli, kimliği doğrulanmış bir istekte `"success"` döndürür.
+</ResponseField>
+
+<ResponseField name="data.balance" type="number" required>
+  Harcanabilir güncel cüzdan bakiyeniz.
+</ResponseField>
+
+<ResponseField name="data.currency" type="string" required>
+  Cüzdanınız için ISO 4217 para birimi kodu (örneğin `"USD"` veya `"EUR"`).
+</ResponseField>
+
+<ResponseField name="data.transactions" type="array" required>
+  Cüzdan işlemlerinin kronolojik listesi. Her giriş bir `id`, bir `type` (`"credit"` veya `"debit"`),
+  `amount`, okunabilir bir `description` ve bir `created_at` zaman damgası içerir.
+</ResponseField>
+
+---
+
+## POST /api/customer/wallet/withdraw
+
+Cüzdan bakiyenizden belirtilen tutar için bir çekim talebi gönderir. Çekim talepleri beklemede durumuna
+girer ve fonlar serbest bırakılmadan önce mağaza yöneticisi tarafından incelenir.
+
+### Kimlik doğrulama
+
+Bearer belirtecinizi `Authorization` başlığına ekleyin.
+
+### İstek gövdesi
+
+```json
+{
+  "amount": 50
+}
+```
+
+<ParamField body="amount" type="number" required>
+  Cüzdanınızdan çekmek istediğiniz tutar. Pozitif bir sayı olmalı ve güncel kullanılabilir bakiyenizi
+  aşamaz. Değer, cüzdanınızın varsayılan para biriminde ifade edilir.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/customer/wallet/withdraw \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 50}'
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "withdrawal_id": 88,
+    "amount": 50.00,
+    "status": "pending",
+    "requested_at": "2024-12-01T08:45:00Z"
+  }
+}
+```
+
+<Note>
+  Çekim talepleri **anında işlenmez**. Bu isteği gönderdikten sonra bir `"pending"` durumuna girer ve bir
+  mağaza yöneticisi tarafından onaylanması gerekir. Çekiminiz onaylandığında veya reddedildiğinde bir
+  bildirim alırsınız. Bir talep hâlâ beklemedeyken aynı tutar için yinelenen talepler göndermeyin.
+</Note>
+
+<Warning>
+  Güncel cüzdan bakiyenizden büyük bir `amount` ile çekim talebi göndermek bir doğrulama hatası döndürür.
+  Çekim göndermeden önce bakiyenizi daima `GET /api/customer/wallet` ile kontrol edin.
+</Warning>
+
+---
+
+## GET /api/customer/tickets
+
+Hesabınızda açtığınız tüm destek taleplerini; güncel durumları ve atandıkları departman dahil listeler.
+
+### Kimlik doğrulama
+
+Bearer belirtecinizi `Authorization` başlığına ekleyin.
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/customer/tickets \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": [
+    {
+      "id": 55,
+      "subject": "License not activating",
+      "department": "Technical Support",
+      "status": "open",
+      "created_at": "2024-11-20T10:00:00Z",
+      "last_reply_at": "2024-11-21T14:30:00Z"
+    }
+  ]
+}
+```
+
+---
+
+## POST /api/customer/tickets
+
+Hesabınızda yeni bir destek talebi açar. Hedef departmanı, bir konu başlığını ve ilk mesajınızın gövdesini
+belirtmelisiniz. Talep anında oluşturulur ve inceleme için seçilen departmana atanır.
+
+### Kimlik doğrulama
+
+Bearer belirtecinizi `Authorization` başlığına ekleyin.
+
+### İstek gövdesi
+
+```json
+{
+  "department_id": 1,
+  "subject": "License not activating on new machine",
+  "message": "I purchased Pro Suite last week but the activation key returns an error on my new laptop."
+}
+```
+
+<ParamField body="department_id" type="integer" required>
+  Bu talebin yönlendirileceği destek departmanının kimliği. Kurulumunuz için doğru departman kimliklerini
+  bulmak üzere mağaza yöneticinizle iletişime geçin veya mağazanın yardım merkezine bakın.
+</ParamField>
+
+<ParamField body="subject" type="string" required>
+  Talep için kısa, açıklayıcı bir konu başlığı. En fazla 255 karakter.
+</ParamField>
+
+<ParamField body="message" type="string" required>
+  Destek talebinizin tam metni. Mümkün olduğunca ayrıntı verin — destek ekibinin talebinizi daha hızlı
+  çözmesine yardımcı olmak için ilgili yerlerde sipariş kimliklerini, lisans anahtarlarını ve hata
+  mesajlarını ekleyin.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/customer/tickets \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "department_id": 1,
+    "subject": "License not activating on new machine",
+    "message": "I purchased Pro Suite last week but the activation key returns an error on my new laptop."
+  }'
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "id": 56,
+    "subject": "License not activating on new machine",
+    "department": "Technical Support",
+    "status": "open",
+    "created_at": "2024-12-01T09:10:00Z"
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="data.id" type="integer" required>
+  Yeni oluşturulan destek talebinize atanan benzersiz kimlik. Talebinize gelecekteki isteklerde veya
+  yazışmalarda başvurmak için bu değeri saklayın.
+</ResponseField>
+
+<ResponseField name="data.subject" type="string" required>
+  Gönderdiğiniz konu başlığı; onay için yanıtta geri yansıtılır.
+</ResponseField>
+
+<ResponseField name="data.department" type="string" required>
+  Talebin yönlendirildiği departmanın görünen adı.
+</ResponseField>
+
+<ResponseField name="data.status" type="string" required>
+  Talebin ilk durumu. Yeni oluşturulan talepler daima `"open"` durumundadır.
+</ResponseField>
+
+<ResponseField name="data.created_at" type="string" required>
+  Talebin oluşturulduğu anın ISO 8601 zaman damgası.
+</ResponseField>

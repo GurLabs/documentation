@@ -1,47 +1,97 @@
 ---
-title: "Quickstart"
-description: "Begin with a guide on the fastest path to a successful outcome"
+title: "5 Dakikada GurStore'a Başlayın"
+sidebarTitle: "Hızlı Başlangıç"
+description: "Yönetici hesabınızla giriş yapın, bir dijital ürün ekleyin, ödeme ağ geçidi bağlayın ve ilk satışınızı yapın — hepsi beş dakikadan kısa sürede."
 ---
 
-Describe how someone begins using your product. What is the first thing they need to do? Are there any prerequisites?
+Bu rehber, sıfırdan yayında ve satışa hazır bir mağazaya ulaşmak için gereken her şeyi adım adım
+anlatır. Sonunda; giriş yapmış bir yönetici hesabınız, kataloğunuzda en az bir ürün ve bağlı bir
+ödeme ağ geçidiniz olacak — gerçek siparişleri almaya hazır.
 
-A quickstart should take someone from zero to using your product. They'll get a quick win and a sense of what they can accomplish.
-
-## Prerequisites
-
-Before you begin, you must have:
-
-- Requirement one (for example, Node.js 18+, a free account, an API key)
-- Requirement two (for example, a compatible device, a compatible browser, a compatible operating system)
-
-## Get started
+<Note>
+  Henüz GurStore'u kurmadınız mı? Önce [Kurulum → Genel Bakış](/installation/overview) sayfasını
+  izleyin. Kurulumla uğraşmak istemiyorsanız [GurStore Hosting](/installation/gurstore-hosting)
+  her şeyi sizin yerinize yapar.
+</Note>
 
 <Steps>
-  <Step title="Install">
-    Describe how to install your product or sign up.
+  <Step title="Yönetim Paneline Giriş Yapın">
+    Kurulum sırasında oluşturduğunuz yönetici hesabıyla `https://alanadiniz.com/admin` üzerinden
+    giriş yapın. (Yönetici hesabını [Kurulum Sihirbazı](/installation/setup-wizard) adımında
+    oluşturmuştunuz.)
 
-    ```bash
-    npm install your-package
-    ```
+    Müşterileriniz ise mağazaya sosyal hesaplarıyla anında kaydolabilir:
+
+    - **Google** — giriş/kayıt sayfasında "Google ile devam et"
+    - **Discord** — giriş/kayıt sayfasında "Discord ile devam et"
   </Step>
-  <Step title="Configure">
-    Describe any setup or configuration needed before first use.
 
-    ```bash
-    your-cli init
-    ```
+  <Step title="Mağaza Ayarlarını Yapılandırın">
+    Ürün eklemeden önce mağazanıza kimlik kazandırın. **Yönetim → Ayarlar** bölümüne gidin ve
+    şunları doldurun:
+
+    - **Mağaza adı** — mağaza başlığında, e-postalarda ve fişlerde görünür
+    - **Para birimi** — müşterilerinizden tahsil edilecek para birimi
+    - **Logo** — kare veya yatay bir logo yükleyin (PNG veya SVG önerilir)
+    - **İletişim e-postası** — sipariş bildirimleri ve müşteri destek yanıtları için kullanılır
+
+    Değişiklikleri kaydedin. Mağazanız güncellenen markayı anında yansıtır.
   </Step>
-  <Step title="Run it">
-    Show the first thing a user does to see it working.
 
-    ```bash
-    your-cli start
-    ```
+  <Step title="İlk Ürününüzü Oluşturun">
+    Kataloğunuza ilk ürünü eklemek için **Yönetim → Ürünler → Oluştur** bölümüne gidin.
+
+    Zorunlu alanları doldurun:
+
+    | Alan | Açıklama |
+    |---|---|
+    | **Ad** | Mağazanızda görünen ürün başlığı |
+    | **Kategori** | Kolay gezinme için ürünleri gruplayın |
+    | **Fiyat** | Ödeme sırasında tahsil edilen tutar |
+    | **Ürün Türü** | `dosya`, `lisans anahtarı` veya `seri anahtar` |
+
+    Seçtiğiniz ürün türüne göre:
+
+    - **Dosya** — indirilebilir dosyayı doğrudan yükleyin (ZIP, EXE veya PDF gibi)
+    - **Lisans anahtarı / Seri anahtar** — anahtarları stok alanına her satıra bir tane olacak
+      şekilde yapıştırın
+
+    Ürünü yayına almak için **Kaydet**'e tıklayın.
+  </Step>
+
+  <Step title="Ödeme Ağ Geçidi Bağlayın">
+    Ödeme alabilmek için **Yönetim → Ödeme Kurulumu** üzerinden en az bir ağ geçidi bağlayın.
+
+    GurStore şunları destekler:
+
+    - **Stripe** — [Stripe Panelinizden](https://dashboard.stripe.com/apikeys) yayınlanabilir
+      (publishable) ve gizli (secret) anahtarınızı girin
+    - **Iyzico** — Iyzico üye iş yeri panelinizden API anahtarı ve gizli anahtarı girin
+
+    Tercih ettiğiniz ağ geçidini varsayılan yapın ve kaydedin.
+
+    <Tip>
+      Yayına geçmeden önce ödeme ağ geçidinizde **test modunu** açın. Hem Stripe hem Iyzico,
+      gerçek tahsilat yapmadan uçtan uca satın alma denemesi için sandbox bilgileri sunar. Gerçek
+      ödemelere hazır olduğunuzda canlı bilgilere geçin.
+    </Tip>
+  </Step>
+
+  <Step title="Mağazayı Önizleyin ve Ürün Bağlantınızı Paylaşın">
+    Üst menüdeki **Mağazayı Görüntüle** ile mağazanızı bir müşterinin göreceği gibi önizleyin.
+    Ürününüzün doğru fiyat, açıklama ve türle göründüğünü doğrulayın.
+
+    Belirli bir ürüne doğrudan bağlantı paylaşmak için ürünü **Yönetim → Ürünler**'de açın ve ürün
+    detay sayfasından **Ürün URL**'sini kopyalayın. Bu bağlantıyı sosyal medya, e-posta kampanyası
+    veya kendi web sitenizde paylaşın.
+
+    Mağazanız artık yayında. Bağlantıyı ziyaret eden her müşteri satın alma işlemini tamamlayıp
+    ürününü otomatik olarak alabilir.
   </Step>
 </Steps>
 
-<Tip>
-  Give people a way to get help. This could be a link to a support page, a chat with a customer support agent, or a forum for your product.
-
-  Example: Need help? Reach out to us at [support@yourcompany.com](mailto:support@yourcompany.com).
-</Tip>
+<Note>
+  Ürün oluşturmayı otomatikleştirmek, toplu stok yüklemek veya GurStore'u harici bir sistemle
+  entegre etmek isterseniz **REST API** size tam programatik erişim sunar. API anahtarınızı almak
+  ve uç noktaları keşfetmek için [API Girişi](/api/introduction) sayfasına bakın.
+</Note>

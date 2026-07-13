@@ -1,0 +1,74 @@
+---
+title: "GurStore ile İndirilebilir Dosya Satışı"
+sidebarTitle: "İndirilebilir Dosyalar"
+description: "Dosyaları GurStore'a yükleyin ve satın alma sonrası güvenli indirme bağlantılarını otomatik teslim edin. Ürün başına indirme limiti ve bağlantı süresi belirleyin."
+---
+
+Dosya tabanlı dijital ürünler; yazılım kurulumları, PDF rehberler, ses paketleri, tasarım şablonları
+ve daha fazlası gibi indirilebilir her türlü varlığı, teslimatı kendiniz yönetmeden satmanızı sağlar.
+Müşteri ödemeyi tamamladığı anda GurStore güvenli, süreli bir indirme bağlantısı üretir ve bunu
+müşterinin Siparişler panelinde anında gösterir. Bağlantının kaç kez kullanılabileceğini ve ne kadar
+süre aktif kalacağını siz belirlersiniz.
+
+## Dosya Ürünü Oluşturma
+
+<Steps>
+  <Step title="Yönetim → Ürünler → Oluştur bölümüne gidin">
+    Mağaza yönetim panelinizi açın, **Ürünler**'e gidin ve **Ürün Oluştur**'a tıklayın.
+  </Step>
+  <Step title="Ürün türünü Dosya olarak ayarlayın">
+    **Ürün Türü** alanında **Dosya**'yı seçin. Bu, GurStore'a yüklenmiş bir varlık beklemesini ve
+    satın alımda bir indirme bağlantısı üretmesini söyler.
+  </Step>
+  <Step title="Dosyalarınızı yükleyin">
+    **Dosya Yükle**'ye tıklayın ve teslim etmek istediğiniz varlıkları seçin. Tek bir ürüne birden
+    fazla dosya ekleyebilirsiniz — aşağıdaki [Ürün başına birden fazla dosya](#ürün-başına-birden-fazla-dosya)
+    bölümüne bakın.
+  </Step>
+  <Step title="İndirme limiti ve bağlantı süresini belirleyin">
+    **İndirme Limiti** (örneğin sipariş başına en fazla üç indirme için `3`) ve **Bağlantı Süresi**
+    (örneğin satın almadan sonra `48 saat`) değerlerini yapılandırın. Her iki değer de müşteri hesabı
+    başına değil, sipariş başına uygulanır.
+  </Step>
+  <Step title="Ürünü yayınlayın">
+    Kalan ürün alanlarını (ad, fiyat, kategori, görseller) tamamlayın, durumu **Aktif** yapın ve
+    kaydedin. Ürününüz artık yayında ve satışa hazır.
+  </Step>
+</Steps>
+
+## Teslimat Nasıl Çalışır?
+
+Müşterinin ödemesi onaylandığında GurStore, o siparişe özel benzersiz ve imzalı bir indirme URL'si
+otomatik oluşturur. Müşteri, sipariş onay sayfasında ve `/dashboard/orders` adresindeki
+**Siparişler** panelinde bir **İndir** düğmesi görür. Sizin bir işlem yapmanıza gerek yoktur —
+teslimat anında ve tamamen otomatiktir.
+
+## İndirme Limitleri ve Süre
+
+İndirme limiti ve bağlantı süresi, dosyalarınızı yetkisiz yeniden dağıtımdan korumak için birlikte
+çalışır.
+
+- **İndirme limiti** — müşteri, indirme bağlantısına belirlediğiniz sayıya kadar tıklayabilir. Limit
+  dolduğunda bağlantı pasifleşir ve indirme düğmesinin yerini bir bilgi notu alır. Müşteri gerçekten
+  ek bir indirmeye ihtiyaç duyarsa (örneğin cihaz arızasından sonra) sayacı **Yönetim → Siparişler →
+  Siparişi Görüntüle** üzerinden elle sıfırlayabilirsiniz.
+- **Bağlantı süresi** — indirme URL'si, kaç indirme kullanıldığından bağımsız olarak belirlediğiniz
+  süre penceresi sonunda çalışmayı durdurur. Süre dolduktan sonra müşteri sizden bağlantı uzatması
+  istemek üzere iletişime geçer; bunu aynı sipariş detay ekranından verebilirsiniz.
+
+Her iki değeri makul varsayılanlara ayarlamak (örneğin üç indirme ve 48 saat süre), meşru
+müşterilere yeterli esneklik sağlarken bağlantı herkese açık paylaşılırsa maruz kalmayı sınırlar.
+
+## Ürün Başına Birden Fazla Dosya
+
+Tek bir ürüne birden fazla dosya ekleyebilirsiniz. Eklenen tüm dosyalar, müşterinin sipariş
+sayfasında ayrı indirme öğeleri olarak sunulur; her biri, yapılandırdığınız ortak limite karşı kendi
+indirme sayacına sahiptir. Bu, bir ürün birden çok bileşenle geldiğinde kullanışlıdır — örneğin ana
+uygulama kurulumu artı bir PDF kılavuz.
+
+<Note>
+  GurStore, yüklenen dosyaları sunucuda güvenli şekilde saklar ve geçerli bir sipariş belirteci
+  olmadan erişilemeyen imzalı URL'ler üzerinden sunar. Desteklenen dosya biçimleri, müşterilerinizin
+  ihtiyaç duyduğu her türü kapsar — platform tarafından uygulanan bir biçim kısıtlaması yoktur. Çok
+  büyük varlıkları yüklemeden önce barındırma planınızın tekil dosya boyutu sınırlarını kontrol edin.
+</Note>

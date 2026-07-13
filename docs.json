@@ -1,72 +1,161 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mintlify Starter Kit",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
-  },
-  "favicon": "/favicon.svg",
-  "navigation": {
-    "pages": [
-      {
-        "group": "Getting Started",
-        "pages": [
-          "index",
-          "quickstart"
-        ]
-      }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
+  "name": "GurStore",
+  "theme": "almond",
+  "language": "tr",
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/dark-all-big.png",
+    "dark": "/images/light-all-big.png",
+    "href": "https://gurstore.net/"
+  },
+  "favicon": {
+    "light": "/images/light-icon.png",
+    "dark": "/images/dark-icon.png"
+  },
+  "colors": {
+    "primary": "#ffae00",
+    "light": "#040404",
+    "dark": "#ff8500"
   },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://app.mintlify.com"
-    }
+      "label": "Hemen Başla",
+      "href": "/quickstart"
+    },
+    "links": [
+      {
+        "href": "https://demo.gurstore.net",
+        "label": "Demo"
+      },
+      {
+        "href": "https://gurstore.net/contact",
+        "label": "İletişim"
+      }
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Dokümantasyon",
+        "groups": [
+          {
+            "group": "Başlarken",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "account-setup"
+            ]
+          },
+          {
+            "group": "Kurulum",
+            "pages": [
+              "installation/overview",
+              "installation/gurstore-hosting",
+              "installation/cpanel",
+              "installation/plesk",
+              "installation/pterodactyl",
+              "installation/ubuntu-vps",
+              "installation/setup-wizard",
+              "installation/license"
+            ]
+          },
+          {
+            "group": "Mağaza & Ürünler",
+            "pages": [
+              "products/overview",
+              "products/digital-products",
+              "products/license-keys",
+              "products/serial-keys",
+              "products/variants-pricing"
+            ]
+          },
+          {
+            "group": "Satış",
+            "pages": [
+              "selling/checkout",
+              "selling/payments",
+              "selling/coupons-discounts",
+              "selling/orders"
+            ]
+          },
+          {
+            "group": "Müşteri Özellikleri",
+            "pages": [
+              "customers/dashboard",
+              "customers/wallet-balance",
+              "customers/loyalty-points",
+              "customers/affiliate-referrals",
+              "customers/support-tickets"
+            ]
+          },
+          {
+            "group": "Yapılandırma",
+            "pages": [
+              "configuration/theme-editor",
+              "configuration/payment-setup",
+              "configuration/oauth-social-login",
+              "configuration/discord-integration",
+              "configuration/team-staff",
+              "configuration/maintenance-mode",
+              "configuration/leaderos-plugin"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Referansı",
+        "groups": [
+          {
+            "group": "Genel Bakış",
+            "pages": [
+              "api/introduction",
+              "api/authentication"
+            ]
+          },
+          {
+            "group": "Mağaza (Storefront)",
+            "pages": [
+              "api/products",
+              "api/cart",
+              "api/checkout"
+            ]
+          },
+          {
+            "group": "Müşteri API",
+            "pages": [
+              "api/customer-dashboard",
+              "api/orders-licenses",
+              "api/wallet-tickets"
+            ]
+          },
+          {
+            "group": "Özel API v1",
+            "pages": [
+              "api/v1-overview",
+              "api/v1-license-verify",
+              "api/v1-order-create"
+            ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "api/webhooks"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "background": {
+    "decoration": "grid"
   },
   "contextual": {
     "options": [
-      "copy",
-      "view",
-      "chatgpt",
       "claude",
-      "perplexity",
-      "mcp",
-      "cursor",
-      "vscode"
-    ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+      "download-pdf",
+      "copy"
+    ],
+    "display": "toc"
   }
 }

@@ -1,0 +1,177 @@
+---
+title: "GurStore'da Ödeme Ağ Geçitlerini Yapılandırın"
+sidebarTitle: "Ödeme Kurulumu"
+description: "Müşterilerden ödeme almaya başlamak için GurStore yönetim panelinden ödeme ağ geçidiniz olarak Stripe, Iyzico veya Papara'yı bağlayın ve yapılandırın."
+---
+
+Mağazanız ödeme alabilmeden önce en az bir ödeme ağ geçidi bağlamanız gerekir. GurStore; Stripe, Iyzico
+ve Papara'yı kutudan çıktığı gibi destekler ve müşterilerinize daha fazla ödeme seçeneği sunmak için
+birden çok ağ geçidini aynı anda çalıştırabilirsiniz. Her ağ geçidi; ağ geçidi hesabınızdan API
+bilgilerini girmenizi, GurStore'un ödeme olaylarını alması için bir webhook URL'si kaydetmenizi ve
+ardından ağ geçidini yönetim panelinizde açmanızı gerektirir.
+
+## Ödeme Kurulumuna Erişim
+
+Ödeme ağ geçitlerinizi yönetmek için **Yönetim → Ödeme Kurulumu**'na gidin. Bu sayfa; desteklenen tüm ağ
+geçitlerini, bağlantı durumlarını ve her birini etkinleştirme/devre dışı bırakma kontrollerini listeler.
+
+<Note>
+  GurStore, birden çok ödeme ağ geçidini aynı anda etkinleştirmeyi destekler. Müşteriler ödemede tüm
+  aktif ağ geçitlerini seçenek olarak görür ve tercih ettikleri ödeme yöntemini seçebilir.
+</Note>
+
+## Stripe
+
+Stripe; kredi kartlarını, banka kartlarını ve çok çeşitli yerel ödeme yöntemlerini destekleyen, küresel
+olarak kullanılabilen bir ödeme işlemcisidir.
+
+<Steps>
+  <Step title="Stripe API anahtarlarınızı alın">
+    [Stripe Panelinize](https://dashboard.stripe.com) giriş yapın, **Developers → API Keys**'e gidin ve
+    **Publishable key** ile **Secret key** değerlerinizi kopyalayın.
+  </Step>
+  <Step title="Bilgilerinizi GurStore'a girin">
+    **Yönetim → Ödeme Kurulumu**'nda Stripe bölümünü bulun ve **Publishable Key** ile **Secret Key**
+    değerlerinizi ilgili alanlara yapıştırın.
+  </Step>
+  <Step title="Webhook URL'sini kaydedin">
+    Stripe Panelinizde **Developers → Webhooks**'a gidin ve şu uç nokta URL'sini ekleyin:
+
+    ```
+    https://magazaniz.com/webhooks/stripe
+    ```
+
+    Stripe'ın göndermesini istediğiniz olayları seçin (en az: `payment_intent.succeeded`,
+    `payment_intent.payment_failed`, `checkout.session.completed`).
+  </Step>
+  <Step title="Stripe ağ geçidini etkinleştirin">
+    **Yönetim → Ödeme Kurulumu**'nun Stripe bölümündeki **Etkin** anahtarını açın, ardından
+    **Kaydet**'e tıklayın.
+  </Step>
+</Steps>
+
+<Warning>
+  Stripe **Secret Key**'inizi asla herkese açık paylaşmayın veya sürüm kontrolüne eklemeyin. Gizli
+  anahtarınıza erişimi olan herkes hesabınız adına API çağrıları yapabilir. Ona bir şifre gibi davranın.
+</Warning>
+
+## Iyzico
+
+Iyzico; Türk müşteriler için kredi kartlarını ve taksitli ödemeleri destekleyen, Türkiye'de yaygın bir
+ödeme ağ geçididir.
+
+<Steps>
+  <Step title="Iyzico API anahtarlarınızı alın">
+    [Iyzico Üye İş Yeri Paneline](https://merchant.iyzipay.com) giriş yapın, **Settings → API Keys**'e
+    gidin ve **API Key** ile **Secret Key** değerlerinizi kopyalayın.
+  </Step>
+  <Step title="Bilgilerinizi GurStore'a girin">
+    **Yönetim → Ödeme Kurulumu**'nda Iyzico bölümünü bulun ve **API Key** ile **Secret Key** değerlerini
+    ilgili alanlara yapıştırın.
+  </Step>
+  <Step title="Webhook URL'sini kaydedin">
+    Iyzico Üye İş Yeri Panelinizde **Settings → Webhook**'a gidin ve şu URL'yi girin:
+
+    ```
+    https://magazaniz.com/webhooks/iyzico
+    ```
+  </Step>
+  <Step title="Iyzico ağ geçidini etkinleştirin">
+    **Yönetim → Ödeme Kurulumu**'nun Iyzico bölümündeki **Etkin** anahtarını açın, ardından
+    **Kaydet**'e tıklayın.
+  </Step>
+</Steps>
+
+<Warning>
+  Iyzico **Secret Key**'iniz ödeme isteklerini imzalamak ve doğrulamak için kullanılır. Gizli tutun ve
+  ele geçirildiğinden şüphelenirseniz hemen değiştirin.
+</Warning>
+
+## Papara
+
+Papara; müşterilerin Papara hesap bakiyeleriyle ödeme yapmasını sağlayan bir Türk dijital cüzdan ve
+ödeme hizmetidir.
+
+<Steps>
+  <Step title="Papara API anahtarınızı alın">
+    [Papara İş Hesabınıza](https://merchant.papara.com) giriş yapın, **API Settings**'e gidin ve **API
+    Key**'inizi kopyalayın.
+  </Step>
+  <Step title="Bilgilerinizi GurStore'a girin">
+    **Yönetim → Ödeme Kurulumu**'nda Papara bölümünü bulun ve **API Key**'inizi bilgi alanına yapıştırın.
+  </Step>
+  <Step title="Webhook URL'sini kaydedin">
+    Papara üye iş yeri panelinizde **Webhook Settings**'e gidin ve şu URL'yi girin:
+
+    ```
+    https://magazaniz.com/webhooks/papara
+    ```
+  </Step>
+  <Step title="Papara ağ geçidini etkinleştirin">
+    **Yönetim → Ödeme Kurulumu**'nun Papara bölümündeki **Etkin** anahtarını açın, ardından
+    **Kaydet**'e tıklayın.
+  </Step>
+</Steps>
+
+<Warning>
+  Papara **API Key**'inizi asla istemci tarafı kodda göstermeyin veya yetkisiz kişilerle paylaşmayın.
+  Sızdığını düşünüyorsanız Papara panelinizden değiştirin.
+</Warning>
+
+## Mağaza Para Biriminizi Ayarlama
+
+Mağaza para biriminiz; fiyatların müşterilere nasıl gösterileceğini ve ödeme tutarlarının ağ geçidinize
+nasıl gönderileceğini belirler.
+
+<Steps>
+  <Step title="Yönetim → Ayarlar → Para Birimi bölümüne gidin">
+    Kenar çubuğundaki **Ayarlar** menüsünü açın ve **Para Birimi**'ni seçin.
+  </Step>
+  <Step title="Para biriminizi seçin">
+    Açılır listeden tercih ettiğiniz para birimini seçin (örneğin USD, EUR veya TRY).
+  </Step>
+  <Step title="Seçiminizi kaydedin">
+    **Kaydet**'e tıklayın. Tüm ürün fiyatları ve ödeme toplamları artık seçilen para biriminde gösterilir.
+  </Step>
+</Steps>
+
+<Note>
+  GurStore'da seçtiğiniz para biriminin, ödeme ağ geçidi hesabınızda yapılandırılan para birimiyle
+  eşleştiğinden emin olun. Bir uyumsuzluk ödeme hatalarına veya yanlış tahsilat tutarlarına yol açabilir.
+</Note>
+
+## Test Modu ve Canlı Mod
+
+GurStore ödeme kurulumu hem test (sandbox) hem canlı modu destekler. Mağazanızı kurarken, gerçek işlem
+yapmadan ödemelerin doğru aktığını doğrulamak için test modunu kullanın.
+
+<CardGroup cols={2}>
+  <Card title="Test Modu" icon="flask">
+    Ağ geçidinizin sağladığı sandbox veya test API anahtarlarını kullanın. Ödemeler simüle edilmiş bir
+    ortamdan geçer — gerçek para tahsil edilmez. Lansmandan önce ödeme akışınızı doğrulamak için idealdir.
+  </Card>
+  <Card title="Canlı Mod" icon="circle-check">
+    Gerçek müşteri ödemelerini işlemek için üretim API anahtarlarınızı kullanın. Yalnızca ödeme akışınızı
+    test modunda tamamen test ettikten sonra canlı moda geçin.
+  </Card>
+</CardGroup>
+
+<Steps>
+  <Step title="Sandbox bilgilerini girin">
+    **Yönetim → Ödeme Kurulumu**'nda ağ geçidinizin sağladığı test veya sandbox API anahtarlarını bilgi
+    alanlarına yapıştırın.
+  </Step>
+  <Step title="Bir test siparişi verin">
+    Ödemenin doğru işlendiğini teyit etmek için ağ geçidinizin yayınladığı test kart numaralarını veya
+    test hesabı bilgilerini kullanarak örnek bir sipariş verin.
+  </Step>
+  <Step title="Canlı bilgilere geçin">
+    Memnun kaldığınızda sandbox anahtarlarını canlı üretim API anahtarlarınızla değiştirin ve kaydedin.
+    Mağazanız artık gerçek ödemeleri kabul etmeye hazır.
+  </Step>
+</Steps>
+
+<Warning>
+  Mağaza lansmanınızı duyurmadan önce tüm sandbox bilgilerini canlı bilgilerle değiştirdiğinizden emin
+  olun. Test anahtarlarını yerinde bırakmak, gerçek müşteri ödemelerinin başarısız olmasına yol açar.
+</Warning>

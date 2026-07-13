@@ -1,0 +1,140 @@
+---
+title: "GurStore'a Discord Botu Bağlayın"
+sidebarTitle: "Discord Botu"
+description: "Gerçek zamanlı sipariş bildirimleri almak ve Discord sunucunuzda müşteri rol atamalarını otomatikleştirmek için GurStore'a bir Discord botu entegre edin."
+---
+
+GurStore Discord entegrasyonu, mağazanızı bir bot aracılığıyla doğrudan Discord sunucunuza bağlar.
+Kurulduktan sonra bot, belirlenen bir kanala gerçek zamanlı sipariş bildirimleri gönderebilir; böylece
+ekibiniz yeni bir satın almanın ne zaman geldiğini her zaman bilir. Ayrıca satın alma tamamlayan
+müşterilere otomatik olarak bir Discord rolü atayabilir; bu da ödeme yapan müşteriler için özel kanalları
+veya ayrıcalıkları kolayca kısıtlamanızı sağlar. Tüm yapılandırma yönetim panelinizde yapılır — kod
+gerekmez.
+
+## Botu Kurma
+
+Entegrasyonu GurStore'da yapılandırabilmeniz için önce sunucunuza eklenmiş bir Discord botuna ihtiyacınız
+var. Botunuz hazır olduğunda **Yönetim → Discord Botu** bölümünde botunuzun belirteciyle (token) ve
+sunucunuzun Guild ID'siyle bağlarsınız.
+
+<Steps>
+  <Step title="Bir Discord botu oluşturun">
+    [discord.com/developers/applications](https://discord.com/developers/applications) adresine gidin,
+    **New Application**'a tıklayın ve bir ad verin. **Bot** bölümüne gidin ve bot kullanıcısını oluşturmak
+    için **Add Bot**'a tıklayın.
+  </Step>
+  <Step title="Bot Token'ınızı kopyalayın">
+    **Bot** bölümünde bot belirtecinizi almak için **Reset Token** (veya zaten oluşturulmuşsa **Copy**)
+    düğmesine tıklayın. Bu değeri güvende tutun.
+  </Step>
+  <Step title="Botu sunucunuza davet edin">
+    **OAuth2 → URL Generator**'a gidin, **bot** kapsamını seçin ve gerekli izinleri verin (en az: **Send
+    Messages** ve **Manage Roles**). Oluşturulan URL'yi kopyalayın, tarayıcınıza yapıştırın ve botun
+    Discord sunucunuza katılmasına izin verin.
+  </Step>
+  <Step title="Guild ID'nizi bulun">
+    Discord'da **User Settings → Advanced → Developer Mode** üzerinden Geliştirici Modu'nu etkinleştirin.
+    Kenar çubuğunda sunucu adınıza sağ tıklayın ve Guild ID'nizi almak için **Copy ID**'yi seçin.
+  </Step>
+  <Step title="Bilgileri GurStore'a girin">
+    **Yönetim → Discord Botu**'na gidin, **Bot Token** ve **Guild ID** değerlerini ilgili alanlara
+    yapıştırın ve **Kaydet**'e tıklayın.
+  </Step>
+</Steps>
+
+<Note>
+  GurStore entegrasyonu çalışmadan önce botunuz doğru izinlerle Discord sunucunuzun bir üyesi olmalıdır.
+  Bot sunucunuzda değilse veya gerekli izinlerden yoksunsa sipariş bildirimleri ve rol atamaları sessizce
+  başarısız olur.
+</Note>
+
+## Bildirim Kanalları
+
+Bir müşteri her sipariş verdiğinde belirli bir Discord kanalının mesaj almasını yapılandırabilirsiniz. Bu,
+ekibinizi sürekli yönetim panelini kontrol etmek zorunda kalmadan gerçek zamanlı bilgilendirir.
+
+<Steps>
+  <Step title="Kanal ID'nizi bulun">
+    Discord'da (Geliştirici Modu etkinken) sipariş bildirimleri almak istediğiniz kanala sağ tıklayın ve
+    **Copy ID**'yi seçin.
+  </Step>
+  <Step title="Bildirim kanalını ayarlayın">
+    **Yönetim → Discord Botu**'nda **Sipariş Bildirim Kanalı** alanını bulun ve kanal ID'sini yapıştırın.
+  </Step>
+  <Step title="Ayarlarınızı kaydedin">
+    **Kaydet**'e tıklayın. Bundan sonra GurStore, her yeni sipariş verildiğinde o kanala bir mesaj gönderir.
+  </Step>
+</Steps>
+
+<Tip>
+  Discord sunucunuzda özel bir **#siparisler** kanalı oluşturun ve yalnızca GurStore sipariş bildirimleri
+  için kullanın. Bu, bildirim akışınızı temiz tutar ve genel sohbet gürültüsü olmadan geçmiş siparişleri
+  aramayı kolaylaştırır.
+</Tip>
+
+## Rol Atama
+
+GurStore, müşterilere satın almayı tamamladıktan sonra otomatik olarak bir Discord rolü atayabilir. Bu;
+ödeme yapan müşterilere özel kanallara, özel destek başlıklarına veya topluluk ayrıcalıklarına erişim
+vermek için idealdir.
+
+<Steps>
+  <Step title="Discord sunucunuzda bir rol oluşturun">
+    Discord sunucu ayarlarınızda **Roles**'a gidin ve yeni bir rol oluşturun (örneğin "Müşteri" veya
+    "Üye"). Rengini, izinlerini ve kanal erişimini gerektiği gibi yapılandırın.
+  </Step>
+  <Step title="Rol ID'sini kopyalayın">
+    Geliştirici Modu etkinken **Server Settings → Roles**'ta role sağ tıklayın ve **Copy ID**'yi seçin.
+  </Step>
+  <Step title="Rol ID'sini GurStore'a girin">
+    **Yönetim → Discord Botu**'nda rol ID'sini **Satın Alma Rol ID'si** alanına yapıştırın.
+  </Step>
+  <Step title="Ayarlarınızı kaydedin">
+    **Kaydet**'e tıklayın. GurStore artık, bir satın almayı tamamlayan ve Discord hesabını bağlamış her
+    müşteriye bu rolü atamasını bota bildirir.
+  </Step>
+</Steps>
+
+<Note>
+  Rol atama yalnızca Discord hesabını sosyal giriş yoluyla GurStore hesabına bağlamış müşteriler için
+  çalışır. Misafir olarak ödeme yapan veya yalnızca e-posta hesabı kullanan müşteriler otomatik olarak bir
+  Discord rolü almaz.
+</Note>
+
+## Bağlantıyı Test Etme
+
+Bot bilgilerinizi ve kanal ayarlarınızı kaydettikten sonra, canlı siparişler için güvenmeden önce botun
+bağlı ve doğru çalıştığını doğrulamak için yerleşik test aracını kullanın.
+
+<Steps>
+  <Step title="Yönetim → Discord Botu'nu açın">
+    Yönetim panelinizde Discord Botu ayarları sayfasına gidin.
+  </Step>
+  <Step title="Test düğmesine tıklayın">
+    **Bağlantıyı Test Et** düğmesine tıklayın. GurStore, bot aracılığıyla yapılandırdığınız bildirim
+    kanalına bir test mesajı göndermeye çalışır.
+  </Step>
+  <Step title="Discord kanalınızı kontrol edin">
+    Discord'a geçin ve yapılandırdığınız bildirim kanalında bir test mesajının belirdiğini teyit edin.
+    Mesaj görünüyorsa entegrasyonunuz doğru çalışıyor demektir.
+  </Step>
+</Steps>
+
+<Accordion title="Bağlantı sorunlarını giderme">
+  Test mesajı kanalınızda görünmüyorsa şunları kontrol edin:
+
+  - **Bot Token** — belirtecin doğru olduğunu ve son kaydetmenizden bu yana Discord geliştirici portalında
+    yeniden oluşturulmadığını doğrulayın.
+  - **Guild ID** — ID'nin botun üye olduğu sunucuyla eşleştiğini onaylayın.
+  - **Channel ID** — kanal ID'sini (kanal adını veya sunucu ID'sini değil) kopyaladığınızdan emin olun.
+  - **Bot izinleri** — botun hedef kanalda **Send Messages** iznine sahip olduğunu doğrulayın. Kanal
+    düzeyindeki izin geçersiz kılmaları, sunucu düzeyi izinler doğru ayarlı olsa bile botu engelleyebilir.
+  - **Bot üyeliği** — botun hâlâ sunucunuzun bir üyesi olduğundan ve atılmadığından/yasaklanmadığından emin
+    olun.
+</Accordion>
+
+<Note>
+  Bot, Discord sunucunuzda en az **Send Messages** ve **Manage Roles** izinlerini gerektirir. **Send
+  Messages** olmadan sipariş bildirimleri gönderilmez. **Manage Roles** olmadan satın alma sonrası otomatik
+  rol atama başarısız olur.
+</Note>

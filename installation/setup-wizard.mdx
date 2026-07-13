@@ -1,0 +1,90 @@
+---
+title: "Kurulum Sihirbazı"
+sidebarTitle: "Kurulum Sihirbazı"
+description: "Dosyaları yükledikten sonra tarayıcıdan /install adresine giderek GurStore'u lisans, veritabanı ve yönetici hesabıyla adım adım kurun."
+---
+
+Dosyaları sunucunuza yükleyip alan adınızı `public/` klasörüne yönlendirdikten sonra kurulumun
+geri kalanı tamamen **web tabanlı sihirbaz** üzerinden yürür. Bu sayfa, hangi barındırma
+yöntemini seçerseniz seçin izleyeceğiniz **ortak son adımdır**.
+
+Tarayıcınızdan şu adrese gidin:
+
+```
+https://alanadiniz.com/install
+```
+
+<Steps>
+  <Step title="Gereksinim kontrolü" icon="list-check">
+    Sihirbaz açılır açılmaz sunucunuzu tarar: PHP sürümü, gerekli PHP eklentileri ve yazma
+    izinleri. Tüm satırlar yeşil olduğunda **Devam** düğmesi etkinleşir.
+
+    <Warning>
+      Kırmızı bir satır görürseniz eksik eklentiyi etkinleştirin veya ilgili klasöre yazma izni
+      verin (bkz. [Genel Bakış → Yazma İzinleri](/installation/overview)). Sorun giderildikten
+      sonra sayfayı yenileyin.
+    </Warning>
+  </Step>
+
+  <Step title="Lisans doğrulama" icon="key">
+    Lisans anahtarınızı girin. GurStore, lisansı **kurulum yaptığınız alan adına** bağlar ve
+    GurStore lisans sunucusu üzerinden doğrular. Lisans hakkında ayrıntı için
+    [Lisans & Etki Alanı](/installation/license) sayfasına bakın.
+  </Step>
+
+  <Step title="Veritabanı bağlantısı" icon="database">
+    Veritabanı türünü ve bilgilerini girin. GurStore **MySQL / MariaDB**, **PostgreSQL** ve
+    **SQLite** destekler.
+
+    | Alan | Açıklama |
+    |---|---|
+    | **Sürücü** | `mysql`, `pgsql` veya `sqlite` |
+    | **Host** | Genellikle `127.0.0.1` (SQLite'ta gerekmez) |
+    | **Port** | MySQL `3306`, PostgreSQL `5432` |
+    | **Veritabanı adı** | Önceden oluşturduğunuz boş veritabanı |
+    | **Kullanıcı adı / Şifre** | Veritabanı kullanıcısı bilgileri |
+
+    Bilgileri kaydettiğinizde sihirbaz bağlantıyı test eder, `.env` dosyanızı yazar ve
+    **veritabanı tablolarını otomatik olarak oluşturur** (migration). Ek bir komut çalıştırmanıza
+    gerek yoktur.
+  </Step>
+
+  <Step title="Mağaza ayarları" icon="store">
+    Mağaza adınızı, logonuzu ve temel tercihlerinizi belirleyin. Bu bilgiler daha sonra
+    **Yönetim → Ayarlar** üzerinden değiştirilebilir.
+  </Step>
+
+  <Step title="Yönetici hesabı" icon="user-shield">
+    İlk yönetici hesabını oluşturun: ad, e-posta ve güçlü bir şifre. Bu hesap tam yetkili
+    yönetici (admin) hesabıdır.
+  </Step>
+
+  <Step title="İki Adımlı Doğrulama (2FA)" icon="shield-halved">
+    Güvenliğiniz için sihirbaz, yönetici hesabına **iki adımlı doğrulama** kurmanızı ister.
+    Google Authenticator, Authy veya benzeri bir uygulamayla QR kodu okutun ve üretilen 6 haneli
+    kodu girerek doğrulayın.
+  </Step>
+
+  <Step title="Kurulumu tamamla" icon="circle-check">
+    Son adımda sihirbaz önbellekleri temizler ve kurulumu kilitler. Artık
+    `https://alanadiniz.com/admin` üzerinden yönetim paneline giriş yapabilirsiniz.
+  </Step>
+</Steps>
+
+<Note>
+  Kurulum tamamlandıktan sonra `/install` adresi güvenlik için devre dışı kalır. Kurulumu
+  yeniden çalıştırmanız gerekirse sunucu yöneticinizle veya destek ekibimizle iletişime geçin.
+</Note>
+
+## Sonraki Adım
+
+Mağazanız hazır! İlk ürününüzü eklemek ve ödeme ağ geçidi bağlamak için:
+
+<CardGroup cols={2}>
+  <Card title="Hızlı Başlangıç" icon="bolt" href="/quickstart">
+    5 dakikada ilk ürününüzü ekleyin ve satışa başlayın.
+  </Card>
+  <Card title="Hesap Kurulumu" icon="gear" href="/account-setup">
+    Profilinizi, mağaza kimliğinizi ve güvenlik ayarlarınızı yapılandırın.
+  </Card>
+</CardGroup>

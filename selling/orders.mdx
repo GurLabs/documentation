@@ -1,0 +1,89 @@
+---
+title: "GurStore'da Müşteri Siparişlerini Görüntüleme ve Yönetme"
+sidebarTitle: "Siparişler"
+description: "Sipariş durumunu izleyin, satın alma ayrıntılarını görün, teslimat öğelerini yönetin ve iadeleri GurStore yönetim panelinden ve müşteri panelinden işleyin."
+---
+
+GurStore'daki her tamamlanmış satın alma; hem sizin hem müşterinizin erişebileceği bir sipariş kaydı
+oluşturur. Müşteriler satın alma geçmişlerini görüntüleyip teslim edilen öğelerine kişisel panellerinden
+erişebilir; siz ise tüm siparişleri yönetim panelinden yönetebilir, filtreleyebilir ve inceleyebilirsiniz.
+Sipariş sistemi, rutin talepler için karşılıklı iletişim gerektirmeden her iki tarafa da tam görünürlük sağlar.
+
+## Müşteri Sipariş Geçmişi
+
+Müşteriler, giriş yapmışken `/dashboard/orders` adresine giderek tüm geçmiş satın alımlarını
+görüntüleyebilir. Listedeki her sipariş şunları gösterir:
+
+- **Satın alınan ürünler** — siparişteki öğelerin adları ve adetleri
+- **Sipariş toplamı** — satın alma anında tahsil edilen tutar
+- **Sipariş durumu** — siparişin güncel durumu (aşağıdaki durumlara bakın)
+- **Teslimat** — siparişe dahil indirilen dosyalara, lisans anahtarlarına veya seri anahtarlara doğrudan
+  erişim
+
+Müşteriler herhangi bir siparişe tıklayarak tam detay görünümünü açabilir ve teslimat öğelerini
+istedikleri zaman alabilir.
+
+## Sipariş Durumları
+
+GurStore, bir satın almanın yaşam döngüsünü yansıtmak için dört sipariş durumu kullanır:
+
+<CardGroup cols={2}>
+  <Card title="Beklemede" icon="clock">
+    Sipariş başlatılmış ancak ödeme henüz onaylanmamıştır.
+  </Card>
+  <Card title="Tamamlandı" icon="circle-check">
+    Ödeme başarılı olmuş ve teslimat öğeleri müşteriye sağlanmıştır.
+  </Card>
+  <Card title="İade Edildi" icon="arrow-rotate-left">
+    Bu sipariş için bir iade yapılmıştır. Sipariş kaydedilir ancak teslimat erişimi geri alınmış olabilir.
+  </Card>
+  <Card title="İptal Edildi" icon="circle-xmark">
+    Sipariş, müşteri tarafından veya başarısız bir ödeme nedeniyle tamamlanmadan iptal edilmiştir.
+  </Card>
+</CardGroup>
+
+## Satın Alınan Dosya ve Anahtarlara Erişim
+
+<Note>
+  Teslimat öğeleri — seri anahtarlar, lisans anahtarları ve indirilebilir dosyalar dahil — satın alma
+  anında siparişe otomatik eklenir. Başarılı bir ödemenin hemen ardından hem `/checkout/success`
+  sayfasında hem de `/dashboard/orders` adresindeki sipariş detay sayfasında müşteriye görünür.
+</Note>
+
+Müşteriler, teslimat öğelerine sipariş geçmişlerinden ilgili siparişi açarak erişir. Ürün türüne göre
+sipariş detay sayfası şunları gösterir:
+
+- Dosya tabanlı ürünler için bir **indirme bağlantısı**
+- Yazılım veya oyun etkinleştirmeleri için bir **seri anahtar**
+- Abonelik veya erişim tabanlı ürünler için bir **lisans anahtarı**
+
+Tamamlanmış bir siparişi yerine getirmek için sizden ek bir adım gerekmez.
+
+## Yönetici Sipariş Yönetimi
+
+Tüm müşteri siparişlerini **Yönetim → Satın Alımlar** bölümünden görüntüleyip yönetebilirsiniz. Satın
+alımlar sayfası, mağazanızda verilen her siparişin tam listesini ve şu olanakları sunar:
+
+- **Duruma göre filtreleme** — listeyi beklemede, tamamlandı, iade edildi veya iptal edildi
+  siparişlere daraltın
+- **Sipariş öğelerini görüntüleme** — her siparişte tam olarak ne satın alındığını, teslimat
+  ayrıntıları dahil inceleyin
+- **İade verme** — belirli bir sipariş için iade sürecini doğrudan yönetim panelinden başlatın
+
+Dönüşmemiş bekleyen siparişler veya işlem gerektiren iade talepleri gibi dikkat gerektiren siparişleri
+hızlıca belirlemek için filtreleri kullanın.
+
+<Tip>
+  Sipariş verilerinizi Yönetim → Satın Alımlar sayfasından dışa aktarabilirsiniz. Dışa aktarmaları;
+  muhasebe, satış raporlama veya elektronik tablolar ya da tercih ettiğiniz iş zekâsı platformu gibi
+  harici araçlarda analiz için kullanın.
+</Tip>
+
+## Sipariş Bildirimleri
+
+GurStore, siparişler verildiğinde hem sizi hem müşterilerinizi bilgilendirir:
+
+- **Müşteriler**, her başarılı satın almanın ardından otomatik bir e-posta onayı alır. E-posta;
+  sipariş ayrıntılarını ve teslimat öğelerini içerir.
+- **Yöneticiler**, yeni siparişleri **Yönetim → Satın Alımlar** panelinde gerçek zamanlı görür;
+  böylece elle yenilemeye gerek kalmadan gelen satışların güncel görünümüne sahip olursunuz.

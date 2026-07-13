@@ -1,0 +1,231 @@
+---
+title: "GurStore için Sepet API Uç Noktaları"
+sidebarTitle: "Sepet"
+description: "GurStore kimlik doğrulamalı sepet API uç noktaları aracılığıyla sepete ürün ekleyin, kupon kodları uygulayın ve sepet içeriğini alın."
+---
+
+GurStore sepet API'si, bir müşterinin alışveriş oturumunu programatik olarak yönetmenizi sağlar — güncel
+sepet durumunu alın, isteğe bağlı varyant seçimiyle ürün ekleyin ve indirim için kupon kodları uygulayın.
+Tüm sepet uç noktaları geçerli bir bearer belirteci gerektirir. Sepet, kimliği doğrulanmış müşterinin
+oturumuna bağlıdır; bu yüzden her belirteç aynı anda tam olarak bir sepete karşılık gelir.
+
+---
+
+## Sepet içeriğini al
+
+Kimliği doğrulanmış müşteri için tüm satır öğeleri, adetler, uygulanan kuponlar ve çalışan toplamlar dahil
+güncel sepeti döndürür.
+
+```
+GET /api/store/cart
+```
+
+**Kimlik doğrulama:** Bearer belirteci gerekir
+
+### Örnek istek
+
+```bash
+curl https://magazaniz.com/api/store/cart \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Accept: application/json"
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "items": [
+      {
+        "product_id": 1,
+        "variant_id": 2,
+        "name": "Pro License",
+        "quantity": 1,
+        "unit_price": 29.99,
+        "subtotal": 29.99
+      }
+    ],
+    "coupon": null,
+    "discount": 0,
+    "total": 29.99
+  }
+}
+```
+
+### Yanıt alanları
+
+<ResponseField name="status" type="string">
+  Geçerli bir `200` yanıtında `"success"`.
+</ResponseField>
+
+<ResponseField name="data.items" type="array">
+  Sepette şu anda bulunan satır öğesi nesnelerinden oluşan bir dizi. Sepet boşsa boş dizi döndürür.
+
+  <ResponseField name="data.items[].product_id" type="integer">
+    Bu satır öğesindeki ürünün kimliği.
+  </ResponseField>
+
+  <ResponseField name="data.items[].variant_id" type="integer">
+    Varsa seçilen ürün varyantının kimliği.
+  </ResponseField>
+
+  <ResponseField name="data.items[].name" type="string">
+    Ürünün görünen adı.
+  </ResponseField>
+
+  <ResponseField name="data.items[].quantity" type="integer">
+    Bu satır öğesindeki birim sayısı.
+  </ResponseField>
+
+  <ResponseField name="data.items[].unit_price" type="number">
+    Öğe eklendiğinde birim başına fiyat.
+  </ResponseField>
+
+  <ResponseField name="data.items[].subtotal" type="number">
+    Satır öğesi toplamı (`unit_price × quantity`).
+  </ResponseField>
+</ResponseField>
+
+<ResponseField name="data.coupon" type="string | null">
+  Sepete uygulanan kupon kodu ya da hiçbiri uygulanmadıysa `null`.
+</ResponseField>
+
+<ResponseField name="data.discount" type="number">
+  Aktif kuponun uyguladığı toplam indirim tutarı. Kupon yoksa `0`.
+</ResponseField>
+
+<ResponseField name="data.total" type="number">
+  İndirimlerden sonra nihai sepet toplamı.
+</ResponseField>
+
+---
+
+## Sepete öğe ekle
+
+Kimliği doğrulanmış müşterinin sepetine bir ürün (isteğe bağlı bir varyantla) ekler. Ürün zaten
+sepetteyse adet artırılır.
+
+```
+POST /api/store/cart/add
+```
+
+**Kimlik doğrulama:** Bearer belirteci gerekir
+
+### İstek gövdesi
+
+<ParamField body="product_id" type="integer" required>
+  Sepete eklenecek ürünün kimliği. Ürün kimliklerini `GET /api/store/products`'tan alabilirsiniz.
+</ParamField>
+
+<ParamField body="variant_id" type="integer">
+  Belirli bir ürün varyantının kimliği (ör. lisans kademesi, koltuk sayısı veya plan). Ürünün varyantları
+  olduğunda zorunludur; varyantı olmayan ürünlerde atlayın.
+</ParamField>
+
+<ParamField body="quantity" type="integer" required>
+  Eklenecek birim sayısı. Pozitif bir tamsayı olmalıdır. Tek lisanslı dijital ürünler için `1` kullanın.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/store/cart/add \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"product_id": 1, "variant_id": 2, "quantity": 1}'
+```
+
+### Örnek yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "items": [
+      {
+        "product_id": 1,
+        "variant_id": 2,
+        "name": "Pro License",
+        "quantity": 1,
+        "unit_price": 29.99,
+        "subtotal": 29.99
+      }
+    ],
+    "coupon": null,
+    "discount": 0,
+    "total": 29.99
+  }
+}
+```
+
+Yanıt, öğe eklendikten sonra güncellenmiş sepet durumunun tamamını döndürür — `GET /api/store/cart` ile
+aynı biçim.
+
+---
+
+## Kupon kodu uygula
+
+Kimliği doğrulanmış müşterinin aktif sepetine bir indirim kuponu uygular. Geçerliyse sepet toplamı,
+indirim uygulanarak yeniden hesaplanır.
+
+```
+POST /api/store/cart/coupon
+```
+
+**Kimlik doğrulama:** Bearer belirteci gerekir
+
+### İstek gövdesi
+
+<ParamField body="code" type="string" required>
+  Sepete uygulanacak kupon kodu (ör. `"LAUNCH20"`). Kodlar büyük/küçük harfe duyarsızdır.
+</ParamField>
+
+### Örnek istek
+
+```bash
+curl -X POST https://magazaniz.com/api/store/cart/coupon \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{"code": "LAUNCH20"}'
+```
+
+### Örnek başarılı yanıt
+
+```json
+{
+  "status": "success",
+  "data": {
+    "items": [
+      {
+        "product_id": 1,
+        "variant_id": 2,
+        "name": "Pro License",
+        "quantity": 1,
+        "unit_price": 29.99,
+        "subtotal": 29.99
+      }
+    ],
+    "coupon": "LAUNCH20",
+    "discount": 6.00,
+    "total": 23.99
+  }
+}
+```
+
+### Örnek hata yanıtı
+
+```json
+{
+  "status": "error",
+  "message": "The coupon code LAUNCH20 is invalid or has expired."
+}
+```
+
+<Warning>
+Kuponlar oturum başına tek kullanımlıktır. Bir kupon sepete uygulanıp sepet ödemeye ilerlediğinde, kupon
+yeni bir oturum için yeniden kullanılamaz. Bir kupon uygulayıp ardından sepeti temizlerseniz, ödeme
+yapmadan önce yeniden uygulamanız gerekebilir.
+</Warning>

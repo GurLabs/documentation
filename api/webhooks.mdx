@@ -1,0 +1,118 @@
+---
+title: "GurStore'da Ödeme Webhook'ları"
+sidebarTitle: "Webhooks"
+description: "GurStore; siparişleri otomatik onaylamak ve dijital teslimatı tetiklemek için Stripe, Iyzico, Papara ve kripto ağ geçitlerinden ödeme webhook'ları alır."
+---
+
+Webhook'lar, ödeme ağ geçitlerinin bir ödeme tamamlandığında, başarısız olduğunda veya iade edildiğinde
+GurStore'u bilgilendirmesine olanak tanır — hiçbir elle müdahale olmadan otomatik sipariş teslimatını
+tetikler. Bir müşteri yapılandırdığınız ağ geçitlerinden biriyle ödeme yaptığında, o ağ geçidi GurStore
+örneğinize bir HTTP POST gönderir; GurStore de yükü doğrular ve siparişi buna göre günceller. Bu uç
+noktaları yapılandırmayı ve izlemeyi anlamak, güvenilir ve elle uğraşmadan sipariş işleme için kritiktir.
+
+## Webhook Uç Noktaları
+
+Aşağıdaki uç noktalar GurStore kurulumunuza yerleşiktir. Her ağ geçidinin panelini, olayları mağazanızın
+alan adındaki karşılık gelen URL'ye gönderecek şekilde yapılandırırsınız.
+
+| Ağ Geçidi | Webhook URL |
+|---|---|
+| Stripe | `POST /webhook/stripe` |
+| Iyzico | `POST /webhook/iyzico` |
+| Papara | `POST /webhook/papara` |
+| Kripto (mcsets) | `POST /webhook/mcsets` |
+
+Örneğin mağazanız `https://magazaniz.com` adresinde çalışıyorsa, Stripe webhook URL'niz
+`https://magazaniz.com/webhook/stripe` olur.
+
+---
+
+## Her Ağ Geçidinde Webhook Yapılandırma
+
+### Stripe
+
+1. [Stripe Panelinize](https://dashboard.stripe.com) giriş yapın.
+2. **Developers → Webhooks**'a gidin.
+3. **Add endpoint**'e tıklayın ve webhook URL'nizi girin: `https://magazaniz.com/webhook/stripe`.
+4. İletmek istediğiniz olayları seçin — en az `payment_intent.succeeded`, `payment_intent.payment_failed`
+   ve `charge.refunded`.
+5. Stripe'ın ürettiği **Signing secret**'ı kopyalayın ve **GurStore Yönetim → Ödeme Kurulumu → Stripe**'a
+   yapıştırın.
+
+### Iyzico
+
+1. Iyzico üye iş yeri panelinize giriş yapın.
+2. **Settings → Integration Settings** (veya eşdeğer callback yapılandırma bölümü) bölümüne gidin.
+3. **Callback URL**'yi `https://magazaniz.com/webhook/iyzico` olarak ayarlayın.
+4. Değişikliklerinizi kaydedin. Iyzico her işlemden sonra ödeme sonuçlarını bu URL'ye POST eder.
+
+### Papara
+
+1. Papara üye iş yeri hesabınıza giriş yapın.
+2. **Merchant Settings → Notification Settings**'e gidin.
+3. Bildirim URL'nizi girin: `https://magazaniz.com/webhook/papara`.
+4. Papara'nın ödeme durumu güncellemelerini GurStore'a otomatik göndermesi için ayarlarınızı kaydedin.
+
+### Kripto (mcsets)
+
+Mcsets üye iş yeri panelinizde callback URL'sini `https://magazaniz.com/webhook/mcsets` adresini
+gösterecek şekilde yapılandırın. Mcsets kripto ödeme onaylarını yönetir ve bir işlem gerekli onay sayısına
+ulaştığında GurStore'u bilgilendirir.
+
+---
+
+## İşlenen Webhook Olayları
+
+GurStore, webhook aracılığıyla geldiklerinde şu ödeme yaşam döngüsü olaylarını işler:
+
+| Olay | GurStore'daki Etkisi |
+|---|---|
+| **Ödeme başarılı** | Sipariş durumu onaylandı olarak ayarlanır ve dijital teslimat anında tetiklenir (lisans anahtarı verilir, dosya indirmesi açılır vb.) |
+| **Ödeme başarısız** | Sipariş durumu iptal edildi olarak ayarlanır ve teslimat yapılmaz |
+| **İade yapıldı** | Sipariş durumu iade edildi olarak güncellenir; verilmiş lisanslar veya seriler buna göre işaretlenir |
+
+---
+
+## İmza Doğrulama
+
+Webhook imza doğrulamasını kendiniz uygulamanıza gerek yoktur. GurStore, gelen her webhook'un gerçekliğini
+ağ geçidinin gizli anahtarını kullanarak otomatik doğrular. Her istekte bulunan imza başlığını (ör. Stripe
+için `Stripe-Signature`), **Yönetim → Ödeme Kurulumu**'nda yapılandırdığınız gizli anahtara karşı kontrol
+eder.
+
+Bu, yalnızca ödeme ağ geçitlerinizden gelen gerçek isteklerin işlenmesini sağlar — sahte veya kurcalanmış
+yükler, herhangi bir sipariş durumu değişmeden önce reddedilir.
+
+---
+
+## Webhook'ları Yerelde Test Etme
+
+Geliştirme sırasında, herkese açık bir URL göstermeden canlı webhook olaylarını yerel bir GurStore
+örneğine iletmek için Stripe CLI'yi kullanabilirsiniz:
+
+```bash
+stripe listen --forward-to magazaniz.com/webhook/stripe
+```
+
+CLI geçici bir webhook imzalama sırrı yazdırır — bunu geliştirme sırasında yerel `.env`'nizde kullanın.
+Yayına geçmeye hazır olduğunuzda, onu Stripe Panelinizdeki kalıcı sırla değiştirin.
+
+<Tip>
+  Belirli test olaylarını tetiklemek (ör. `stripe trigger payment_intent.succeeded`) ve yayına geçmeden önce
+  GurStore'un siparişleri onayladığını ve doğru teslim ettiğini doğrulamak için Stripe CLI'nin `stripe
+  trigger` komutunu kullanın.
+</Tip>
+
+<Warning>
+  GurStore webhook uç noktalarınız, ağ geçidi bildirimlerinin onlara ulaşabilmesi için internette herkese
+  açık erişilebilir olmalıdır. Bu URL'leri, ödeme ağ geçidi sunucularından gelen istekleri engelleyecek bir
+  güvenlik duvarı, VPN veya IP allowlist arkasına koymayın. GurStore webhook'u hiç almazsa, başarılı bir
+  ödemeden sonra bile siparişler beklemede durumunda kalır.
+</Warning>
+
+<Note>
+  Ödeme sonrası siparişler onaylanmıyorsa, önce ağ geçidinizin panelindeki webhook teslimat kayıtlarını
+  kontrol edin — çoğu ağ geçidi (Stripe dahil) başarısız teslimatları saatler boyunca birkaç kez yeniden
+  dener. Teslimat başarısızlıklarının yaygın nedenleri: uç noktanın 2xx dışı bir durum döndürmesi, yanlış
+  yapılandırılmış bir imzalama sırrı veya ağ geçidi IP aralıklarını engelleyen bir güvenlik duvarı.
+</Note>
