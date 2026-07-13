@@ -1,0 +1,178 @@
+---
+title: "Kurulum Sorun Giderme"
+sidebarTitle: "Sorun Giderme"
+description: "GurStore kurulumunda karşılaşılan HTTP 500, boş sayfa, 403/404, SSL ve izin hatalarının nedenleri ve adım adım çözümleri."
+---
+
+Kurulum sırasında bir hata mı aldınız? Panik yok — GurStore standart bir Laravel uygulaması olduğundan
+hataların neredeyse tamamı birkaç bilinen nedenden kaynaklanır. En sık karşılaşılan durum olan **HTTP
+500** ile başlayalım.
+
+## HTTP 500 — "Bu sayfa çalışmıyor"
+
+`https://magazaniz.com` veya `/install` açıldığında **HTTP ERROR 500** görüyorsanız, uygulama
+çalışıyor ama başlangıçta bir şeye takılıyor demektir. Sırasıyla şunları kontrol edin.
+
+### Adım 1 — Gerçek hatayı görün
+
+500 hatası varsayılan olarak ayrıntıyı gizler. Gerçek nedeni iki şekilde görebilirsiniz:
+
+<Tabs>
+  <Tab title="Log dosyasını okuyun (önerilen)">
+    Dosyalarınızda şu dosyayı açın ve **en alttaki** (en yeni) satırlara bakın:
+
+    ```
+    storage/logs/laravel.log
+    ```
+
+    Buradaki hata mesajı (ör. `Permission denied`, `could not find driver`, `No application encryption
+    key`) size tam olarak neyin yanlış olduğunu söyler. Aşağıdaki bölümlerde bu mesajların çözümleri var.
+  </Tab>
+
+  <Tab title="Hata ayıklamayı geçici açın">
+    Sunucudaki `.env` dosyasını açın ve şu satırı bulun:
+
+    ```ini
+    APP_DEBUG=false
+    ```
+
+    Geçici olarak `true` yapıp kaydedin, sayfayı yenileyin. Artık ekranda ayrıntılı hata görünür.
+
+    <Warning>
+      Sorunu bulduktan sonra **mutlaka** `APP_DEBUG=false` geri yapın. Açık kalırsa hassas bilgiler
+      (veritabanı yolları, anahtarlar) herkese görünür.
+    </Warning>
+  </Tab>
+</Tabs>
+
+### Adım 2 — En sık 4 neden ve çözümü
+
+<AccordionGroup>
+  <Accordion title="1) Alan adı public klasörünü göstermiyor (en yaygın)">
+    Belge kökü (document root) uygulamanın **`public`** klasörünü göstermelidir. Kök klasörü gösteriyorsa
+    500 veya bozuk sayfa alırsınız.
+
+    - **cPanel:** [cPanel rehberi → 4. adım](/installation/cpanel#4-alan-adını-public-klasörüne-yönlendirin-en-önemli-adım)
+    - **Plesk:** [Plesk rehberi](/installation/plesk)
+    - **VPS/Nginx:** sunucu bloğunda `root .../public;` olmalı ([Ubuntu/VPS](/installation/ubuntu-vps))
+
+    Tarayıcıda `https://magazaniz.com/index.php` yerine kaynak kodu (ör. `.env` içeriği) görüyorsanız,
+    kesinlikle document root yanlıştır.
+  </Accordion>
+
+  <Accordion title="2) storage / bootstrap-cache klasörü yazılabilir değil">
+    Log'da `Permission denied` veya `failed to open stream ... storage/logs` görüyorsanız izin sorunudur.
+
+    - `storage` ve `bootstrap/cache` klasörlerine **755** (veya **775**) izni verin; `storage` için alt
+      klasörlere de uygulayın (Recurse).
+    - VPS'te: `sudo chown -R www-data:www-data /var/www/gurstore && sudo chmod -R 775 storage bootstrap/cache`
+  </Accordion>
+
+  <Accordion title="3) .env yok veya APP_KEY tanımsız">
+    Log'da `No application encryption key has been specified` görüyorsanız:
+
+    - Dosyalar arasında `.env` yoksa, `.env.example` dosyasını **`.env`** olarak kopyalayın.
+    - Ardından bir uygulama anahtarı üretin. SSH varsa:
+      ```bash
+      php artisan key:generate
+      ```
+      SSH yoksa `.env` içindeki `APP_KEY=` satırına 32 karakterlik rastgele bir değeri
+      `base64:...` biçiminde eklemeniz gerekir; en kolayı hosting sağlayıcınızdan SSH/terminal desteği
+      istemektir.
+
+    <Note>
+      Genellikle GurStore paketi bir `.env` ile gelir ve sihirbaz gerisini yazar; bu adım yalnızca `.env`
+      hiç yoksa gerekir.
+    </Note>
+  </Accordion>
+
+  <Accordion title="4) PHP sürümü eski veya bir eklenti eksik">
+    Log'da `could not find driver` (PDO/veritabanı sürücüsü) veya `Call to undefined function` (eksik
+    eklenti) görüyorsanız:
+
+    - PHP sürümünü **8.2+** (8.3 önerilir) yapın.
+    - Şu eklentileri etkinleştirin: `pdo`, `openssl`, `mbstring`, `curl`, `tokenizer`, `xml`, `fileinfo`,
+      `bcmath`, `json`, `gd`/`imagick`.
+    - cPanel'de: **Select PHP Version → Extensions**. Plesk'te: **PHP Settings**.
+
+    Tam liste: [Genel Bakış → Sistem Gereksinimleri](/installation/overview).
+  </Accordion>
+</AccordionGroup>
+
+## Sayfanın Tamamı Boş (Beyaz Ekran)
+
+Hiç içerik gelmiyor, hata da yok. Genellikle `APP_DEBUG=false` ile gizlenmiş bir 500'dür. Yukarıdaki
+**Adım 1**'i uygulayıp `storage/logs/laravel.log`'a bakın.
+
+## 404 — Ana sayfa açılıyor ama diğer sayfalar "Not Found"
+
+Ana sayfa gelir ama `/install`, `/admin` gibi yollar 404 verirse, Apache'de **mod_rewrite** kapalı veya
+`.htaccess` yok sayılıyor demektir.
+
+<Steps>
+  <Step title=".htaccess dosyasının varlığını doğrulayın">
+    `public/.htaccess` dosyasının var olduğundan emin olun (File Manager'da gizli dosyaları göster).
+  </Step>
+  <Step title="mod_rewrite / AllowOverride">
+    Paylaşımlı hostinglerde mod_rewrite genelde açıktır; kapalıysa hosting desteğine açtırın. VPS'te
+    Apache kullanıyorsanız `AllowOverride All` olmalı (veya Nginx yapılandırmasında `try_files` satırı).
+  </Step>
+</Steps>
+
+## 403 — Forbidden
+
+- Belge kökü doğru klasörü (`public`) gösteriyor ama `index.php` yerine dizin listesi engelleniyor
+  olabilir. Document root'un `public` **klasörünün kendisi** olduğundan emin olun.
+- `public` içinde `index.php` dosyasının bulunduğunu doğrulayın (arşiv eksik çıkmış olabilir).
+
+## SSL / Cloudflare Hataları (525, 526, Yönlendirme Döngüsü)
+
+Cloudflare'de **turuncu bulut (Proxied)** açıksa ve sunucunuzda geçerli SSL yoksa 525/526 ya da sonsuz
+yönlendirme alırsınız.
+
+<Steps>
+  <Step title="Önce DNS only ile ilerleyin">
+    Cloudflare **DNS → Records**'ta kaydı **DNS only** (gri bulut) yapın, kurulumu tamamlayın.
+  </Step>
+  <Step title="SSL modunu Full (strict) yapın">
+    Sunucunuza Let's Encrypt SSL kurduktan sonra Cloudflare **SSL/TLS → Overview → Full (strict)** seçin,
+    ardından isterseniz turuncu buluta geçin.
+  </Step>
+</Steps>
+
+Ayrıntı: [Alan Adı & DNS](/installation/domain-dns).
+
+## "Lisans" / "Lisanssız" Uyarısı
+
+Kurulum bitti ama site kilitli veya lisans hatası veriyorsa:
+
+- [Kurulum yöntemi sayfanızdaki](/installation/overview) **cron (zamanlanmış görev)** adımını
+  uyguladığınızdan emin olun — lisans arka planda cron ile yenilenir.
+- Sunucunuzun dışarıya (özellikle `api.gurstore.net`) bağlantı yapabildiğini doğrulayın; bazı sunucular
+  giden bağlantıları engeller.
+- Ayrıntı: [Lisans & Etki Alanı](/installation/license).
+
+## `/install` Sayfası Açılmıyor / "Zaten kurulu" diyor
+
+Kurulum bir kez tamamlandığında `/install` güvenlik için kilitlenir. Kurulumu yeniden çalıştırmanız
+gerekiyorsa (ör. yanlış veritabanı girdiniz), hosting/SSH erişiminizle kurulum kilidini kaldırmak için
+[destek ekibimizle](https://gurstore.net/contact) iletişime geçin.
+
+## Hâlâ Çözülmediyse
+
+Aşağıdakileri hazırlayıp destek ekibimize iletin; çok daha hızlı yardımcı oluruz:
+
+<CardGroup cols={2}>
+  <Card title="laravel.log çıktısı" icon="file-lines">
+    `storage/logs/laravel.log` dosyasının **son 20–30 satırı**.
+  </Card>
+  <Card title="Ortam bilgisi" icon="server">
+    PHP sürümü, hosting türü (cPanel/Plesk/VPS) ve alan adınız.
+  </Card>
+  <Card title="Ne denediniz?" icon="list-check">
+    Hangi adımda takıldığınız ve ekranda görünen tam hata metni.
+  </Card>
+  <Card title="Bize ulaşın" icon="headset">
+    [gurstore.net/contact](https://gurstore.net/contact) veya Discord.
+  </Card>
+</CardGroup>

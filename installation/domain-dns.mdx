@@ -1,0 +1,160 @@
+---
+title: "Alan Adı & DNS Yönlendirme"
+sidebarTitle: "Alan Adı & DNS"
+description: "Alan adınızı GurStore sunucunuza bağlayın: Cloudflare, GoDaddy, Natro ve diğer sağlayıcılarda A kaydı ve www ayarları — ekran ekran, adım adım."
+---
+
+GurStore'un tarayıcıdan açılabilmesi için alan adınızın (ör. `magazaniz.com`) sunucunuzun **IP
+adresine** işaret etmesi gerekir. Bu işlem bir **DNS A kaydı** eklemekle yapılır. Bu sayfa, en yaygın
+alan adı sağlayıcılarında bunu adım adım gösterir.
+
+<Note>
+  **Sunucu IP adresinizi nereden bulurum?**
+  - **Kendi VPS/sunucunuz** ise: hosting sağlayıcınızın panelinde veya sunucuda `curl ifconfig.me`
+    komutuyla.
+  - **cPanel** ise: cPanel sağ/sol kenar çubuğunda **Shared IP Address** ya da **Genel Bilgiler →
+    Sunucu Bilgileri** altında.
+  - **[GurStore Hosting](/installation/gurstore-hosting)** kullanıyorsanız: size sipariş sonrası
+    iletilen **IP adresi** (veya nameserver) bilgilerini kullanın.
+</Note>
+
+## Hangi Kayıtları Ekleyeceksiniz?
+
+Çoğu kurulum için yalnızca iki kayıt yeterlidir:
+
+| Tür | Ad (Name/Host) | Değer (Content/Target) | Açıklama |
+|---|---|---|---|
+| **A** | `@` | `SUNUCU_IP_ADRESI` | Kök alan adı (`magazaniz.com`) sunucuya işaret eder |
+| **CNAME** | `www` | `magazaniz.com` | `www.magazaniz.com` → kök alan adına yönlenir |
+
+<Warning>
+  `@` işareti "kök alan adı" (root/apex) anlamına gelir. Bazı paneller `@` yerine alan adının
+  tamamını yazmanızı ister, bazıları boş bırakmanızı. Emin değilseniz `@` deneyin.
+</Warning>
+
+## Sağlayıcıya Göre Adımlar
+
+<Tabs>
+  <Tab title="Cloudflare">
+    ### Cloudflare'de A Kaydı Ekleme
+
+    <Steps>
+      <Step title="DNS ayarlarını açın">
+        [dash.cloudflare.com](https://dash.cloudflare.com) adresine giriş yapın, alan adınızı seçin ve
+        sol menüden **DNS → Records** (Kayıtlar) bölümüne gidin.
+      </Step>
+      <Step title="Kök (A) kaydını ekleyin">
+        **Add record** (Kayıt ekle) düğmesine tıklayın ve şunları girin:
+        - **Type:** `A`
+        - **Name:** `@`
+        - **IPv4 address:** sunucunuzun IP adresi (ör. `77.90.53.65`)
+        - **Proxy status:** İlk kurulumda **DNS only** (gri bulut) seçin. SSL sertifikanız (Let's
+          Encrypt) düzgün kurulduktan sonra isterseniz **Proxied** (turuncu bulut) yapabilirsiniz.
+        - **TTL:** `Auto`
+        - **Save** deyin.
+      </Step>
+      <Step title="www kaydını ekleyin">
+        Tekrar **Add record**:
+        - **Type:** `CNAME`
+        - **Name:** `www`
+        - **Target:** `magazaniz.com`
+        - **Proxy status:** kök kayıtla aynı (başlangıçta **DNS only**)
+        - **Save** deyin.
+      </Step>
+    </Steps>
+
+    <Warning>
+      **Turuncu bulut (Proxied) ve SSL:** Cloudflare proxy'si açıkken (turuncu bulut), **SSL/TLS →
+      Overview** ayarını **Full (strict)** yapın ve sunucunuzda geçerli bir SSL sertifikası bulundurun.
+      Aksi halde **525** veya **526** SSL hatası ya da sonsuz yönlendirme (redirect loop) alırsınız.
+      En güvenli başlangıç: kurulum bitene kadar **DNS only** (gri bulut) ile ilerleyin.
+    </Warning>
+  </Tab>
+
+  <Tab title="GoDaddy">
+    ### GoDaddy'de A Kaydı
+
+    <Steps>
+      <Step title="DNS yönetimini açın">
+        GoDaddy hesabınıza girin, **My Products → Domains** altında alan adınızın yanındaki **DNS**
+        (veya **Manage DNS**) butonuna tıklayın.
+      </Step>
+      <Step title="Kök A kaydını düzenleyin/ekleyin">
+        **Records** bölümünde mevcut `A` kaydını **Edit** ile düzenleyin veya **Add** ile ekleyin:
+        - **Type:** `A` · **Name:** `@` · **Value:** `SUNUCU_IP` · **TTL:** `1 Hour`
+        - **Save** deyin.
+      </Step>
+      <Step title="www CNAME kaydını ekleyin">
+        - **Type:** `CNAME` · **Name:** `www` · **Value:** `@` (veya `magazaniz.com`) · **Save**
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Natro / Türk sağlayıcılar">
+    ### Natro, Turhost, İsimtescil vb.
+
+    <Steps>
+      <Step title="DNS / Bölge yönetimine gidin">
+        Müşteri panelinize girin, **Alan Adlarım → Yönet** yolunu izleyin ve **DNS Yönetimi** (veya
+        **DNS Bölge / Zone Editörü**) bölümünü açın.
+      </Step>
+      <Step title="A kaydı ekleyin">
+        - **Tür:** `A` · **Ad/Host:** `@` (bazı panellerde boş bırakılır) · **Değer/Hedef:** `SUNUCU_IP`
+        - **TTL:** `3600` · **Ekle/Kaydet**
+      </Step>
+      <Step title="www için CNAME ekleyin">
+        - **Tür:** `CNAME` · **Ad:** `www` · **Değer:** `magazaniz.com` · **Kaydet**
+      </Step>
+    </Steps>
+
+    <Note>
+      Bazı Türk sağlayıcılarda alan adı, sağlayıcının kendi nameserver'larında değilse önce **DNS
+      yönetimini etkinleştirmeniz** gerekebilir. Nameserver'ları başka yere (ör. Cloudflare) verdiyseniz
+      A kaydını **orada** düzenlemelisiniz — kayıt her zaman **nameserver'ın bulunduğu yerde** eklenir.
+    </Note>
+  </Tab>
+
+  <Tab title="Diğer / Genel">
+    ### Genel Mantık
+
+    Hangi sağlayıcıyı kullanırsanız kullanın adımlar aynıdır:
+
+    1. Alan adı panelinizde **DNS Yönetimi / Zone Editor** bölümünü bulun.
+    2. Bir **A** kaydı ekleyin: **Ad** `@`, **Değer** sunucunuzun IP adresi.
+    3. Bir **CNAME** kaydı ekleyin: **Ad** `www`, **Değer** `magazaniz.com`.
+    4. Kaydedin ve yayılmayı bekleyin.
+
+    <Warning>
+      Kayıtları **nameserver'larınızın barındırıldığı yerde** düzenleyin. Alan adınız Cloudflare
+      nameserver'larını kullanıyorsa kayıtları GoDaddy'de değil **Cloudflare'de** eklemelisiniz.
+    </Warning>
+  </Tab>
+</Tabs>
+
+## Yayılmayı (Propagation) Bekleyin
+
+DNS değişiklikleri anında geçerli olmaz; genellikle **5 dakika – 2 saat** (nadiren 24 saate kadar)
+sürer. Kaydın aktif olup olmadığını kontrol edin:
+
+```bash
+# Terminalde (Windows: nslookup magazaniz.com)
+dig +short magazaniz.com
+```
+
+Dönen IP adresi, sunucunuzun IP'siyle aynıysa yönlendirme tamamlanmıştır. Çevrimiçi kontrol için
+[dnschecker.org](https://dnschecker.org) kullanabilirsiniz.
+
+<Steps>
+  <Step title="IP doğru dönüyor mu?">
+    `dig +short magazaniz.com` çıktısı sunucu IP'nizi gösteriyorsa DNS tamamdır.
+  </Step>
+  <Step title="Kuruluma geçin">
+    Alan adınız sunucuya ulaştığında `https://magazaniz.com/install` adresine gidip
+    [Kurulum Sihirbazı](/installation/setup-wizard)'nı başlatın.
+  </Step>
+</Steps>
+
+<Tip>
+  DNS doğru ama site açılmıyor veya **HTTP 500** görüyorsanız sorun DNS'te değil, sunucu/uygulama
+  yapılandırmasındadır. [Sorun Giderme](/installation/troubleshooting) sayfasına bakın.
+</Tip>

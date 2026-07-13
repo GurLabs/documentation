@@ -52,11 +52,13 @@
             "pages": [
               "installation/overview",
               "installation/gurstore-hosting",
+              "installation/domain-dns",
               "installation/cpanel",
               "installation/plesk",
               "installation/pterodactyl",
               "installation/ubuntu-vps",
               "installation/setup-wizard",
+              "installation/troubleshooting",
               "installation/license"
             ]
           },

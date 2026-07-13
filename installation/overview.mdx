@@ -12,14 +12,24 @@ gerek yoktur. Kurulum üç adımdan ibarettir:
   <Step title="Dosyaları sunucuya yükleyin">
     Lisans panelinizden indirdiğiniz GurStore ZIP paketini sunucunuza yükleyip açın.
   </Step>
-  <Step title="Alan adını /public klasörüne yönlendirin">
-    Web sunucunuzun belge kökünü (document root) uygulamanın `public/` klasörüne ayarlayın.
+  <Step title="Alan adınızı sunucuya yönlendirin">
+    Alan adınızın DNS **A kaydını** sunucunuzun IP adresine yönlendirin (Cloudflare ve diğer
+    sağlayıcılar için adım adım: [Alan Adı & DNS](/installation/domain-dns)).
+  </Step>
+  <Step title="Belge kökünü /public klasörüne ayarlayın">
+    Web sunucunuzun belge kökünü (document root) uygulamanın `public/` klasörüne ayarlayın. Bu adım
+    atlanırsa **HTTP 500** alırsınız — barındırma türünüze uygun rehberi izleyin.
   </Step>
   <Step title="Kurulum sihirbazını çalıştırın">
     Tarayıcıdan `https://alanadiniz.com/install` adresine gidin; sihirbaz lisans, veritabanı
     ve yönetici hesabını sizin için ayarlar. Bkz. [Kurulum Sihirbazı](/installation/setup-wizard).
   </Step>
 </Steps>
+
+<Warning>
+  Kurulumda bir hata mı aldınız (örneğin **HTTP 500**)? En sık neden, alan adının `public` klasörüne
+  yönlendirilmemesi veya yazma izinleridir. Adım adım çözüm: [Sorun Giderme](/installation/troubleshooting).
+</Warning>
 
 <Note>
   Zor kurulumla hiç uğraşmak istemiyor musunuz? **GurStore Hosting** ile sunucu, alan adı,
@@ -93,6 +103,12 @@ biter: tarayıcıdan çalıştırılan [Kurulum Sihirbazı](/installation/setup-
   </Card>
   <Card title="Ubuntu / VPS" icon="terminal" href="/installation/ubuntu-vps">
     Kendi sunucunuzda (self-hosting) Nginx + PHP-FPM ile tam kontrollü kurulum.
+  </Card>
+  <Card title="Alan Adı & DNS" icon="globe" href="/installation/domain-dns">
+    Alan adınızı sunucuya bağlama — Cloudflare ve diğer sağlayıcılar için A kaydı adımları.
+  </Card>
+  <Card title="Sorun Giderme" icon="wrench" href="/installation/troubleshooting">
+    HTTP 500, boş sayfa, 403/404 ve SSL hatalarının adım adım çözümleri.
   </Card>
   <Card title="Lisans & Etki Alanı" icon="key" href="/installation/license">
     Lisansınızı alan adına bağlama, yenileme ve başka bir domaine taşıma.

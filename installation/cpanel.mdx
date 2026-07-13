@@ -1,106 +1,214 @@
 ---
-title: "cPanel ile Kurulum"
+title: "cPanel ile Kurulum (Adım Adım)"
 sidebarTitle: "cPanel"
-description: "Paylaşımlı veya cPanel tabanlı hosting üzerinde GurStore kurulumu: dosya yükleme, PHP sürümü, veritabanı oluşturma ve belge kökü ayarı."
+description: "Paylaşımlı/cPanel hosting üzerinde GurStore kurulumu — dosyaları tam olarak hangi klasöre yükleyeceğiniz, public klasörüne domain yönlendirme, veritabanı ve PHP ayarları dahil, ekran ekran."
 ---
 
-Bu rehber, **cPanel** paneline sahip paylaşımlı hosting hesaplarında GurStore kurulumunu anlatır.
-İşlem, dosyaları yüklemek, bir veritabanı oluşturmak ve alan adını `public/` klasörüne
-yönlendirmekten ibarettir.
+Bu rehber, **cPanel** panelli paylaşımlı hostinglerde GurStore kurulumunu **hiçbir adımı atlamadan**
+anlatır. Sonunda alan adınız GurStore'un `public` klasörünü gösterecek ve `/install` sihirbazına hazır
+olacaksınız.
 
 <Note>
-  Kurulumla hiç uğraşmak istemiyorsanız [GurStore Hosting](/installation/gurstore-hosting) ile
-  tüm bu adımlar sizin yerinize yapılır.
+  Bütün bunlarla uğraşmak istemiyorsanız [GurStore Hosting](/installation/gurstore-hosting) her adımı
+  sizin yerinize yapar; kurulmuş bir mağaza teslim alırsınız.
 </Note>
 
-## Ön Koşullar
+<Info>
+  **Başlamadan önce elinizde şunlar olsun:** GurStore ZIP paketi (lisans panelinizden indirdiğiniz),
+  cPanel kullanıcı adı + şifreniz ve alan adınız. Alan adınızı henüz sunucuya yönlendirmediyseniz önce
+  [Alan Adı & DNS](/installation/domain-dns) sayfasını uygulayın.
+</Info>
 
-- PHP **8.2+** seçebildiğiniz bir cPanel hesabı (MultiPHP Manager)
-- En az bir MySQL veritabanı oluşturma yetkisi
-- Alan adınızın cPanel hesabına tanımlı olması
-
-## 1. PHP Sürümünü Ayarlayın
+## 1. PHP Sürümünü ve Eklentileri Ayarlayın
 
 <Steps>
   <Step title="MultiPHP Manager'ı açın">
-    cPanel ana ekranında **MultiPHP Manager**'a girin, alan adınızı seçin ve PHP sürümünü
-    **8.2 veya 8.3** olarak ayarlayın.
+    cPanel ana ekranında arama kutusuna **MultiPHP** yazın ve **MultiPHP Manager**'a girin. Listeden alan
+    adınızı işaretleyin, sağ üstteki **PHP Version** menüsünden **8.3** (yoksa **8.2**) seçin ve **Apply**
+    deyin.
   </Step>
-  <Step title="Gerekli eklentileri etkinleştirin">
-    **Select PHP Version** (veya **PHP Extensions**) bölümünden şu eklentilerin işaretli
-    olduğundan emin olun: `pdo`, `openssl`, `mbstring`, `curl`, `tokenizer`, `xml`, `fileinfo`,
-    `bcmath`, `json`, `gd` (veya `imagick`).
+  <Step title="Gerekli eklentileri açın">
+    Ana ekrana dönün, bu kez **Select PHP Version** (bazı sunucularda **PHP Selector** ya da **PHP
+    Extensions**) aracını açın. **Extensions** sekmesinde şunların **işaretli** olduğundan emin olun:
+
+    `pdo` · `openssl` · `mbstring` · `curl` · `tokenizer` · `xml` · `fileinfo` · `bcmath` · `json` ·
+    `gd` (veya `imagick`)
+
+    Değişiklikler otomatik kaydolur.
   </Step>
 </Steps>
 
-## 2. Veritabanı Oluşturun
+## 2. Veritabanı Oluşturun (MySQL)
 
 <Steps>
-  <Step title="MySQL Database Wizard">
-    **MySQL® Database Wizard**'ı açın ve yeni bir veritabanı oluşturun (ör. `kullanici_gurstore`).
+  <Step title="MySQL Database Wizard'ı açın">
+    Ana ekranda **MySQL® Database Wizard**'a girin.
   </Step>
-  <Step title="Kullanıcı oluşturup yetki verin">
-    Yeni bir veritabanı kullanıcısı ve güçlü bir şifre belirleyin, ardından bu kullanıcıya
-    veritabanı üzerinde **ALL PRIVILEGES** verin.
+  <Step title="Adım 1 — Veritabanı adı">
+    Bir ad girin, ör. `gurstore`. cPanel buna kullanıcı adınızı ön ek olarak ekler; sonuç
+    `kullaniciadi_gurstore` gibi olur. **Bu tam adı not edin.** **Next Step** deyin.
   </Step>
-  <Step title="Bilgileri not edin">
-    Veritabanı adı, kullanıcı adı ve şifreyi bir kenara not edin; kurulum sihirbazında
-    gerekecek. cPanel'de host genellikle `localhost`'tur.
+  <Step title="Adım 2 — Veritabanı kullanıcısı">
+    Bir kullanıcı adı ve **güçlü bir şifre** girin (cPanel'in Password Generator'ını kullanabilirsiniz).
+    Tam kullanıcı adını (`kullaniciadi_gurstore` gibi) ve şifreyi **not edin**. **Create User** deyin.
   </Step>
-</Steps>
-
-## 3. Dosyaları Yükleyin
-
-<Steps>
-  <Step title="ZIP paketini yükleyin">
-    **File Manager**'ı açın, alan adınızın kök klasörüne (genellikle `public_html` veya alt alan
-    adı klasörü) girin ve GurStore ZIP paketini **Upload** ile yükleyin.
-  </Step>
-  <Step title="Arşivi çıkarın">
-    Yüklenen ZIP'e sağ tıklayıp **Extract** deyin. Tüm GurStore dosyaları bu klasöre açılır.
+  <Step title="Adım 3 — Tüm yetkileri verin">
+    Açılan izin ekranında **ALL PRIVILEGES** kutusunu işaretleyin ve **Next Step** deyin.
   </Step>
 </Steps>
 
-## 4. Belge Kökünü `public/` Yapın
+<Warning>
+  Kurulum sihirbazında bu üç bilgiyi gireceksiniz: **veritabanı adı**, **kullanıcı adı**, **şifre**.
+  cPanel'de veritabanı **host** değeri neredeyse her zaman `localhost`'tur.
+</Warning>
 
-GurStore'un güvenli çalışması için alan adınız uygulamanın `public/` klasörünü göstermelidir.
+## 3. Dosyaları Doğru Klasöre Yükleyin
+
+Burası en kritik adımdır. Alan adınızın türüne göre **doğru klasörü** seçmelisiniz:
 
 <Tabs>
-  <Tab title="Yöntem A — Belge kökünü değiştir">
-    cPanel'de **Domains** bölümünden alan adınızın **Document Root** değerini
-    `.../gurstore/public` olacak şekilde güncelleyin. (Bazı paylaşımlı paketlerde bu ayar kapalı
-    olabilir; bu durumda Yöntem B'yi kullanın.)
+  <Tab title="Ana alan adı (birincil domain)">
+    Alan adınız cPanel hesabının **birincil alan adıysa**, hedef klasör:
+
+    ```
+    /home/kullaniciadi/public_html
+    ```
+
+    Yani cPanel'in **Home** dizinindeki `public_html` klasörü.
   </Tab>
-  <Tab title="Yöntem B — İçeriği public_html'e taşı">
-    Belge kökünü değiştiremiyorsanız: `public/` klasörünün **içindeki** dosyaları `public_html`
-    köküne taşıyın ve uygulamanın geri kalan klasörlerini bir üst dizine yerleştirin. Ardından
-    `public_html/index.php` içindeki `require` yollarını uygulamanın bulunduğu klasöre göre
-    güncelleyin.
+
+  <Tab title="Addon domain / alt alan adı">
+    Alan adınız bir **addon domain** ya da **subdomain** ise, cPanel onu genellikle kendi klasörüne
+    kurar, ör:
+
+    ```
+    /home/kullaniciadi/magazaniz.com
+    ```
+
+    veya
+
+    ```
+    /home/kullaniciadi/public_html/magazaniz.com
+    ```
+
+    Hangi klasör olduğunu **Domains** aracında alan adınızın **Document Root** sütununda görebilirsiniz.
+    GurStore dosyalarını **o klasöre** yükleyeceksiniz.
+  </Tab>
+</Tabs>
+
+<Steps>
+  <Step title="File Manager'ı açın ve hedef klasöre girin">
+    cPanel ana ekranında **File Manager**'a girin. Yukarıda belirlediğiniz hedef klasöre çift tıklayarak
+    girin (ör. `public_html`).
+  </Step>
+  <Step title="ZIP paketini yükleyin">
+    Üst menüden **Upload** deyin, açılan sayfada **Select File** ile bilgisayarınızdaki GurStore ZIP
+    dosyasını seçin. Yükleme %100 olduğunda sekmeyi kapatıp File Manager'a dönün ve **Reload** deyin.
+  </Step>
+  <Step title="Arşivi çıkarın">
+    Yüklenen ZIP dosyasına **sağ tıklayın → Extract** deyin, hedef yolu onaylayın. Çıkarma bitince ZIP
+    dosyasını silebilirsiniz.
+  </Step>
+  <Step title="Klasör yapısını doğrulayın">
+    Çıkardıktan sonra bu klasörde `app`, `bootstrap`, `config`, `public`, `artisan`, `.env.example` gibi
+    öğeleri görmelisiniz.
 
     <Warning>
-      Yöntem B'de dizin yapısı değiştiği için Yöntem A'yı (belge kökü ayarı) tercih etmeniz her
-      zaman daha güvenli ve kolaydır.
+      Bazı ZIP paketleri her şeyi tek bir alt klasöre (`gurstore/`) çıkarır. Böyleyse o klasörün
+      **içindeki** tüm dosyaları bir üst dizine taşıyın; `artisan` ve `public` doğrudan hedef klasörde
+      olmalı, `.../public_html/gurstore/public` gibi iç içe **olmamalı**.
+    </Warning>
+  </Step>
+</Steps>
+
+## 4. Alan Adını `public` Klasörüne Yönlendirin (EN ÖNEMLİ ADIM)
+
+GurStore, güvenlik için yalnızca `public` klasörünü dışarıya açar. Alan adınız `public` klasörünü
+göstermezse, açılışta **HTTP 500** veya kaynak dosyalarının listelenmesi gibi hatalar alırsınız.
+
+<Tabs>
+  <Tab title="Yöntem A — Document Root'u değiştir (ÖNERİLEN)">
+    <Steps>
+      <Step title="Domains aracını açın">
+        cPanel ana ekranında **Domains** aracına girin. Alan adınızı bulun.
+      </Step>
+      <Step title="Document Root'u düzenleyin">
+        Alan adının yanındaki **Manage** (veya kalem/düzenle simgesi) ile **Document Root** alanını açın
+        ve şunu yazın (klasör yapınıza göre uyarlayın):
+
+        ```
+        public_html/public
+        ```
+
+        addon domain ise ör. `magazaniz.com/public`. **Update** / **Save** deyin.
+      </Step>
+    </Steps>
+
+    <Note>
+      Bazı paylaşımlı paketlerde Document Root düzenleme kapalıdır. Bu seçeneği göremiyorsanız Yöntem
+      B'yi kullanın veya hosting sağlayıcınızdan "belge kökünü `public` alt klasörüne çevirin" desteği
+      isteyin.
+    </Note>
+  </Tab>
+
+  <Tab title="Yöntem B — .htaccess yönlendirmesi">
+    Document Root'u değiştiremiyorsanız, hedef klasörün köküne (ör. `public_html/.htaccess`) aşağıdaki
+    içerikle bir `.htaccess` oluşturun. Bu, tüm istekleri `public` klasörüne yönlendirir:
+
+    ```apache
+    <IfModule mod_rewrite.c>
+      RewriteEngine On
+      RewriteRule ^(.*)$ public/$1 [L]
+    </IfModule>
+    ```
+
+    <Warning>
+      Yöntem A (Document Root) her zaman daha temiz ve güvenlidir; mümkünse onu tercih edin. Yöntem B
+      yalnızca Document Root değiştirilemediğinde kullanılmalıdır.
     </Warning>
   </Tab>
 </Tabs>
 
-## 5. Yazma İzinleri
+## 5. Yazma İzinlerini Ayarlayın
 
-File Manager'da (veya SSH varsa) şu klasörlerin yazılabilir olduğundan emin olun: `storage`,
-`bootstrap/cache` ve `.env`. cPanel'de klasöre sağ tıklayıp **Change Permissions** ile `775`
-verebilirsiniz.
+GurStore'un yazabilmesi gereken klasör ve dosyalar: `storage`, `bootstrap/cache` ve `.env`.
+
+File Manager'da her birine **sağ tıklayın → Change Permissions** ve değeri **755** (veya sorun
+yaşarsanız **775**) yapın. `storage` için **Recurse into subdirectories** kutusunu işaretleyin ki alt
+klasörler de aynı izni alsın.
+
+<Info>
+  `.env` dosyası henüz yoksa dert etmeyin — [Kurulum Sihirbazı](/installation/setup-wizard) veritabanı
+  adımında onu sizin için oluşturur. Yalnızca klasörün **yazılabilir** olması yeterlidir.
+</Info>
 
 ## 6. Kurulum Sihirbazını Çalıştırın
 
-Her şey hazır. Tarayıcıdan `https://alanadiniz.com/install` adresine gidin ve
-[Kurulum Sihirbazı](/installation/setup-wizard) adımlarını izleyin — lisans, veritabanı ve
-yönetici hesabınızı orada tanımlayacaksınız.
+Her şey hazır. Tarayıcıdan şu adrese gidin:
+
+```
+https://magazaniz.com/install
+```
+
+Ardından [Kurulum Sihirbazı](/installation/setup-wizard) adımlarını izleyin — lisansınızı, 2. adımda
+oluşturduğunuz veritabanı bilgilerini ve yönetici hesabınızı orada gireceksiniz.
+
+<Warning>
+  `/install` yerine **HTTP 500** görüyorsanız, büyük olasılıkla 4. adım (public yönlendirme) veya 5.
+  adım (izinler) eksiktir. Adım adım çözüm için [Sorun Giderme](/installation/troubleshooting)
+  sayfasına bakın.
+</Warning>
+
+## 7. Zamanlanmış Görev (Cron) Ekleyin
+
+Lisans yenileme, e-posta kuyruğu gibi arka plan işleri için cPanel'de **Cron Jobs** aracına girin ve
+**dakikada bir** çalışan şu görevi ekleyin (yolu kendi klasörünüze göre düzeltin):
+
+```bash
+* * * * * /usr/local/bin/php /home/kullaniciadi/public_html/artisan schedule:run >> /dev/null 2>&1
+```
 
 <Tip>
-  Kurulumdan sonra GurStore'un zamanlanmış görevleri (lisans yenileme, e-posta kuyruğu vb.) için
-  cPanel **Cron Jobs** bölümünden dakikada bir çalışan bir görev ekleyin:
-
-  ```bash
-  * * * * * /usr/local/bin/php /home/kullanici/gurstore/artisan schedule:run >> /dev/null 2>&1
-  ```
+  PHP yolunuzu bilmiyorsanız cPanel **Cron Jobs** sayfasının altında örnek komut satırında görebilir ya
+  da hosting desteğinize sorabilirsiniz. Çoğu cPanel'de `/usr/local/bin/php` doğrudur.
 </Tip>
